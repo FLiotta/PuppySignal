@@ -6,15 +6,23 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.1",
+    "axios": "^0.21.1",
+    "classnames": "^2.2.6",
+    "cogo-toast": "^4.2.3",
+    "jwt-decode": "^3.1.2",
+    "qrcode.react": "^1.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.2",
+    "react-tooltip": "^4.2.14",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
+    "sass": "^1.32.7",
     "typescript": "^4.1.5",
+    "universal-cookie": "^4.0.4",
     "web-vitals": "^1.1.0"
   },
   "scripts": {
@@ -42,11 +50,15 @@
     ]
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/classnames": "^2.2.11",
+    "@types/qrcode.react": "^1.0.1",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "@types/react-redux": "^7.1.16",
     "@types/react-router-dom": "^5.1.7",
     "@types/redux": "^3.6.0",
-    "@types/redux-thunk": "^2.1.0"
+    "@types/redux-thunk": "^2.1.0",
+    "@types/universal-cookie": "^3.0.0"
   }
 }

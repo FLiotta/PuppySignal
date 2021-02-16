@@ -3,10 +3,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import reportWebVitals from './reportWebVitals';
+import Cookie from 'universal-cookie';
 
 // @Project
 import store from './store';
+import { reconnect } from './actions/session';
 import AppRouter from './router/AppRouter';
+import './styles/app.scss';
+
+// @Initialization
+const cookie = new Cookie();
+const previousToken = cookie.get('token');
+
+if(previousToken) {
+  store.dispatch(reconnect(previousToken));
+}
 
 ReactDOM.render(
   <React.StrictMode>
