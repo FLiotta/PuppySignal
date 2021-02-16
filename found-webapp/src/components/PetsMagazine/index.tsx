@@ -15,7 +15,7 @@ const PetsMagazine: React.FC<IProps> = ({
 }) => {
   return (
     <div className="petsmagazine">
-      {pets.map((pet: Pet) => (
+      {pets?.map((pet: Pet) => (
         <PetCard
           {...pet} 
           key={'petsmagazine_' + pet.id}

@@ -1,0 +1,19 @@
+@import '../../styles/colors.scss';
+
+.auth {
+  width: 100%;
+  height: 100%;
+  background-color: #eeeeee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__dialog {
+    width: 300px;
+    height: auto;
+    padding: 15px;
+    border-radius: 16px;
+    background-color: #ffffff;
+    position: relative;
+  }
+}

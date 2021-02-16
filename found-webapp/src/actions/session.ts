@@ -1,5 +1,6 @@
 // @Packages
 import jwtDecode from 'jwt-decode';
+import { ThunkAction } from 'redux-thunk';
 import Cookie from 'universal-cookie';
 
 // @Project
@@ -15,30 +16,40 @@ export const RECONNECT: string = '[SESSION] RECONNECT';
 export const LOGOUT: string = '[SESSION] LOGOUT';
 
 export const signIn: Function = (email: string, password: string): any => {
-  return (dispatch: any) => AuthService.signIn(email, password)
-    .then((response: BackendResponse) => {
-      const { token } = response.data;
+  return (dispatch: any) => new Promise((resolve, reject) => {
+    AuthService.signIn(email, password)
+      .then((response: BackendResponse) => {
+        const { token } = response.data;
+        const decodedToken: any = jwtDecode(token);
+        cookie.set('token', token);
 
-      cookie.set('token', token);
+        dispatch({
+          type: SIGN_IN,
+          payload: {
+            ...decodedToken,
+            token
+          }
+        });
 
-      dispatch({
-        type: SIGN_IN,
-        payload: jwtDecode(token)
-      });
-    })
-    .catch((e: any) => {})
+        resolve(decodedToken);
+      })
+      .catch((e: any) => reject(e));
+  })
 };
 
 export const signUp: Function = (email: string, password: string): any => {
   return (dispatch: any) => AuthService.signUp(email, password)
     .then((response: BackendResponse) => {
       const { token } = response.data;
-
+      const decodedToken: any = jwtDecode(token);
       cookie.set('token', token);
 
       dispatch({
         type: SIGN_UP,
-        payload: jwtDecode(token)
+        payload: {
+          ...decodedToken,
+          token
+        }
       });
     })
     .catch((e: any) => {})
@@ -57,7 +68,10 @@ export const reconnect: Function = (token: string): any => {
       } else {
         dispatch({
           type: RECONNECT,
-          payload
+          payload: {
+            ...payload,
+            token
+          }
         });
 
         res(payload);
@@ -66,6 +80,10 @@ export const reconnect: Function = (token: string): any => {
   }
 }
 
-export const logout: Function = (): any => ({
-  type: LOGOUT
-});
+export const logout: Function = (): any => {
+  cookie.remove('token');
+  
+  return {
+    type: LOGOUT
+  };
+};

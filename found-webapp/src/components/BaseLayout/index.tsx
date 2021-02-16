@@ -17,6 +17,7 @@ const BaseLayout: React.FC<IProps> = ({
       <div className="baselayout__side">
         <ProfileBadge />
         <SidebarMenu className="mt-3" />
+        <p className="text-center mt-5 text-muted">Alpha v1.0</p>
       </div>
       <div className="baselayout__body">
         { children }
