@@ -9,6 +9,7 @@ import Dashboard from '../pages/Dashboard';
 import MyPets from '../pages/MyPets';
 import PetOverview from '../pages/PetOverview';
 import Logout from '../pages/Logout';
+import Found from '../pages/Found';
 import NotFound from '../pages/NotFound';
 
 interface IProps { }
@@ -17,6 +18,7 @@ const AppRouter: React.FC<IProps> = (props) => {
     <BrowserRouter>
       <Switch>
         <Route path="/auth" component={Auth} />
+        <Route path="/found/:petId" component={Found} />
         <BaseLayout>
           <Switch>
             <PrivateRoute path="/" component={Dashboard} exact />

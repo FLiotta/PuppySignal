@@ -6,6 +6,7 @@ import QRCode from 'qrcode.react';
 import PetService from '../../services/PetService';
 import { BackendResponse } from '../../interfaces/app';
 import { Pet } from '../../interfaces/pet';
+import { fetchPetImage } from '../../utils';
 
 interface IProps {
   petId?: number,
@@ -29,11 +30,12 @@ const PetOverview: React.FC<IProps> = ({
   }, []);
 
   const formatQR = (): string => {
-    return JSON.stringify({owner, pet}, undefined, 3);
+    return "http://192.168.0.249:3000/found/" + pet?.id;
   }
   
   return (
     <div>
+      <img src={fetchPetImage(pet?.profile_picture)} className="mx-auto d-block w-25" />
       <pre>
         {JSON.stringify({owner, pet}, undefined, 3)}
       </pre>

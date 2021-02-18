@@ -2,6 +2,9 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import Cookies, { Cookie } from 'universal-cookie';
 
+// @Project
+import { API_PATH } from '../config';
+
 class ApiService {
   http: AxiosInstance;
   httpConfig: any;
@@ -10,7 +13,7 @@ class ApiService {
 
   constructor() {
     this.httpConfig = {
-      baseURL: 'http://localhost:4000/api',
+      baseURL: API_PATH,
       headers: {}
     };
     this.cookies = new Cookies();
@@ -24,15 +27,19 @@ class ApiService {
   }
 
   get(path: string, params: any = {}): Promise<AxiosResponse> {
-    return this.http.get(path, params)
-      .then((res: any) => res.data)
-      .catch((e: any) => e);
+    return new Promise((resolve, reject) => {
+      this.http.get(path, params)
+        .then((res: any) => resolve(res.data))
+        .catch((e: any) => reject(e));
+    })
   }
 
   post(path: string, body: any = {}, config: any = {}): Promise<AxiosResponse> {
-    return this.http.post(path, body, config)
-      .then((res: any) => res.data)
-      .catch((e: any) => e);
+    return new Promise((resolve, reject) => {
+      this.http.post(path, body, config)
+        .then((res: any) => resolve(res.data))
+        .catch((e: any) => reject(e));
+    })
   }
 };
 

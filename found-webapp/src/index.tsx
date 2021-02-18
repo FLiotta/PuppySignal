@@ -8,12 +8,15 @@ import Cookie from 'universal-cookie';
 // @Project
 import store from './store';
 import { reconnect } from './actions/session';
+import { fetchSpecies } from './actions/species';
 import AppRouter from './router/AppRouter';
 import './styles/app.scss';
 
 // @Initialization
 const cookie = new Cookie();
 const previousToken = cookie.get('token');
+
+store.dispatch(fetchSpecies());
 
 if(previousToken) {
   store.dispatch(reconnect(previousToken));
