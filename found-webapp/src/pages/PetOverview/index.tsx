@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 // @Project
-import PetOverview from '../../components/PetOverview';
+import PetOverview from 'components/PetOverview';
 
 interface IMatch {
   id: any

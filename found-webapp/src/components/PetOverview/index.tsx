@@ -3,10 +3,10 @@ import {  useState, useEffect } from 'react';
 import QRCode from 'qrcode.react';
 
 // @Project
-import PetService from '../../services/PetService';
-import { BackendResponse } from '../../interfaces/app';
-import { Pet } from '../../interfaces/pet';
-import { fetchPetImage } from '../../utils';
+import PetService from 'services/PetService';
+import { BackendResponse } from 'interfaces/app';
+import { Pet } from 'interfaces/pet';
+import { fetchPetImage } from 'utils';
 
 interface IProps {
   petId?: number,

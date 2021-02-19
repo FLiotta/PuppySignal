@@ -1,6 +1,6 @@
 // @Project
-import { Pet } from '../../interfaces/pet';
-import PetCard from '../PetCard';
+import { Pet } from 'interfaces/pet';
+import PetCard from 'components/PetCard';
 
 // @Own
 import MockedData from './mockedData';

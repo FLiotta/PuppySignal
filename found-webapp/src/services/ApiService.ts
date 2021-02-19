@@ -3,7 +3,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import Cookies, { Cookie } from 'universal-cookie';
 
 // @Project
-import { API_PATH } from '../config';
+import { API_PATH } from 'config';
 
 class ApiService {
   http: AxiosInstance;

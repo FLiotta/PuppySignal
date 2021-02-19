@@ -1,6 +1,6 @@
 // @Project
-import { BackendResponse } from '../interfaces/app';
-import DataService from '../services/DataService';
+import { BackendResponse } from 'interfaces/app';
+import DataService from 'services/DataService';
 
 export const FETCH_SPECIES: string = '[SPECIES] FETCH';
 

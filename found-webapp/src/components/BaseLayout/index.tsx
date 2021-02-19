@@ -1,6 +1,6 @@
 // @Project
-import ProfileBadge from '../ProfileBadge';
-import SidebarMenu from '../SidebarMenu';
+import ProfileBadge from 'components/ProfileBadge';
+import SidebarMenu from 'components/SidebarMenu';
 
 // @Own
 import './styles.scss';

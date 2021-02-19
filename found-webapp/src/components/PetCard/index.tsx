@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import cn from 'classnames';
 
 // @Project
-import { Pet } from "../../interfaces/pet";
-import Dog from '../../assets/dog.png';
-import Cat from '../../assets/cat.png';
+import { Pet } from "interfaces/pet";
+import Dog from 'assets/dog.png';
+import Cat from 'assets/cat.png';
 
 // @Own
 import './styles.scss';

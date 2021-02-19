@@ -1,0 +1,37 @@
+.addpetmodal {
+  background-color: #ffffff;
+  display: flex;
+  padding: 25px;
+  flex-direction: column;
+
+  &__photo {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    transition: .2s all;
+
+    &:hover {
+      opacity: 0.8;
+      cursor: pointer;
+    };
+
+    &-image {
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      cursor: pointer;
+    }
+
+    .cropper-container {
+      height: max-content;
+      max-height: 100% !important;
+    }
+
+    &--expanded {
+      height: 100%;
+      margin: 0 !important;
+    }
+  }
+}

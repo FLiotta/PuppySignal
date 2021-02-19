@@ -4,8 +4,8 @@ import { ThunkAction } from 'redux-thunk';
 import Cookie from 'universal-cookie';
 
 // @Project
-import { BackendResponse } from '../interfaces/app';
-import AuthService from '../services/AuthService';
+import { BackendResponse } from 'interfaces/app';
+import AuthService from 'services/AuthService';
 
 // @Initialization
 const cookie = new Cookie();

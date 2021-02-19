@@ -5,12 +5,12 @@ import cogoToast from 'cogo-toast';
 import { RouteComponentProps } from 'react-router-dom';
 
 // @Project
-import PetService from '../../services/PetService';
-import { Pet } from '../../interfaces/pet';
+import PetService from 'services/PetService';
+import { Pet } from 'interfaces/pet';
 
 // @Own
 import './styles.scss';
-import { BackendResponse } from '../../interfaces/app';
+import { BackendResponse } from 'interfaces/app';
 
 interface IMatch {
   petId: any

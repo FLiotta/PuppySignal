@@ -1,4 +1,4 @@
-import { SIGN_IN, SIGN_UP, RECONNECT, LOGOUT} from '../actions/session';
+import { SIGN_IN, SIGN_UP, RECONNECT, LOGOUT} from 'actions/session';
 
 const defaultState: any = {}
 

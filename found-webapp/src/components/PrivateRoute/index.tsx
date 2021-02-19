@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Redirect, RouteComponentProps, Route } from 'react-router-dom';
 
 // @Project
-import { selectSessionToken } from '../../selectors/session';
+import { selectSessionToken } from 'selectors/session';
 
 interface IProps { 
   component: any,

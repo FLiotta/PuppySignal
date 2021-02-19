@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // @Project
-import { selectSession } from '../../selectors/session';
-import TestAvatar from '../../assets/avatar.png';
+import { selectSession } from 'selectors/session';
+import TestAvatar from 'assets/avatar.png';
 
 // @Own
 import './styles.scss';

@@ -6,8 +6,8 @@ import { useHistory } from 'react-router-dom';
 import cogoToast from 'cogo-toast';
 
 // @Project
-import { signIn } from '../../actions/session';
-import Loading from '../../components/Loading';
+import { signIn } from 'actions/session';
+import Loading from 'components/Loading';
 
 // @Own
 import './styles.scss';

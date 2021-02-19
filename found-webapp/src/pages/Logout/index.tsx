@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 // @Project
-import { logout } from '../../actions/session';
+import { logout } from 'actions/session';
 
 const Logout: React.FC<any> = () => {
   const dispatch = useDispatch();

@@ -1,4 +1,4 @@
-import { FETCH_SPECIES } from '../actions/species';
+import { FETCH_SPECIES } from 'actions/species';
 
 interface IState {
   results: any[]

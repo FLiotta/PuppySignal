@@ -3,11 +3,13 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // @Project
-import PetsMagazine from '../../components/PetsMagazine';
+import AddPetModal from 'components/AddPetModal';
+import PetsMagazine from 'components/PetsMagazine';
 
 // @Own
 import { fetchPets } from './actions';
 import { selectPets } from './selectors';
+
 interface IProps {};
 
 const MyPets: React.FC<IProps> = (props) => {
@@ -20,6 +22,7 @@ const MyPets: React.FC<IProps> = (props) => {
   
   return (
     <div className="mypets">
+      <AddPetModal />
       <PetsMagazine pets={pets} />
     </div>
   );

@@ -2,15 +2,15 @@
 import { BrowserRouter, Switch, Route} from 'react-router-dom';
 
 // @Project
-import PrivateRoute from '../components/PrivateRoute';
-import BaseLayout from '../components/BaseLayout';
-import Auth from '../pages/Auth';
-import Dashboard from '../pages/Dashboard';
-import MyPets from '../pages/MyPets';
-import PetOverview from '../pages/PetOverview';
-import Logout from '../pages/Logout';
-import Found from '../pages/Found';
-import NotFound from '../pages/NotFound';
+import PrivateRoute from 'components/PrivateRoute';
+import BaseLayout from 'components/BaseLayout';
+import Auth from 'pages/Auth';
+import Dashboard from 'pages/Dashboard';
+import MyPets from 'pages/MyPets';
+import PetOverview from 'pages/PetOverview';
+import Logout from 'pages/Logout';
+import Found from 'pages/Found';
+import NotFound from 'pages/NotFound';
 
 interface IProps { }
 const AppRouter: React.FC<IProps> = (props) => {

@@ -1,6 +1,6 @@
 // @Project
-import { BackendResponse } from '../../interfaces/app';
-import ProfileService from '../../services/ProfileService';
+import { BackendResponse } from 'interfaces/app';
+import ProfileService from 'services/ProfileService';
 
 export const FETCH_PETS: string = '[MY PETS] Fetch pets';
 
