@@ -4,5 +4,6 @@ export interface Pet {
   name?: string;
   specie_id?: number;
   extra?: string;
+  token: string;
   profile_picture?: string;
 }

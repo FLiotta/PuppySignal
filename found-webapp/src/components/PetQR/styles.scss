@@ -1,0 +1,8 @@
+.petqrcode {
+  transition: 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    opacity: .6;
+  }
+}

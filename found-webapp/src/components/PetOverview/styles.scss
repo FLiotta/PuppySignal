@@ -1,3 +1,16 @@
 .petoverview {
-  display: flex;
+  &__photo {
+    justify-self: flex-start;
+    display: block;
+    height: 210px;
+    width: 210px;
+    border-radius: 16px;
+  }
+
+  &__description {
+    padding: 10px;
+    margin-left: 15px;
+    display: flex;
+    flex-direction: column;
+  }
 }

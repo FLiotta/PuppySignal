@@ -1,6 +1,7 @@
 // @Packages
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import qs from 'qs';
 import cogoToast from 'cogo-toast';
 import { RouteComponentProps } from 'react-router-dom';
 
@@ -20,29 +21,32 @@ interface IMatch {
 interface IProps extends RouteComponentProps<IMatch> {}
 
 const Found: React.FC<IProps> = ({
-  match
+  match,
+  location,
 }) => {
   const history = useHistory();
   const [pet, setPet] = useState<Pet | undefined>();
 
   useEffect(() => {
     const { petId } = match.params;
+    const { t } = qs.parse(location.search, { ignoreQueryPrefix: true }) as { t: string };
 
-    if(!petId) {
+    if(!petId || !t) {
       cogoToast.warn('Page unavailable', { position: 'bottom-right' });
       
       history.push('/');
     }
 
-    PetService.scanned(petId)
+    if(t) {
+      PetService.scanned(petId, t)
       .then((response: BackendResponse) => {
-        cogoToast.error("TODO: Implement privacy, only people who scanned should be available to see!", { position: 'bottom-right' });
         setPet(response.data);
       })
       .catch(() => {
         cogoToast.warn('Page unavailable', { position: 'bottom-right' });
         history.push('/');
       });
+    }
   }, []);
 
   return (

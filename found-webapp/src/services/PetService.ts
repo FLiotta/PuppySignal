@@ -29,8 +29,12 @@ class PetService extends ApiService {
     return this.get(`/pet/${petId}`, { params });
   }
 
-  scanned(petId: number | undefined): Promise<AxiosResponse> {
-    return this.get(`/pet/scanned/${petId}`);
+  scanned(petId: number, token: string): Promise<AxiosResponse> {
+    return this.get(`/pet/scanned/${petId}`, {
+      params: {
+        token
+      }
+    });
   }
 }
 

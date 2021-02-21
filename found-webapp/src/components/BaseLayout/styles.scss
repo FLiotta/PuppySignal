@@ -10,7 +10,7 @@ $body_width: calc(100vw - #{$side_width});
   &__side {
     height: 100%;
     width: $side_width;
-    background-color: #eeeeee;
+    background-color: #ffffff;
     padding: 25px;
     position: fixed;
     top: 0;
@@ -22,7 +22,7 @@ $body_width: calc(100vw - #{$side_width});
     left: $side_width;
     height: 100%;
     width: $body_width;
-    background-color: #ffffff;
+    background-color: #eeeeee;
     padding: 25px;
   }
 }
