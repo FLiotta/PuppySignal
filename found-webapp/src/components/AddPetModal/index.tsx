@@ -10,14 +10,25 @@ import cn from 'classnames';
 import 'cropperjs/dist/cropper.css';
 
 // @Project
+import PetService from 'services/PetService';
 import DefaultAvatar from 'assets/avatar.png';
 import Loading from 'components/Loading';
 import { selectSpecies } from 'selectors/species';
 
 // @Own
 import './styles.scss';
+import { BackendResponse } from 'interfaces/app';
+import { Pet } from 'interfaces/pet';
 
 // Declarations
+interface formFields {
+  specie: {
+    id: number,
+    name: string
+  };
+  name: string;
+  extra: string;
+};
 
 Modal.setAppElement('#root')
 
@@ -36,9 +47,22 @@ const customStyles = {
   }
 }
 
-const AddPetModal: React.FC<any> = (props) => {
+interface IProps {
+  onSuccess(newPet: Pet): any,
+  onFailure(): any,
+  onCloseRequest(): any,
+  visible: boolean
+};
+
+const AddPetModal: React.FC<IProps> = ({
+  onSuccess,
+  onFailure,
+  onCloseRequest,
+  visible,
+}) => {
   const species = useSelector(selectSpecies);
 
+  const [loading, setLoading] = useState<boolean>(false);
   const [uploadedPhoto, setUploadedPhoto] = useState<any>();
   const [cropDetails, setCropDetails] = useState<any>(null);
   const [base64Photo, setBase64Photo] = useState<any>(null);
@@ -46,18 +70,32 @@ const AddPetModal: React.FC<any> = (props) => {
   const { handleSubmit, control, register } = useForm();
   const cropper = useRef<HTMLImageElement | any>(null);
 
-  const onFormSubmit = (formFields: any) => {
+  const onFormSubmit = (formFields: formFields) => {
     let payload: any = {
-      specie_id: formFields.specie.id,
+      specie_id: formFields?.specie?.id,
       name: formFields.name,
-      extra: formFields.extra,
+      extra: formFields.extra
     }
 
     if(uploadedPhoto) {
       payload['profile_picture'] = uploadedPhoto;
-      payload['crop_details'] = cropDetails;
+      payload['x'] = Math.round(cropDetails.x);
+      payload['y'] = Math.round(cropDetails.y);
+      payload['width'] = Math.round(cropDetails.width);
+      payload['height'] = Math.round(cropDetails.height);
     }
-    console.log(payload);
+
+    setLoading(true);
+
+    PetService.addNewPet(payload)
+      .then((response: BackendResponse) => {
+        setBase64Photo(null);
+        setUploadedPhoto(null);
+        setCropDetails(null)
+        onSuccess(response.data);
+      })
+      .catch(onFailure)
+      .then(() => setLoading(false));
   }
 
   const handleFileSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +111,6 @@ const AddPetModal: React.FC<any> = (props) => {
 
   const onCropMove = (cropInfo: any) => {
     setCropDetails(cropInfo.detail)
-    console.log(cropper.current?.cropper?.getData())
   }
   const confirmCrop = () => {
     setCropMode(false);
@@ -97,25 +134,26 @@ const AddPetModal: React.FC<any> = (props) => {
 
   return (
     <Modal
-      isOpen={true}
+      isOpen={visible}
       style={customStyles}
-      onRequestClose={() => {}}
+      onRequestClose={onCloseRequest}
       className="addpetmodal"
     >
+      <Loading visible={loading} />
       <div className={cn("addpetmodal__photo mb-4", { 'addpetmodal__photo--expanded': cropMode })}>
         {cropMode && (
-          <div className="d-flex flex-column h-100">
+          <div className="d-flex flex-column">
             <Cropper
               ref={cropper}
               src={base64Photo}
-              style={{ 'height': '100%', width: '100%' }}
+              style={{ maxHeight: 500, width: '100%' }}
               className="AAAAAAAAAA"
               // Cropper.js options
               dragMode='move'
               zoomable={false}
               aspectRatio={1}
               crop={onCropMove}
-              viewMode={1}
+              viewMode={2}
               responsive={true}
               guides={false}
             />

@@ -11,6 +11,7 @@ import { Pet } from 'interfaces/pet';
 // @Own
 import './styles.scss';
 import { BackendResponse } from 'interfaces/app';
+import { fetchPetImage } from 'utils';
 
 interface IMatch {
   petId: any
@@ -36,11 +37,6 @@ const Found: React.FC<IProps> = ({
     PetService.scanned(petId)
       .then((response: BackendResponse) => {
         cogoToast.error("TODO: Implement privacy, only people who scanned should be available to see!", { position: 'bottom-right' });
-        cogoToast.error("TODO: Implement privacy, only people who scanned should be available to see!", { position: 'bottom-right' });
-        cogoToast.error("TODO: Implement privacy, only people who scanned should be available to see!", { position: 'bottom-right' });
-        cogoToast.error("TODO: Implement privacy, only people who scanned should be available to see!", { position: 'bottom-right' });
-        cogoToast.error("TODO: Implement privacy, only people who scanned should be available to see!", { position: 'bottom-right' });
-        cogoToast.error("TODO: Implement privacy, only people who scanned should be available to see!", { position: 'bottom-right' });
         setPet(response.data);
       })
       .catch(() => {
@@ -53,9 +49,8 @@ const Found: React.FC<IProps> = ({
     <div className="found">
       <h1 className="text-center">🐶</h1>
       <h3 className="text-center">Hmm, what do we have here?</h3>
-      <pre style={{
-        whiteSpace: 'pre-wrap'
-      }}>{JSON.stringify(pet, undefined, 3)}</pre>
+      <img src={fetchPetImage(pet?.profile_picture)} className="found__photo" />
+      <pre className="found__debug">{JSON.stringify(pet, undefined, 3)}</pre>
       <div className="d-flex flex-column">
         <button className="btn btn-sm btn-primary">Notify owner</button>
         <button className="btn btn-sm btn-primary my-2">Chat with the owner</button>
