@@ -11,7 +11,6 @@ import 'cropperjs/dist/cropper.css';
 
 // @Project
 import PetService from 'services/PetService';
-import DefaultAvatar from 'assets/avatar.png';
 import Loading from 'components/Loading';
 import { selectSpecies } from 'selectors/species';
 
@@ -165,7 +164,7 @@ const AddPetModal: React.FC<IProps> = ({
         )}
         {!cropMode && (
           <Fragment>
-            <img src={base64Photo || DefaultAvatar} className="addpetmodal__photo-image" />
+            <img src={base64Photo} className="addpetmodal__photo-image" />
             <input onChange={handleFileSubmit} type="file" style={{position: 'absolute', width: 100, height: 100, opacity: 0,}}/>
           </Fragment>
         )}

@@ -11,6 +11,9 @@ import { BackendResponse } from 'interfaces/app';
 import { Pet } from 'interfaces/pet';
 import { downloadCanvasAsImage, fetchPetImage } from 'utils';
 
+// @Own
+import './styles.scss';
+
 interface IMatch {
   id: any
 };
@@ -40,11 +43,12 @@ const PetOverviewPage: React.FC<IProps> = ({
       .then(() => setLoading(false));
   })
   return (
-    <div className="petoverview">
+    <div className="petoverview-page">
       {petId && <PetOverview petId={petId} />}
-      <Section className="mt-4">
+      <Section>
         {pet != undefined && (
           <PetQR
+            center
             id={`pet-${pet?.uuid}`}
             onClick={onQRDownload}
             petId={pet?.id}
@@ -52,7 +56,7 @@ const PetOverviewPage: React.FC<IProps> = ({
             size={210}
           />
         )}
-        <div className="ms-3">
+        <div className="ms-3 mt-3">
           <h4>QR Code</h4>
           <p>
             This QR code will allow others to identify your pet and contact you in case of a lost.

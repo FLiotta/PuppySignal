@@ -2,9 +2,7 @@
 
 .sidebarmenu {
   width: 100%;
-  min-width: 300px;
   height: min-content;
-  background-color: #ffffff;
   padding: 15px;
   border-radius: 16px;
   display: flex;
@@ -16,19 +14,34 @@
     display: flex;
     width: 100%;
     padding: 10px;
+    margin: 10px 0;
     transition: .2s all;
     cursor: pointer;
 
     &--active {
-      color: $color_2 !important;
+      color: $color_white !important;
+      background-color: $color_pink;
+      border-radius: 32px;
+
+      & > * {
+        transition: .2s all;
+
+        &:hover {
+          color: $color_black !important;
+        }
+      }
     }
 
     &-description {
       margin: 0;
     }
 
-    &:hover {
-      color: $color_2;
+    & > * {
+      transition: .2s all;
+
+      &:hover {
+        color: $color_pink;
+      }
     }
   }
 }

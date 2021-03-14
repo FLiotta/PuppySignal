@@ -4,3 +4,8 @@ export interface BackendResponse {
   error?: any,
   data?: any,
 };
+
+export interface Specie {
+  id: number,
+  name: string
+};

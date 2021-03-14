@@ -16,6 +16,7 @@ interface IProps {
   size?: number,
   className?: string,
   onClick(): void,
+  center?: boolean
 };
 
 const PetQR: React.FC<IProps> = ({
@@ -24,6 +25,7 @@ const PetQR: React.FC<IProps> = ({
   size,
   id,
   className,
+  center,
   onClick,
   ...rest
 }) => {
@@ -32,7 +34,9 @@ const PetQR: React.FC<IProps> = ({
   return (
     <QRCode
       id={id}
-      className={cn('petqrcode')}
+      className={cn('petqrcode', {
+        'petqrcode--center': center
+      })}
       size={size}
       value={path}
       onClick={onClick}

@@ -8,6 +8,7 @@ import cogoToast from 'cogo-toast';
 // @Project
 import { signIn } from 'actions/session';
 import Loading from 'components/Loading';
+import Logo from 'components/Logo';
 
 // @Own
 import './styles.scss';
@@ -26,7 +27,7 @@ const Form: React.FC<IPropsForm> = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="form-group">
+      <div className="form-group mt-5">
         <label htmlFor="email"><small>Email</small></label>
         <input 
           className="form-control form-control-sm" 
@@ -80,8 +81,13 @@ const Auth: React.FC<IProps> = (props) => {
   return (
     <div className="auth">
       <div className="auth__dialog">
+        <Logo breakLine center typo />
         <Loading visible={loading} />
         <Form onSubmit={onSubmit} />
+      </div>
+      <div className="auth__body">
+        <h1 className="auth__body-title">Did you know you can track many pets per account?</h1>
+        <p className="auth__body-message">With Pet Tracer you can track as many pets as you want, and its totally free!</p>
       </div>
     </div>
   );

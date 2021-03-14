@@ -1,0 +1,27 @@
+@import '../../styles/colors.scss';
+
+.logo {
+  &--expand {
+    width: 100%;
+    height: 100%;
+  }
+
+  &--center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__isotype {
+    width: 40px;
+    display: block;
+    margin-right: 10px;
+  }
+
+  &__typo {
+    font-family: 'Red hat Display';
+    font-weight: 900;
+    color: $color_black;
+    line-height: 0.8;
+  }
+}

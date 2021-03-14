@@ -1,6 +1,7 @@
 // @Project
 import ProfileBadge from 'components/ProfileBadge';
 import SidebarMenu from 'components/SidebarMenu';
+import Logo from 'components/Logo';
 
 // @Own
 import './styles.scss';
@@ -17,7 +18,7 @@ const BaseLayout: React.FC<IProps> = ({
       <div className="baselayout__side">
         <ProfileBadge />
         <SidebarMenu className="mt-3" />
-        <p className="text-center mt-5 text-muted">Alpha v2.0</p>
+        <Logo center typo breakLine className="baselayout__logo" />
       </div>
       <div className="baselayout__body">
         { children }

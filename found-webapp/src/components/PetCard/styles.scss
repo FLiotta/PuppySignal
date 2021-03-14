@@ -3,27 +3,51 @@
 .petcard {
   width: 200px;
   padding: 25px;
-  border-radius: 18px;
-  border: 2px solid $color_2;
+  background-color: $color_white;
   cursor: pointer;
-  transition: .1s all;
+  transition: .3s all;
   position: relative;
 
+  &__header {
+    height: 50px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__photo {
+    display: block;
+    top: 5px;
+    height: 200%;
+    border-radius: 50%;
+    border: 2px solid $color_pink;
+    padding: 5px;
+    background-color: $color_white;
+  }
+
+  &__body {
+    margin-top: 75px;
+    display: flex;
+    flex-direction: column;
+  }
+
   &__name {
-    margin: 0;
+    margin: 0 0 15px;
     font-weight: 600;
   }
 
-  &__identifier {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    bottom: 10px;
-    right: 10px;
+  &__attribute {
+    text-transform: capitalize;
+    margin-bottom: 5px;
   }
 
   &:hover {
     color: #ffffff;
-    background-color: $color_2;
+    background-color: $color_pink;
+    box-shadow:
+      0 3.9px 3.6px rgba(0, 0, 0, 0.038),
+      0 10.8px 10px rgba(0, 0, 0, 0.055),
+      0 25.9px 24.1px rgba(0, 0, 0, 0.072),
+      0 86px 80px rgba(0, 0, 0, 0.11);
   }
 }

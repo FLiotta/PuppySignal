@@ -2,9 +2,7 @@
 
 .profilebadge {
   width: 100%;
-  min-width: 300px;
   height: min-content;
-  background-color: #ffffff;
   padding: 15px;
   border-radius: 16px;
   display: flex;
@@ -14,30 +12,23 @@
 
   &__header {
     display: flex;
-    min-width: 250px;
-    width: min-content;
     align-items: center;
-    transition: .2s all;
     cursor: pointer;
-    border-radius: 16px;
+    background-color: rgb(254 168 181 / 40%);
+    border-radius: 50px;
+    padding: 5px;
+    border: 2px solid rgb(255 102 125 / 50%);
+    transform: scale(1);
 
     &-avatar {
-      width: 50px;
-      height: 50px;
-      margin: auto;
-      border: 2px solid $color_1;
-      border-radius: 40%;
+      width: 28px;
+      border-radius: 50%;
+      margin-right: 9px;
     }
 
     &-info {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      height: 100%;
-      padding: 10px 15px;
-
       &-name {
-        line-height: .5;
+        margin: 0;
         font-weight: 300;
       }
 
@@ -46,11 +37,6 @@
         line-height: .5;
         font-weight: 300;
       }
-    }
-
-    &:hover {
-      transform: scale(1.05) rotateZ(-5deg);
-      box-shadow: 0px 0px 25px -10px rgba(0,0,0,.5);
     }
   }
   

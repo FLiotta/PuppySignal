@@ -2,6 +2,10 @@
   transition: 0.3s;
   cursor: pointer;
 
+  &--center {
+    align-self: center;
+  }
+
   &:hover {
     opacity: .6;
   }

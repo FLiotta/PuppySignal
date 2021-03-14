@@ -11,6 +11,7 @@ import { fetchPets, addNewPet } from './actions';
 import { selectPets } from './selectors';
 import cogoToast from 'cogo-toast';
 import { Pet } from 'interfaces/pet';
+import './styles.scss';
 
 interface IProps {};
 
@@ -40,12 +41,14 @@ const MyPets: React.FC<IProps> = (props) => {
 
   return (
     <div className="mypets">
-      <button
-        className="btn btn-primary btn-sm mb-3" 
-        onClick={() => setPetModalVisible(true)}
-      >
-        Add a new pet
-      </button>
+      <div>
+        <button
+          className="btn btn-primary btn-sm mb-3" 
+          onClick={() => setPetModalVisible(true)}
+        >
+          Add a new pet
+        </button>
+      </div>
       <AddPetModal
         onSuccess={onPetAddSuccess}
         onFailure={onFailure}
