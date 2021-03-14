@@ -3,7 +3,6 @@ import QRCode from 'qrcode.react';
 import cn from 'classnames';
 
 // @Project
-import DogFace from 'assets/dogface.png';
 import { FOUND_QR_PATH } from 'config';
 
 // @Own
@@ -40,11 +39,6 @@ const PetQR: React.FC<IProps> = ({
       size={size}
       value={path}
       onClick={onClick}
-      imageSettings={{
-        src: DogFace,
-        width: 50,
-        height: 50,
-      }}
       {...rest}
     />
   )
