@@ -13,6 +13,7 @@ import { downloadCanvasAsImage, fetchPetImage } from 'utils';
 
 // @Own
 import './styles.scss';
+import PetLocation from 'components/PetLocations';
 
 interface IMatch {
   id: any
@@ -44,37 +45,42 @@ const PetOverviewPage: React.FC<IProps> = ({
   })
   return (
     <div className="petoverview-page">
-      {petId && <PetOverview petId={petId} />}
-      <Section>
-        {pet != undefined && (
-          <PetQR
-            center
-            id={`pet-${pet?.uuid}`}
-            onClick={onQRDownload}
-            petId={pet?.id}
-            petToken={pet?.token}
-            size={210}
-          />
-        )}
-        <div className="ms-3 mt-3">
-          <h4>QR Code</h4>
-          <p>
-            This QR code will allow others to identify your pet and contact you in case of a lost.
-            <br />
-            Print it and put it somewhere people could easly find it, like a collar.
-            <br /><br />
-            <small>It would be great if you can put some protection to the QR.</small>
-          </p>
-          <div>
-            <button
-              className="btn btn-primary btn-sm"
+      <div className="petoverview-page__section">
+        {petId && <PetOverview petId={petId} />}
+        <Section>
+          {pet != undefined && (
+            <PetQR
+              center
+              id={`pet-${pet?.uuid}`}
               onClick={onQRDownload}
-            >
-              Download
-            </button>
+              petId={pet?.id}
+              petToken={pet?.token}
+              size={210}
+            />
+          )}
+          <div className="ms-3 mt-3">
+            <h4>QR Code</h4>
+            <p>
+              This QR code will allow others to identify your pet and contact you in case of a lost.
+              <br />
+              Print it and put it somewhere people could easly find it, like a collar.
+              <br /><br />
+              <small>It would be great if you can put some protection to the QR.</small>
+            </p>
+            <div>
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={onQRDownload}
+              >
+                Download
+              </button>
+            </div>
           </div>
-        </div>
-      </Section>
+        </Section>
+      </div>
+      <div className="petoverview-page__section petoverview-page__section--column">
+        {pet?.id && ( <PetLocation id={pet.id}/> )}
+      </div>
     </div>
   );
 }

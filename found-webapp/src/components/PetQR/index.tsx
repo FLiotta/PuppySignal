@@ -29,7 +29,7 @@ const PetQR: React.FC<IProps> = ({
   ...rest
 }) => {
   const path = `${FOUND_QR_PATH}/${petId}?t=${petToken}`;
-  console.log(path)
+  
   return (
     <QRCode
       id={id}

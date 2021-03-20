@@ -1,4 +1,6 @@
 .petoverview {
+  padding: 10px;
+
   &__photo {
     display: block;
     border-radius: 16px;
@@ -8,8 +10,6 @@
   }
 
   &__description {
-    padding: 10px;
-    margin-left: 15px;
     display: flex;
     flex-direction: column;
 

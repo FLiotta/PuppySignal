@@ -49,6 +49,18 @@ const Found: React.FC<IProps> = ({
     }
   }, []);
 
+  useEffect(() => {
+    if(pet) {
+      navigator.geolocation.getCurrentPosition(
+        (location) => {
+          const { latitude, longitude } = location.coords;
+
+          PetService.createPetLocation(pet.id, latitude, longitude);
+        }
+      )
+    }
+  }, [pet]);
+
   return (
     <div className="found">
       <h1 className="text-center">🐶</h1>
