@@ -14,7 +14,8 @@ const SidebarMenu: React.FC<IProps> = ({
 }) => {
   return (
     <div className={cn("sidebarmenu", className)}>
-      <NavLink
+      {/**
+       * <NavLink
         to="/"
         exact
         activeClassName="sidebarmenu__option--active"
@@ -25,6 +26,7 @@ const SidebarMenu: React.FC<IProps> = ({
           <i className="fas fa-home mr-2"></i> Home sweet home
         </small>
       </NavLink>
+       
       <NavLink 
         to="/notifications"
         activeClassName="sidebarmenu__option--active"
@@ -35,6 +37,7 @@ const SidebarMenu: React.FC<IProps> = ({
           <i className="fas fa-bell mr-2"></i> Notifications
         </small>
       </NavLink>
+      */}
       <NavLink
         to="/my-pets"
         activeClassName="sidebarmenu__option--active"
@@ -45,7 +48,8 @@ const SidebarMenu: React.FC<IProps> = ({
           <i className="fas fa-paw mr-2"></i> My pets
         </small>
       </NavLink>
-      <NavLink  
+      {/**
+       * <NavLink  
         to="/settings"
         activeClassName="sidebarmenu__option--active"
         className="sidebarmenu__option"
@@ -55,6 +59,7 @@ const SidebarMenu: React.FC<IProps> = ({
           <i className="fas fa-cog mr-2"></i> Settings
         </small>
       </NavLink>
+       */}
       <NavLink 
         to="/logout"
         activeClassName="sidebarmenu__option--active"

@@ -9,7 +9,7 @@ const NotFound: React.FC<any> = () => {
   useEffect(() => {
     cogoToast.info("The page you're looking for may be deleted", { position: 'bottom-right' });
     
-    history.push('/');
+    history.push('/found');
   })
 
   return (

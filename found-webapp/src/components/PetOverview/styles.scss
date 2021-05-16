@@ -1,5 +1,6 @@
 .petoverview {
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
 
   &__photo {
     display: block;
@@ -10,6 +11,7 @@
   }
 
   &__description {
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
 

@@ -135,12 +135,12 @@ const PetLocationMap: React.FC<IProps> = ({
 
   return (
     <div className="petlocations">
-      <h4>Ubications</h4>
-      <p>See anywhere your pet was scanned by others.</p>
+      <h4>Locations</h4>
+      <p>Here will be displayed your friend locations. Such as where people scanned his collar, his home, etc.</p>
       <Map
-          locations={locations}
-          loading={loading}
-        />
+        locations={locations}
+        loading={loading}
+      />
     </div>
   )
 }

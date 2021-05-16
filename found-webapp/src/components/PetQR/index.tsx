@@ -10,7 +10,6 @@ import './styles.scss';
 
 interface IProps {
   petId: number,
-  petToken: string,
   id: string,
   size?: number,
   className?: string,
@@ -20,7 +19,6 @@ interface IProps {
 
 const PetQR: React.FC<IProps> = ({
   petId,
-  petToken,
   size,
   id,
   className,
@@ -28,7 +26,7 @@ const PetQR: React.FC<IProps> = ({
   onClick,
   ...rest
 }) => {
-  const path = `${FOUND_QR_PATH}/${petId}?t=${petToken}`;
+  const path = `${FOUND_QR_PATH}?i=${petId}`;
   
   return (
     <QRCode

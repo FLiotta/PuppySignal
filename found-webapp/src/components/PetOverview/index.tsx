@@ -6,7 +6,6 @@ import PetService from 'services/PetService';
 import { BackendResponse } from 'interfaces/app';
 import { Pet } from 'interfaces/pet';
 import { fetchPetImage } from 'utils';
-import Section from 'components/Section';
 
 // @Own
 import './styles.scss';
@@ -37,7 +36,7 @@ const PetOverview: React.FC<IProps> = ({
       .then(() => setLoading(false));
   }, []);
   return (
-    <Section className="petoverview">
+    <div className="petoverview">
       <Loading visible={loading}/>
       <img
         src={pet?.profile_picture}
@@ -50,7 +49,7 @@ const PetOverview: React.FC<IProps> = ({
         <small>Argentinian dogo</small>
         <small>{pet?.extra}</small>
       </div>
-    </Section>
+    </div>
   )
 };
 

@@ -37,12 +37,8 @@ class PetService extends ApiService {
     return this.post(`/pet/${petId}/location`, { lat, lng })
   }
 
-  scanned(petId: number, token: string): Promise<AxiosResponse> {
-    return this.get(`/pet/scanned/${petId}`, {
-      params: {
-        token
-      }
-    });
+  scanned(qr: string): Promise<AxiosResponse> {
+    return this.get(`/pet/scanned/${qr}`);
   }
 }
 
