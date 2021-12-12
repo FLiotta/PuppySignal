@@ -1,30 +1,27 @@
-from starlette.routing import request_response
+import fastapi
 import uvicorn
-from typing import List
+from os.path import join, dirname, pardir
+
+from dotenv import load_dotenv
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 
-from server.database import SessionLocal
-from sqlalchemy.orm import Session
-from server.models import Pet, Specie, Code, UserPet, Notification
-from server.schemas import SpecieSchema, PetSchema, CodeSchema, UserPetSchema, NotificationSchema
-from fastapi import FastAPI, Depends
+from server.routes import api_router
+
+load_dotenv(join(dirname(__file__), pardir, '.env'))
 
 app = FastAPI()
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-
-@app.get("/", response_model=List[NotificationSchema])
-async def root(db: Session = Depends(get_db)):
-    query = db.query(Notification).all()
-
-    print(query)
-    return query
+app.include_router(api_router, prefix="/api/v2")
 
 if __name__ == "__main__":
     uvicorn.run(app, log_level="debug", reload=True)

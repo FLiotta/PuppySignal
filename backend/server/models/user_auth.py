@@ -1,5 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Integer, String, Date, ForeignKey, Column
+from sqlalchemy.orm import relationship
 
 from server.database import Base
 
@@ -11,3 +12,5 @@ class UserAuth(Base):
   user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
   created_at = Column(Date, default=datetime.now, nullable=False)
   updated_at = Column(Date, default=datetime.now, nullable=False)
+
+  user = relationship('User', back_populates='auths', lazy=False)

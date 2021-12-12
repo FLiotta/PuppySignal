@@ -22,6 +22,7 @@ class User(Base):
   updated_at = Column(Date, default=datetime.now, nullable=False)
 
   pets = relationship("UserPet", back_populates="user")
+  auths = relationship("UserAuth", back_populates="user")
 
   def __str__(self):
     return f"[{self.uuid}][{self.id}] {self.first_name} {self.last_name}"
