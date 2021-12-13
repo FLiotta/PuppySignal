@@ -3,31 +3,25 @@ import requests
 import os
 
 from datetime import datetime, timedelta
-from typing import Any
-from pydantic import BaseModel
 from fastapi.exceptions import HTTPException
 from fastapi.params import Depends
 from fastapi.routing import APIRouter
 from sqlalchemy.orm.session import Session
-from sqlalchemy import select
 
-from server.schemas import UserSchema
+from server.schemas import UserSchema, OAuthGoogleResponse, GoogleOAuthBody
 from server.models import UserAuth, User
-from server.utils import get_db, protected_route
+from server.utils import get_db
 
 router = APIRouter()
 
-class GoogleOAuthBody(BaseModel):
-  token: str
-
-@router.post("/google")
+@router.post("/google", response_model=OAuthGoogleResponse)
 async def get_auth(body: GoogleOAuthBody, db: Session = Depends(get_db)):
   token: str = body.token
 
   response = requests.get(f"https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token={token}")
 
   if not response.ok:
-    raise HTTPException(status_code=400, detail="Invalid token.")
+    raise HTTPException(status_code=400, detail="Invalid google token.")
 
   response_data = response.json()
 
@@ -58,6 +52,8 @@ async def get_auth(body: GoogleOAuthBody, db: Session = Depends(get_db)):
     db.add(new_user_auth_model)
 
     user_to_serialize = new_user
+
+    db.commit()
   
   jwt_token = jwt.encode({
     **UserSchema.from_orm(user_to_serialize).dict(),

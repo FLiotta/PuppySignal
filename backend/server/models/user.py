@@ -21,7 +21,7 @@ class User(Base):
   created_at = Column(Date, default=datetime.now, nullable=False)
   updated_at = Column(Date, default=datetime.now, nullable=False)
 
-  pets = relationship("UserPet", back_populates="user")
+  pets = relationship("Pet", secondary="user_pet", back_populates="owners")
   auths = relationship("UserAuth", back_populates="user")
 
   def __str__(self):

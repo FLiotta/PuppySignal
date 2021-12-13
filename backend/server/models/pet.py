@@ -17,7 +17,7 @@ class Pet(Base):
   color = Column(String(50))
   specie_id = Column(Integer, ForeignKey("specie.id"))
 
-  owners = relationship("UserPet", back_populates="pet")
+  owners = relationship("User", secondary="user_pet", back_populates="pets")
   specie = relationship("Specie", back_populates="pets", lazy=False)
   code = relationship("Code", back_populates="pet")
 

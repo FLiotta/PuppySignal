@@ -9,6 +9,3 @@ class UserPet(Base):
   id = Column(Integer, primary_key=True, nullable=False)
   user_id = Column(Integer, ForeignKey('user.id'))
   pet_id = Column(Integer, ForeignKey('pet.id'))
-
-  user = relationship("User", back_populates="pets", lazy=False)
-  pet = relationship("Pet", back_populates="owners", lazy=False)

@@ -8,3 +8,4 @@ from server.schemas.notification import NotificationSchema
 from server.schemas.user_auth import UserAuthSchema
 from server.schemas.pet_location import PetLocationSchema
 from server.schemas.user_notification import UserNotificationSchema
+from server.schemas.services import *

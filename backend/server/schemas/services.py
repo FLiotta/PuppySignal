@@ -1,0 +1,27 @@
+from typing import List, Optional
+from pydantic import BaseModel
+
+from server.schemas import SpecieSchema, UserSchema, PetSchema
+
+class GoogleOAuthBody(BaseModel):
+  token: str
+
+class OAuthGooglePayload(BaseModel):
+  token: str
+
+class OAuthGoogleResponse(BaseModel):
+  data: OAuthGooglePayload
+
+class DataSpeciesResponse(BaseModel):
+  data: List[SpecieSchema]
+
+class ProfileResponse(BaseModel):
+  data: UserSchema
+
+class ProfilePatchBody(BaseModel):
+  first_name: Optional[str]
+  last_name: Optional[str]
+  birthday: Optional[str]
+
+class ProfilePetsResponse(BaseModel):
+  data: List[PetSchema]
