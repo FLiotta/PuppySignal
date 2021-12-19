@@ -1,5 +1,3 @@
-import os
-
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session, query
@@ -7,10 +5,12 @@ from twilio.rest import Client
 
 from server.models import User
 from server.schemas import UserSchema, ProfileResponse, ProfilePatchBody, ProfilePetsResponse, PhoneNumberBody, PhoneNumberVerifyBody
-from server.utils import get_db, protected_route, get_user
+from server.utils import get_db, protected_route, get_user, get_settings
+from server.config import Settings
 
+settings = get_settings()
 router = APIRouter()
-twilio = Client(os.environ.get("TWILIO_ACCOUNT_SID"), os.environ.get("TWILIO_AUTH_TOKEN"))
+twilio = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
 # TODO: rate limtier
 
@@ -55,8 +55,8 @@ def get_user_pets(db: Session = Depends(get_db), u: UserSchema = Depends(get_use
 # TODO: rate limiter
 
 @router.post("/phone_number", status_code=200, dependencies=[Depends(protected_route)])
-def request_phone_number_code(body: PhoneNumberBody):
-  verify = twilio.verify.services(os.environ.get("TWILIO_SERVICE_ID"))
+def request_phone_number_code(body: PhoneNumberBody, settings: Settings = Depends(get_settings)):
+  verify = twilio.verify.services(settings.TWILIO_SERVICE_ID)
 
   try:
     verify.verifications.create(to=body.phone_number, channel='sms')
@@ -67,8 +67,13 @@ def request_phone_number_code(body: PhoneNumberBody):
 # TODO: rate limtier
 
 @router.post("/phone_number/verify", status_code=200, dependencies=[Depends(protected_route)])
-def verify_requested_phone_number_code(body: PhoneNumberVerifyBody, db: Session = Depends(get_db), u: UserSchema = Depends(get_user)):
-  verify = twilio.verify.services(os.environ.get("TWILIO_SERVICE_ID"))
+def verify_requested_phone_number_code(
+  body: PhoneNumberVerifyBody, 
+  db: Session = Depends(get_db), 
+  u: UserSchema = Depends(get_user),
+  settings: Settings = Depends(get_settings)
+):
+  verify = twilio.verify.services(settings.TWILIO_SERVICE_ID)
 
   try:
     verify.verification_checks.create(to=body.phone_number, code=body.code)

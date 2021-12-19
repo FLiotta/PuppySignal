@@ -1,9 +1,13 @@
+from fastapi.param_functions import Depends
 import jwt
 import os
+
+from functools import lru_cache
 
 from fastapi import Header
 from fastapi.exceptions import HTTPException
 from server.database import SessionLocal
+from server import config
 
 def get_db():
   db = SessionLocal()
@@ -12,16 +16,20 @@ def get_db():
   finally:
     db.close()
 
-async def get_user(token: str = Header(...)):
-  decoded_user = jwt.decode(token, os.environ.get("JWT_SECRET"), algorithms='HS256')
+@lru_cache()
+def get_settings():
+    return config.Settings()
+
+async def get_user(token: str = Header(...), settings: config.Settings = Depends(get_settings)):
+  decoded_user = jwt.decode(token, settings.JWT_SECRET, algorithms='HS256')
     
   return decoded_user
 
-async def protected_route(token: str = Header(...)):
+async def protected_route(token: str = Header(...), settings: config.Settings = Depends(get_settings)):
   if token is None:
     raise HTTPException(status_code=401, detail="Authorization token not found.")
   try:
-    jwt.decode(token, os.environ.get("JWT_SECRET"), algorithms='HS256')
+    jwt.decode(token, settings.JWT_SECRET, algorithms='HS256')
     
     pass
   except: 
