@@ -25,3 +25,10 @@ class ProfilePatchBody(BaseModel):
 
 class ProfilePetsResponse(BaseModel):
   data: List[PetSchema]
+
+class PhoneNumberBody(BaseModel):
+  phone_number: str
+
+class PhoneNumberVerifyBody(BaseModel):
+  phone_number: str
+  code: int 

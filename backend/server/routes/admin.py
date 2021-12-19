@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from nanoid import generate
 
 from server.models import Code
 from server.utils import get_db
 
 router = APIRouter()
 
-# TODO: Only administrator should be able to generate codes.
+# TODO: Only administrator should be allowed to generate codes.
+# TODO: rate limtier
 
 @router.post('/generate_codes', status_code=201)
 def generate_codes(db: Session = Depends(get_db)):

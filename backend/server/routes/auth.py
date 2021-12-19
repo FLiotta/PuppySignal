@@ -14,6 +14,10 @@ from server.utils import get_db
 
 router = APIRouter()
 
+# User shouldn't be allowed to access these endpoints if they're already authenticated.
+
+# TODO: rate limtier
+
 @router.post("/google", response_model=OAuthGoogleResponse)
 async def get_auth(body: GoogleOAuthBody, db: Session = Depends(get_db)):
   token: str = body.token
