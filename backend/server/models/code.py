@@ -17,7 +17,7 @@ class Code(Base):
   created_at = Column(Date, default=datetime.now, nullable=False)
   updated_at = Column(Date, default=datetime.now, nullable=False)
 
-  pet = relationship("Pet", back_populates="code")
+  pet = relationship("Pet", back_populates="codes")
 
   def __str__(self):
     return f"[{self.id}][{self.code}] {self.code}"

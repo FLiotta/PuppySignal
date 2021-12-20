@@ -19,7 +19,7 @@ class Pet(Base):
 
   owners = relationship("User", secondary="user_pet", back_populates="pets")
   specie = relationship("Specie", back_populates="pets", lazy=False)
-  code = relationship("Code", back_populates="pet")
+  codes = relationship("Code", back_populates="pet")
 
   def __str__(self):
-    return f"[{self.uuid}][{self.id}] {self.first_name} {self.last_name}"
+    return f"[{self.uuid}][{self.id}] {self.name}"
