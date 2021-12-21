@@ -140,3 +140,7 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_u
     raise HTTPException(status_code=404, detail="Pet not found")
 
   return pet.locations
+
+  
+# TODO: Scans code
+# ...

@@ -52,6 +52,9 @@ def get_user_pets(db: Session = Depends(get_db), u: UserSchema = Depends(get_use
     "data": user.pets
   }
 
+# TODO: Retrieve notifications ep
+# ...
+
 # TODO: rate limiter
 
 @router.post("/phone_number", status_code=200, dependencies=[Depends(protected_route)])
