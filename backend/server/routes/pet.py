@@ -75,7 +75,7 @@ async def create_pet(
       db.add(new_user_pet)
       db.flush()
 
-      avatar_key = f"{new_pet.uuid}.jpg"
+      avatar_key = f"pets/{new_pet.uuid}.jpg"
 
       new_pet.profile_picture = f"{settings.b2_endpoint_url}/{settings.b2_bucket}/{avatar_key}"
 
