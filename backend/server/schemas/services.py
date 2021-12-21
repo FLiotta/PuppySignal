@@ -32,3 +32,8 @@ class PhoneNumberBody(BaseModel):
 class PhoneNumberVerifyBody(BaseModel):
   phone_number: str
   code: int 
+
+class CreatePetBody(BaseModel):
+  name: str
+  description: str
+  specie_id: int

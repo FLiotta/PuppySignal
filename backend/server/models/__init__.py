@@ -7,3 +7,4 @@ from server.models.notification import Notification
 from server.models.pet_location import PetLocation
 from server.models.user_auth import UserAuth
 from server.models.user_notification import UserNotification
+from server.models.location import Location

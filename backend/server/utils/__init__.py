@@ -1,10 +1,10 @@
-from fastapi.param_functions import Depends
 import jwt
 import os
 
 from functools import lru_cache
 
 from fastapi import Header
+from fastapi.param_functions import Depends
 from fastapi.exceptions import HTTPException
 from server.database import SessionLocal
 from server import config
@@ -17,7 +17,7 @@ def get_db():
     db.close()
 
 @lru_cache()
-def get_settings():
+def get_settings() -> config.Settings:
     return config.Settings()
 
 async def get_user(token: str = Header(...), settings: config.Settings = Depends(get_settings)):
