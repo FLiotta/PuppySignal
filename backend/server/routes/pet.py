@@ -89,7 +89,9 @@ async def create_pet(
 
       db.commit()
 
-      return new_pet
+      return {
+        "data": new_pet
+      }
     except Exception as e:
       db.rollback()
       raise HTTPException(status_code=500, detail="Pet can't be created.")
@@ -105,7 +107,9 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_u
   if not pet:
     raise HTTPException(status_code=404, detail="Pet not found")
 
-  return pet
+  return {
+    "data": pet
+  }
 
 # TODO: rate limiter
 # TODO: pagination?
@@ -127,7 +131,9 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_u
       "code": code.code
     })
 
-  return parsed_codes
+  return {
+    "data": parsed_codes
+  }
 
 # TODO: rate limiter
 
@@ -140,7 +146,9 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_u
   if not pet:
     raise HTTPException(status_code=404, detail="Pet not found")
 
-  return pet.locations
+  return {
+    "data": pet.locations
+  }
 
   
 # TODO: Scans code
