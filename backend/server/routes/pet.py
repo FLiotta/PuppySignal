@@ -108,6 +108,7 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_u
   return pet
 
 # TODO: rate limiter
+# TODO: pagination?
 
 @router.get("/{pet_id}/codes", response_model=List[CodeSchema], dependencies=[Depends(protected_route)])
 def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_user)):

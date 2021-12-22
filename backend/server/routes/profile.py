@@ -1,10 +1,12 @@
+from typing import List
+
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
-from sqlalchemy.orm import Session, query
+from sqlalchemy.orm import Session, joinedload
 from twilio.rest import Client
 
-from server.models import User
-from server.schemas import UserSchema, ProfileResponse, ProfilePatchBody, ProfilePetsResponse, PhoneNumberBody, PhoneNumberVerifyBody
+from server.models import User, Notification, Pet
+from server.schemas import UserSchema, ProfileResponse, ProfilePatchBody, ProfilePetsResponse, PhoneNumberBody, PhoneNumberVerifyBody, NotificationWithPetSchema
 from server.utils import get_db, protected_route, get_user, get_settings
 from server.config import Settings
 
@@ -43,17 +45,30 @@ def update_profile(body: ProfilePatchBody, db: Session = Depends(get_db), u: Use
   db.commit()
 
 # TODO: rate limtier
+# TODO: pagination?
 
 @router.get("/pets", response_model=ProfilePetsResponse, dependencies=[Depends(protected_route)])
 def get_user_pets(db: Session = Depends(get_db), u: UserSchema = Depends(get_user)):
-  user = db.query(User).filter(User.id == u["id"]).first()
+  pets = db.query(Pet).filter(
+    Pet.owners.any(id=u['id'])
+  ).options(joinedload(Pet.specie)).all()
 
   return {
-    "data": user.pets
+    "data": pets
   }
 
-# TODO: Retrieve notifications ep
-# ...
+# TODO: rate limiter
+# TODO: pagination?
+
+@router.get("/notifications", response_model=List[NotificationWithPetSchema], dependencies=[Depends(protected_route)])
+def get_user_notifications(db: Session = Depends(get_db), u: UserSchema = Depends(get_user)):
+  notifications = db.query(Notification).filter(
+    Notification.owners.any(id=u['id'])
+  ).options(joinedload(Notification.pet)).all()
+
+  return {
+    "data": notifications
+  }
 
 # TODO: rate limiter
 

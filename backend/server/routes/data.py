@@ -11,6 +11,7 @@ router = APIRouter()
 # But letting anyone request these endpoints could lead to an incident in the future?
 
 # TODO: rate limtier
+# TODO: pagination?
 
 @router.get('/species', response_model=DataSpeciesResponse)
 def get_species(db: Session = Depends(get_db)):

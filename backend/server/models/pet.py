@@ -18,7 +18,7 @@ class Pet(Base):
   specie_id = Column(Integer, ForeignKey("specie.id"))
 
   owners = relationship("User", secondary="user_pet", back_populates="pets")
-  specie = relationship("Specie", back_populates="pets", lazy=False)
+  specie = relationship("Specie", back_populates="pets", lazy='noload')
   codes = relationship("Code", back_populates="pet")
   locations = relationship("Location", secondary="pet_location", backref="pet")
 

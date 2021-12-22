@@ -11,7 +11,7 @@ class PetSchema(BaseModel):
   profile_picture: Optional[str]
   extra: Optional[str]
   color: Optional[str]
-  specie: SpecieSchema
+  specie: Optional[SpecieSchema]
 
   class Config:
     orm_mode = True
