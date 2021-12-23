@@ -37,3 +37,6 @@ class CreatePetBody(BaseModel):
   name: str
   description: str
   specie_id: int
+
+class ScannedQRCodeResponse(BaseModel):
+  data: PetSchema

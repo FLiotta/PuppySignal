@@ -5,12 +5,12 @@ import numpy
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
-from server.schemas import PetSchema, CodeSchema, LocationSchema, UserSchema
+from server.schemas import PetSchema, CodeSchema, LocationSchema, UserSchema, ScannedQRCodeResponse
 from server.utils import get_db, get_user, protected_route, get_settings
 from server.config import Settings
-from server.models import Pet, Code, UserPet
+from server.models import Pet, Code, UserPet, UserNotification, Notification
 
 router = APIRouter()
 
@@ -151,5 +151,43 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_u
   }
 
   
-# TODO: Scans code
-# ...
+# TODO: rate limiter (QR special case)
+
+@router.get("/scanned/{qr_code}", response_model=ScannedQRCodeResponse)
+def scan_qr_code(qr_code: str, db: Session = Depends(get_db)):
+  code = db.query(Code).filter(Code.code == qr_code).options(
+      joinedload(Code.pet).joinedload(Pet.owners)
+    ).first()
+
+  db.close()
+
+  with db.begin():
+    try:
+      new_notification = Notification(
+        type="SCANNED",
+        scanned_pet_id=code.pet.id
+      )
+      db.add(new_notification)
+      db.flush()
+
+      for owner in code.pet.owners:
+        new_user_notification = UserNotification(
+          user_id=owner.id,
+          notification_id=new_notification.id
+        )
+
+        db.add(new_user_notification)
+      
+      db.commit()
+
+      # TODO Send push notification
+      # ...
+      # TODO Send email
+      # ...
+
+      return {
+        "data": code.pet
+      }
+    except Exception as e:
+      db.rollback()
+      raise HTTPException(status_code=500, detail="QR Code can't be scanned.")
