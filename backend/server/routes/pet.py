@@ -16,8 +16,8 @@ router = APIRouter()
 
 # TODO: rate limiter
 
-@router.post("/", response_model=PetSchema, dependencies=[Depends(protected_route)])
-async def create_pet(
+@router.post("/", response_model=PetSchema, status_code=200, dependencies=[Depends(protected_route)])
+def create_pet(
   file: UploadFile = File(...),
   name: str = Form(...),
   description: str = Form(...),

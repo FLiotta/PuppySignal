@@ -1,7 +1,7 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
-from server.schemas import SpecieSchema, UserSchema, PetSchema
+from server.schemas import SpecieSchema, UserSchema, PetSchema, NotificationWithPetSchema
 
 class GoogleOAuthBody(BaseModel):
   token: str
@@ -40,3 +40,6 @@ class CreatePetBody(BaseModel):
 
 class ScannedQRCodeResponse(BaseModel):
   data: PetSchema
+
+class ProfileNotificationsResponse(BaseModel):
+  data: List[NotificationWithPetSchema]
