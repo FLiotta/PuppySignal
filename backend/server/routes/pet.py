@@ -7,7 +7,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form
 from sqlalchemy.orm import Session, joinedload
 
-from server.schemas import PetSchema, CodeSchema, LocationSchema, UserSchema, ScannedQRCodeResponse
+from server.schemas import UserSchema, ScannedQRCodeResponse, PetByIdResponse, PetCodesResponse, PetLocationsResponse, CreatePetSchema
 from server.utils import get_db, get_user, protected_route, get_settings
 from server.config import Settings
 from server.models import Pet, Code, UserPet, UserNotification, Notification
@@ -16,7 +16,7 @@ router = APIRouter()
 
 # TODO: rate limiter
 
-@router.post("/", response_model=PetSchema, status_code=200, dependencies=[Depends(protected_route)])
+@router.post("/", response_model=CreatePetSchema, status_code=200, dependencies=[Depends(protected_route)])
 def create_pet(
   file: UploadFile = File(...),
   name: str = Form(...),
@@ -98,7 +98,7 @@ def create_pet(
 
 # TODO: rate limiter
 
-@router.get("/{pet_id}", response_model=PetSchema, dependencies=[Depends(protected_route)])
+@router.get("/{pet_id}", response_model=PetByIdResponse, dependencies=[Depends(protected_route)])
 def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_user)):
   pet = db.query(Pet).filter(
     (Pet.id == pet_id) & (Pet.owners.any(id=u['id']))
@@ -114,7 +114,7 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_u
 # TODO: rate limiter
 # TODO: pagination?
 
-@router.get("/{pet_id}/codes", response_model=List[CodeSchema], dependencies=[Depends(protected_route)])
+@router.get("/{pet_id}/codes", response_model=PetCodesResponse, dependencies=[Depends(protected_route)])
 def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_user)):
   pet = db.query(Pet).filter(
     (Pet.id == pet_id) & (Pet.owners.any(id=u['id']))
@@ -137,7 +137,7 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_u
 
 # TODO: rate limiter
 
-@router.get("/{pet_id}/locations", response_model=List[LocationSchema], dependencies=[Depends(protected_route)])
+@router.get("/{pet_id}/locations", response_model=PetLocationsResponse, dependencies=[Depends(protected_route)])
 def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_user)):
   pet = db.query(Pet) \
     .filter((Pet.id == pet_id) & (Pet.owners.any(id=u['id']))) \
