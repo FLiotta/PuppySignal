@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form
 from sqlalchemy.orm import Session, joinedload
 
 from server.schemas import UserSchema, ScannedQRCodeResponse, PetByIdResponse, PetCodesResponse, PetLocationsResponse, CreatePetSchema
-from server.utils import get_db, get_user, protected_route, get_settings
+from server.utils import get_db, get_user, protected_route, get_settings, fully_validated_user
 from server.config import Settings
 from server.models import Pet, Code, UserPet, UserNotification, Notification
 
@@ -16,7 +16,7 @@ router = APIRouter()
 
 # TODO: rate limiter
 
-@router.post("/", response_model=CreatePetSchema, status_code=200, dependencies=[Depends(protected_route)])
+@router.post("/", response_model=CreatePetSchema, status_code=200, dependencies=[Depends(protected_route), Depends(fully_validated_user)])
 def create_pet(
   file: UploadFile = File(...),
   name: str = Form(...),

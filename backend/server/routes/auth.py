@@ -79,8 +79,6 @@ async def get_auth(
     algorithm="HS256"
   )
 
-
-  print(jwt_token, flush=True)
   return {
     "data": {
       "token": jwt_token
