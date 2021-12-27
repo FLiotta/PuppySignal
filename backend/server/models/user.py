@@ -11,7 +11,7 @@ class User(Base):
   __tablename__ = "user"
 
   id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-  uuid = Column(UUID, default=uuid.uuid4, nullable=False)
+  uuid = Column(UUID(as_uuid=True), default=uuid.uuid4,nullable=False)
   first_name = Column(String(50), nullable=False)
   last_name = Column(String(50), nullable=False)
   email = Column(String(50), nullable=False)

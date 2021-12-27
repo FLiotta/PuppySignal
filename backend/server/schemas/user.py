@@ -1,10 +1,12 @@
+import uuid
+
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
 
 class UserSchema(BaseModel):
   id: int
-  uuid: str
+  uuid: uuid.UUID
   first_name: str
   last_name: str
   email: str

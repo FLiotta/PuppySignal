@@ -1,6 +1,5 @@
 import jwt
 import requests
-import os
 
 from datetime import datetime, timedelta
 from fastapi.exceptions import HTTPException
@@ -10,7 +9,8 @@ from sqlalchemy.orm.session import Session
 
 from server.schemas import UserSchema, OAuthGoogleResponse, GoogleOAuthBody
 from server.models import UserAuth, User
-from server.utils import get_db
+from server.config import Settings
+from server.utils import get_db, get_settings
 
 router = APIRouter()
 
@@ -19,7 +19,11 @@ router = APIRouter()
 # TODO: rate limtier
 
 @router.post("/google", response_model=OAuthGoogleResponse)
-async def get_auth(body: GoogleOAuthBody, db: Session = Depends(get_db)):
+async def get_auth(
+  body: GoogleOAuthBody,
+  settings: Settings = Depends(get_settings),
+  db: Session = Depends(get_db)
+):
   token: str = body.token
 
   response = requests.get(f"https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token={token}")
@@ -38,35 +42,45 @@ async def get_auth(body: GoogleOAuthBody, db: Session = Depends(get_db)):
   if user_oauth is not None:
     user_to_serialize = user_oauth.user
   else:
-    new_user_model = User(
-      first_name=response_data['given_name'],
-      last_name=response_data['family_name'],
-      email=response_data['email'],
-      profile_picture=response_data['picture']
-    )
+    try:
+      new_user = User(
+        first_name=response_data['given_name'],
+        last_name=response_data['family_name'],
+        email=response_data['email'],
+        profile_picture=response_data['picture']
+      )
 
-    new_user = db.add(new_user_model)
+      db.add(new_user)
 
-    new_user_auth_model = UserAuth(
-      method="GOOGLE",
-      oauth_id=response_data['id'],
-      user_id=new_user.id
-    )
+      db.flush()
 
-    db.add(new_user_auth_model)
+      db.refresh(new_user)
 
-    user_to_serialize = new_user
+      new_user_auth = UserAuth(
+        method="GOOGLE",
+        oauth_id=response_data['id'],
+        user_id=new_user.id
+      )
 
-    db.commit()
-  
+      db.add(new_user_auth)
+      db.commit()
+
+      user_to_serialize = new_user
+    except Exception as e:
+      raise HTTPException(status_code=500, detail="User cannot be created.")
+      
+    
   jwt_token = jwt.encode({
     **UserSchema.from_orm(user_to_serialize).dict(),
+    "uuid": str(user_to_serialize.uuid),
     "exp": datetime.utcnow() + timedelta(days=7)
     },
-    os.environ.get('JWT_SECRET'),
+    settings.JWT_SECRET,
     algorithm="HS256"
   )
 
+
+  print(jwt_token, flush=True)
   return {
     "data": {
       "token": jwt_token
