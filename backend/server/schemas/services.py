@@ -3,11 +3,19 @@ from pydantic import BaseModel
 
 from server.schemas import SpecieSchema, UserSchema, PetSchema, NotificationWithPetSchema, CodeSchema, LocationSchema
 
+class RefreshTokenPayload(BaseModel):
+  token: str
+  refresh_token: str
+
+class RefreshTokenResponse(BaseModel):
+  data: RefreshTokenPayload
+
 class GoogleOAuthBody(BaseModel):
   token: str
 
 class OAuthGooglePayload(BaseModel):
   token: str
+  refresh_token: str
 
 class OAuthGoogleResponse(BaseModel):
   data: OAuthGooglePayload

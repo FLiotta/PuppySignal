@@ -31,6 +31,7 @@ async def protected_route(token: str = Header(...), settings: config.Settings = 
   try:
     jwt.decode(token, settings.JWT_SECRET, algorithms='HS256')
     
+    # TODO: Verify token isn't expired.
     pass
   except: 
     raise HTTPException(status_code=403, detail="Invalid JWT Token.")
