@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from server.schemas import SpecieSchema, UserSchema, PetSchema, NotificationWithPetSchema, CodeSchema, LocationSchema
 
 class RefreshTokenPayload(BaseModel):
-  token: str
+  action_token: str
   refresh_token: str
 
 class RefreshTokenResponse(BaseModel):
@@ -14,7 +14,7 @@ class GoogleOAuthBody(BaseModel):
   token: str
 
 class OAuthGooglePayload(BaseModel):
-  token: str
+  action_token: str
   refresh_token: str
 
 class OAuthGoogleResponse(BaseModel):

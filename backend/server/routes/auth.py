@@ -14,6 +14,16 @@ from server.utils import get_db, get_settings
 
 router = APIRouter()
 
+"""
+  action_tokens must only have the next fields:
+
+  @id: Int
+  @uuid: UUIDv4
+  @phone_verified: Boolean
+
+  Not personal info should be in the token, it's only for validations purposes.
+"""
+
 # User shouldn't be allowed to access these endpoints if they're already authenticated.
 
 # TODO: rate limtier
@@ -72,8 +82,8 @@ async def get_auth(
     
   jwt_token = jwt.encode({
     "id": user_to_serialize.id,
-    "validated_phone_number": user_to_serialize.validated_profile_phone_number,
     "uuid": str(user_to_serialize.uuid),
+    "phone_verified": user_to_serialize.validated_profile_phone_number,
     "exp": datetime.utcnow() + timedelta(minutes=5),
     "iat": datetime.utcnow()
     },
@@ -102,7 +112,7 @@ async def get_auth(
 
   return {
     "data": {
-      "token": jwt_token,
+      "action_token": jwt_token,
       "refresh_token": refresh_token
     }
   }
@@ -126,12 +136,14 @@ async def jwt_refresh(
   elif actual_time > token.valid_until:
     raise HTTPException(status_code=400, detail="Expired refresh token.")
   
-  user_id = token.user.id
+  user = token.user
 
   db.delete(token)
 
   access_token = jwt.encode({
-    "user_id": str(user_id),
+    "id": user.id,
+    "uuid": str(user.uuid),
+    "phone_verified": user.validated_profile_phone_number,
     "exp": datetime.utcnow() + timedelta(minutes=5),
     "iat": datetime.utcnow()
     },
@@ -151,7 +163,7 @@ async def jwt_refresh(
   db.add(
     RefreshToken(
       token=new_refresh_token,
-      user_id=user_id,
+      user_id=user.id,
       valid_until=new_refresh_token_expiration_time
     )
   )
@@ -160,7 +172,7 @@ async def jwt_refresh(
 
   return {
     "data": {
-      "token": access_token,
+      "action_token": access_token,
       "refresh_token": new_refresh_token
     }
   }

@@ -2,6 +2,7 @@ import jwt
 import os
 
 from functools import lru_cache
+from jwt.exceptions import ExpiredSignatureError
 
 from fastapi import Header
 from fastapi.param_functions import Depends
@@ -30,11 +31,12 @@ async def protected_route(token: str = Header(...), settings: config.Settings = 
     raise HTTPException(status_code=401, detail="Authorization token not found.")
   try:
     jwt.decode(token, settings.JWT_SECRET, algorithms='HS256')
-    
-    # TODO: Verify token isn't expired.
+
     pass
+  except ExpiredSignatureError:
+    raise HTTPException(status_code=403, detail="Expired token.")
   except: 
-    raise HTTPException(status_code=403, detail="Invalid JWT Token.")
+    raise HTTPException(status_code=403, detail="Invalid Token.")
  
 async def fully_validated_user(token: str = Header(...), settings: config.Settings = Depends(get_settings)):
   if token is None:
