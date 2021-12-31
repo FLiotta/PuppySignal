@@ -102,7 +102,7 @@ def verify_requested_phone_number_code(
 
     user.update(
       phone_number = body.phone_number,
-      validated_profile_phone_number = True
+      phone_verified = True
     )
 
     db.commit()

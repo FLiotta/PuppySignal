@@ -12,7 +12,7 @@ class UserSchema(BaseModel):
   email: str
   profile_picture: Optional[str]
   phone_number: Optional[str]
-  validated_profile_phone_number: bool
+  phone_verified: bool
 
   class Config:
     orm_mode = True

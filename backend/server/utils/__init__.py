@@ -49,7 +49,7 @@ async def fully_validated_user(token: str = Header(...), settings: config.Settin
   except:
     raise HTTPException(status_code=403, detail="Invalid JWT Token.")
 
-  if not user['validated_profile_phone_number']:
+  if not user['phone_verified']:
     raise HTTPException(status_code=401, detail="You must validate your phone number first.")
 
   pass
