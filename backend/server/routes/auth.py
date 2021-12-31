@@ -144,7 +144,7 @@ async def jwt_refresh(
     "id": user.id,
     "uuid": str(user.uuid),
     "phone_verified": user.validated_profile_phone_number,
-    "exp": datetime.utcnow() + timedelta(minutes=5),
+    "exp": datetime.utcnow() + timedelta(minutes=10),
     "iat": datetime.utcnow()
     },
     settings.JWT_SECRET,
