@@ -32,7 +32,7 @@ export interface IPet {
   profile_picture?: string
   extra?: string
   color?: string
-  specie?: ISpecie
+  specie: ISpecie
 }
 
 export interface INotification {
