@@ -42,10 +42,10 @@ const Home: React.FC<any> = () => {
           />
         </View>
         <BannerCTA
-          title="Need help?"
+          title="Have any question? 🕵🏻‍♀️"
           description="We all did at some point, take a look at our FAQ."
           onPress={handleOpenFAQ}
-          image=""
+          image={null}
         />
         <View style={styles.activity}>
           <Text style={styles.activityTitle}>Recent activity</Text>

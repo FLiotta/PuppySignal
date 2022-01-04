@@ -14,8 +14,8 @@ const MyPets: React.FC<any> = ({ navigation }) => {
   const onQRPress = () => {
     // TODO
   }
-  const onCardPress = () => {
-    // TODO
+  const onCardPress = (petId: number) => {
+    navigation.navigate('PetProfile', { id: petId });
   }
 
   const onRegisterPetPress = () => {
@@ -30,7 +30,7 @@ const MyPets: React.FC<any> = ({ navigation }) => {
           onPress={onRegisterPetPress}
           title="Register a pet 🐶!"
           description="Less than a few minutes and voila ✨!"
-          image=""
+          image={null}
           imageStyle={{
             right: -25,
             bottom: 25,
@@ -50,7 +50,7 @@ const MyPets: React.FC<any> = ({ navigation }) => {
                     <Fragment>
                       <PetCard
                         pet={pet}
-                        onPress={onCardPress}
+                        onPress={() => onCardPress(pet.id)}
                         onQRPRess={onQRPress}
                       />
                       {isNotLastOne && <View style={styles.divisor}></View>}

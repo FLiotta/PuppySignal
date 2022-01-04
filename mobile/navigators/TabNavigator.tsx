@@ -7,9 +7,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 // @Project
 import { COLORS } from 'styles';
-import MyPetsScreen from 'views/MyPets';
 import HomeScreen from 'views/Home';
 import SettingsScreen from 'views/Settings';
+import MyPetStack from './MyPetStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -40,7 +40,7 @@ const TabsNavigator: React.FC<any> = ({ navigation }) => {
       />
       <Tab.Screen 
         name="My Pets" 
-        component={MyPetsScreen} 
+        component={MyPetStack} 
         options={{
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => {
