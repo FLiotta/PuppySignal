@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from server.schemas import SpecieSchema, UserSchema, PetSchema, NotificationWithPetSchema, CodeSchema, LocationSchema
 
 class RefreshTokenPayload(BaseModel):
-  action_token: str
+  access_token: str
   refresh_token: str
 
 class RefreshTokenResponse(BaseModel):
@@ -14,7 +14,7 @@ class GoogleOAuthBody(BaseModel):
   token: str
 
 class OAuthGooglePayload(BaseModel):
-  action_token: str
+  access_token: str
   refresh_token: str
 
 class OAuthGoogleResponse(BaseModel):
@@ -39,7 +39,7 @@ class PhoneNumberBody(BaseModel):
 
 class PhoneNumberVerifyBody(BaseModel):
   phone_number: str
-  code: int 
+  code: int
 
 class CreatePetBody(BaseModel):
   name: str

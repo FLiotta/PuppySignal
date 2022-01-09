@@ -15,7 +15,7 @@ from server.utils import get_db, get_settings
 router = APIRouter()
 
 """
-  action_tokens must only have the next fields:
+  access_tokens must only have the next fields:
 
   @id: Int
   @uuid: UUIDv4
@@ -47,7 +47,7 @@ async def get_auth(
   user_oauth = db.query(UserAuth)\
     .filter((UserAuth.method == "GOOGLE") & (UserAuth.oauth_id == response_data['id']))\
     .first()
-  
+
   user_to_serialize = None
 
   if user_oauth is not None:
@@ -72,14 +72,14 @@ async def get_auth(
         oauth_id=response_data['id'],
         user_id=new_user.id
       )
-      
+
       db.add(new_user_auth)
       db.commit()
 
       user_to_serialize = new_user
     except Exception as e:
       raise HTTPException(status_code=500, detail="User cannot be created.")
-    
+
   jwt_token = jwt.encode({
     "id": user_to_serialize.id,
     "uuid": str(user_to_serialize.uuid),
@@ -112,7 +112,7 @@ async def get_auth(
 
   return {
     "data": {
-      "action_token": jwt_token,
+      "access_token": jwt_token,
       "refresh_token": refresh_token
     }
   }
@@ -135,7 +135,7 @@ async def jwt_refresh(
     raise HTTPException(status_code=404, detail="Refresh token not found.")
   elif actual_time > token.valid_until:
     raise HTTPException(status_code=400, detail="Expired refresh token.")
-  
+
   user = token.user
 
   db.delete(token)
@@ -172,7 +172,7 @@ async def jwt_refresh(
 
   return {
     "data": {
-      "action_token": access_token,
+      "access_token": access_token,
       "refresh_token": new_refresh_token
     }
   }
