@@ -1,24 +1,28 @@
 // @Project
 import { AxiosPromise } from 'axios'
-import { ServiceResponse } from 'interfaces'
+import { BackendResponse } from 'interfaces'
 
 // @Own
 import http from './http'
 
 interface GoogleAuthResponse {
-  action_token: string,
+  access_token: string,
   refresh_token: string
 }
 
 interface RefreshTokenResponse {
-  action_token: string,
+  access_token: string,
   refresh_token: string
 }
 
-export const googleAuth = (token: string): AxiosPromise<ServiceResponse<GoogleAuthResponse>> => {
+export const googleAuth = (token: string): AxiosPromise<BackendResponse<GoogleAuthResponse>> => {
   return http.post('/oauth/google', { token });
 }
 
-export const refreshToken = (token: string): AxiosPromise<ServiceResponse<RefreshTokenResponse>> => {
-  return http.post('/oauth/refresh_token', { token });
+export const refreshToken = (token: string): AxiosPromise<BackendResponse<RefreshTokenResponse>> => {
+  return http.post('/oauth/jwt/refresh', {}, {
+    headers: {
+      "refresh-token": token
+    }
+  });
 }

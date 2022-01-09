@@ -1,12 +1,14 @@
 import { AxiosPromise, AxiosResponse } from "axios";
+import { AnyAction } from "redux";
+import { ThunkDispatch } from 'redux-thunk';
+
+import { IStoreState } from 'reducers'
+
+export interface IThunkDispatcher extends ThunkDispatch<IStoreState, any, AnyAction> { }
 
 export interface BackendResponse<T> {
   data: T,
   detail?: string
-}
-
-export interface ServiceResponse<T> extends AxiosPromise {
-  data: BackendResponse<T>
 }
 
 export interface ISpecie {

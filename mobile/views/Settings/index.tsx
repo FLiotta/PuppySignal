@@ -1,13 +1,18 @@
 // @Packages
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Text, Image, TouchableOpacity, Alert } from 'react-native';
+import { useDispatch } from 'react-redux';
 
 // @Project
 import { COLORS } from 'styles';
+import { logOut } from 'actions/session';
 
 const More: React.FC<any> = () => {
+  const dispatch = useDispatch()
+
   const onLogoutPress = () => {
-    // TODO
+    console.log("REEEEEEEEEE")
+    dispatch(logOut())
   }
 
   const onDeleteAccountPress = () => {
@@ -63,7 +68,7 @@ const More: React.FC<any> = () => {
           </View>
         </View>
         <View style={{ paddingHorizontal: 20, marginTop: 20, }}>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={onLogoutPress}>
             <Text style={styles.buttoncta}>Logout</Text>
           </TouchableOpacity>
           <TouchableOpacity>

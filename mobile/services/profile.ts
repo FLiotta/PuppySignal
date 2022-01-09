@@ -1,7 +1,7 @@
 // @Project
 import { AxiosPromise, AxiosResponse } from 'axios'
 import {
-  ServiceResponse,
+  BackendResponse,
   IUser,
   IPet,
   INotification
@@ -16,7 +16,7 @@ interface UpdateProfileBody {
   birthday?: string
 }
 
-export const getProfile = (): AxiosPromise<ServiceResponse<IUser>> => {
+export const getProfile = (): AxiosPromise<BackendResponse<IUser>> => {
   return http.get('/profile');
 }
 
@@ -24,11 +24,11 @@ export const updateProfile = (payload: UpdateProfileBody): AxiosPromise<AxiosRes
   return http.patch('/profile', payload)
 }
 
-export const getProfilePets = (): AxiosPromise<ServiceResponse<IPet[]>> => {
+export const getProfilePets = (): AxiosPromise<BackendResponse<IPet[]>> => {
   return http.get('/profile/pets')
 }
 
-export const getProfileNotifications = (): AxiosPromise<ServiceResponse<INotification[]>> => {
+export const getProfileNotifications = (): AxiosPromise<BackendResponse<INotification[]>> => {
   return http.get('/profile/notifications')
 }
 

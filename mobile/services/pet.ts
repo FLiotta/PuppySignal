@@ -1,6 +1,6 @@
 // @Project
 import { AxiosPromise, AxiosResponse } from 'axios'
-import { ServiceResponse, IPet, ICode, ILocation } from 'interfaces'
+import { BackendResponse, IPet, ICode, ILocation } from 'interfaces'
 
 // @Own
 import http from './http'
@@ -12,7 +12,7 @@ interface CreatePetBody {
   specie_id: number
 }
 
-export const createPet = (payload: CreatePetBody): AxiosPromise<ServiceResponse<IPet>> => {
+export const createPet = (payload: CreatePetBody): AxiosPromise<BackendResponse<IPet>> => {
   const bodyAsFormData = new FormData();
 
   for(const [key, value] of Object.entries(payload)) {
@@ -34,18 +34,18 @@ export const createPet = (payload: CreatePetBody): AxiosPromise<ServiceResponse<
   });
 }
 
-export const getPet = (id: number): AxiosPromise<ServiceResponse<IPet>> => {
+export const getPet = (id: number): AxiosPromise<BackendResponse<IPet>> => {
   return http.get(`/pet/${id}`)
 }
 
-export const getPetCodes = (id: number): AxiosPromise<ServiceResponse<ICode[]>> => {
+export const getPetCodes = (id: number): AxiosPromise<BackendResponse<ICode[]>> => {
   return http.get(`/pet/${id}/codes`)
 }
 
-export const getPetLocations = (id: number): AxiosPromise<ServiceResponse<ILocation[]>> => {
+export const getPetLocations = (id: number): AxiosPromise<BackendResponse<ILocation[]>> => {
   return http.get(`/pet/${id}/locations`)
 }
 
-export const scanPetCode = (code: string): AxiosPromise<ServiceResponse<IPet>> => {
+export const scanPetCode = (code: string): AxiosPromise<BackendResponse<IPet>> => {
   return http.get(`/pet/scanned/${code}`)
 }
