@@ -11,6 +11,19 @@ export interface BackendResponse<T> {
   detail?: string
 }
 
+export interface AccessTokenPayload {
+  id: number
+  uuid: string
+  phone_verified: boolean
+  exp: number,
+  iat: number
+}
+
+export interface RefreshTokenPayload {
+  exp: number,
+  iat: number
+}
+
 export interface ISpecie {
   id: number,
   name: string

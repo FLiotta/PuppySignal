@@ -4,16 +4,20 @@ import { Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useSelector } from 'react-redux';
 
 // @Project
 import { COLORS } from 'styles';
 import HomeScreen from 'views/Home';
 import SettingsScreen from 'views/Settings';
 import MyPetStack from './MyPetStack';
+import { selectSessionProfile } from 'selectors/session';
 
 const Tab = createBottomTabNavigator();
 
 const TabsNavigator: React.FC<any> = ({ navigation }) => {
+  const profile = useSelector(selectSessionProfile)
+
   return (
     <Tab.Navigator screenOptions={{
       tabBarStyle: {
@@ -86,7 +90,7 @@ const TabsNavigator: React.FC<any> = ({ navigation }) => {
             return (
               <Image
                 source={{
-                  uri: "https://i.pinimg.com/736x/00/2d/2c/002d2c77c221715e795e00298527b750.jpg"
+                  uri: profile.profile_picture
                 }}
                 style={{
                   width: 30,

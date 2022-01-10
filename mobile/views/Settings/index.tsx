@@ -1,17 +1,18 @@
 // @Packages
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Text, Image, TouchableOpacity, Alert } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // @Project
 import { COLORS } from 'styles';
 import { logOut } from 'actions/session';
+import { selectSessionProfile } from 'selectors/session';
 
 const More: React.FC<any> = () => {
   const dispatch = useDispatch()
+  const profile = useSelector(selectSessionProfile)
 
   const onLogoutPress = () => {
-    console.log("REEEEEEEEEE")
     dispatch(logOut())
   }
 
@@ -34,7 +35,7 @@ const More: React.FC<any> = () => {
           <View style={styles.profileCardAvatarWrapper}>
             <Image
               source={{
-                uri: "https://i.pinimg.com/736x/00/2d/2c/002d2c77c221715e795e00298527b750.jpg"
+                uri: profile.profile_picture
               }}
               style={styles.profileCardAvatar}
             />
@@ -42,15 +43,11 @@ const More: React.FC<any> = () => {
           <View style={styles.profileCardBody}>
             <View>
               <Text style={styles.title}>Name</Text>
-              <Text style={styles.value}>Lorem</Text>
+              <Text style={styles.value}>{profile.first_name}</Text>
             </View>
             <View>
               <Text style={styles.title}>Lastname</Text>
-              <Text style={styles.value}>Ipsum</Text>
-            </View>
-            <View>
-              <Text style={styles.title}>Birthday</Text>
-              <Text style={styles.value}>18/02</Text>
+              <Text style={styles.value}>{profile.last_name}</Text>
             </View>
           </View>
         </View>
@@ -59,11 +56,11 @@ const More: React.FC<any> = () => {
           <View style={[styles.profileCardBody, { flexDirection: 'column' }]}>
             <View>
               <Text style={styles.title}>Email</Text>
-              <Text style={[styles.value, { color: '#d1d1d1' }]}>liottafabrizio@gmail.com</Text>
+              <Text style={[styles.value, { color: '#d1d1d1' }]}>{profile.email}</Text>
             </View>
             <View style={{ marginTop: 25 }}>
               <Text style={styles.title}>Phone Number</Text>
-              <Text style={[styles.value, { color: '#d1d1d1' }]}>+54 9 341 3214567</Text>
+              <Text style={[styles.value, { color: '#d1d1d1' }]}>{profile.phone_number || "Not provided."}</Text>
             </View>
           </View>
         </View>
@@ -109,7 +106,7 @@ const styles = StyleSheet.create({
   profileCardBody: {
     paddingHorizontal: 25,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
   },
   profileCardAvatar: {
     width: 75,

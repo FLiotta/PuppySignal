@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { selectSessionTokens } from 'selectors/session';
 import AuthStack from 'navigators/AuthStack';
 import TabNavigator from 'navigators/TabNavigator';
+import Loading from 'views/Loading'
 
 // @Own
 import store from './store'
@@ -33,23 +34,21 @@ const App: React.FC<any> = () => {
   useEffect(() => {
     AsyncStorage.getItem('authentication_tokens')
       .then((storage_tokens) => {
-        if (!storage_tokens) return
-
+        if (!storage_tokens) throw new Error("No previous token")
+        
         const tokens = JSON.parse(storage_tokens)
 
-        if (!tokens?.refresh_token) return
-
+        if (!tokens?.refresh_token) throw new Error("No previous token")
+        
         dispatch(refreshSessionToken())
-          .then(() => {
-            setLoading(false)
-          })
-          .catch(() => { 
-            // DO NOTHING
-          })
+          .finally(() => setLoading(false))
+      })
+      .catch(() => {
+        setLoading(false)
       })
   }, [])
 
-  if (loading) return <></>
+  if (loading) return <Loading />
 
   return (
     <NavigationContainer>

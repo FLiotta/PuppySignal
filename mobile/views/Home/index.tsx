@@ -1,21 +1,33 @@
 // @Packages
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, Text, Image, Linking } from 'react-native';
-import { useSelector } from 'react-redux';
+import { View, ScrollView, Text, Image, Linking, RefreshControl } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // @Project
 import BannerCTA from 'components/BannerCTA'
 import NotificationCard from 'components/NotificationCard'
-
-dayjs.extend(relativeTime)
+import { selectSessionProfile } from 'selectors/session';
+import { IThunkDispatcher } from 'interfaces';
+import { getUserProfile } from 'actions/session';
 
 // @Own
 import activities from './mock_data.json'
 import styles from './styles';
 
+dayjs.extend(relativeTime)
+
 const Home: React.FC<any> = () => {
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
+  const profile = useSelector(selectSessionProfile)
+  const dispatch: IThunkDispatcher = useDispatch()
+
+  useEffect(() => {
+    if(!profile.id) {
+      dispatch(getUserProfile())
+    }
+  }, [])
 
   const handleOpenFAQ = () => {
     const path = 'https://www.puppysignal.com/faq';
@@ -27,17 +39,32 @@ const Home: React.FC<any> = () => {
     });
   }
 
+  const onRefresh = async () => {
+    setIsRefreshing(true)
+
+    await dispatch(getUserProfile())
+    
+    setIsRefreshing(false)
+  }
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={onRefresh}
+        />
+      }
+    >
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <Text style={styles.headerText}>
-            Lorem Ipsum
+            {profile.first_name} {profile.last_name}
           </Text>
           <Image
             style={styles.headerImage}
             source={{
-              uri: "https://i.pinimg.com/736x/00/2d/2c/002d2c77c221715e795e00298527b750.jpg"
+              uri: profile.profile_picture
             }}
           />
         </View>
