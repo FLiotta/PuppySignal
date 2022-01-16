@@ -1,16 +1,22 @@
 // @Packages
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { View, FlatList, Text } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
 // @Project
 import PetCard from 'components/PetCard';
 import BannerCTA from 'components/BannerCTA';
 
 // @Own
-import pets from './mock_data.json'
-import styles from './styles'
+import styles from './styles';
+import { getPetsProfile } from './actions';
+import { IThunkDispatcher } from 'interfaces';
+import { selectMyPetsPets } from './selectors';
 
 const MyPets: React.FC<any> = ({ navigation }) => {
+  const dispatch: IThunkDispatcher = useDispatch();
+  const pets = useSelector(selectMyPetsPets);
+
   const onQRPress = () => {
     // TODO
   }
@@ -21,6 +27,14 @@ const MyPets: React.FC<any> = ({ navigation }) => {
   const onRegisterPetPress = () => {
     // TODO
   }
+
+  useEffect(() => {
+    dispatch(getPetsProfile())
+  }, [])
+
+  useEffect(() => {
+    console.log(pets)
+  }, [pets])
 
   return (
     <View style={styles.container}>

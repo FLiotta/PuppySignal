@@ -1,18 +1,41 @@
 // @Packages
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, Image, ScrollView } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 
 // @Project
 import QR from 'assets/qr.png'
 import MAP from 'assets/maps.png'
 import FeatureCard from 'components/FeatureCard'
-import { IPet } from 'interfaces'
+import { IPet, IThunkDispatcher } from 'interfaces'
 import { COLORS } from 'styles'
 
 // @Own
+import { getPetProfile } from './actions'
+import { selectPetProfile } from './selectors'
 import styles from './styles'
+import { RouteProp } from '@react-navigation/native'
 
-const PetProfile: React.FC<any> = () => {
+interface IProps {
+  navigation: any,
+  route: RouteProp<{
+    params: {
+      id: number
+    }
+  }, 'params'>
+}
+
+const PetProfile: React.FC<IProps> = ({ 
+  navigation,
+  route
+}) => {
+  const dispatch: IThunkDispatcher = useDispatch()
+  const pet = useSelector(selectPetProfile)
+
+  useEffect(() => {
+    dispatch(getPetProfile(route.params.id))
+  }, [])
+
   const onCodesPress = () => {
     // TODO
   }
@@ -28,7 +51,7 @@ const PetProfile: React.FC<any> = () => {
           <View style={styles.profileCardAvatarWrapper}>
             <Image
               source={{
-                uri: "https://i.pinimg.com/736x/00/2d/2c/002d2c77c221715e795e00298527b750.jpg"
+                uri: pet?.profile_picture
               }}
               style={styles.profileCardAvatar}
             />
@@ -36,11 +59,11 @@ const PetProfile: React.FC<any> = () => {
           <View style={styles.profileCardBody}>
             <View>
               <Text style={styles.title}>Name</Text>
-              <Text style={styles.value}>Lorem</Text>
+              <Text style={styles.value}>{pet?.name}</Text>
             </View>
             <View>
               <Text style={styles.title}>Specie</Text>
-              <Text style={styles.value}>Dog</Text>
+              <Text style={styles.value}>{pet?.specie?.name}</Text>
             </View>
             <View>
               <Text style={styles.title}>Birthday</Text>
@@ -53,9 +76,7 @@ const PetProfile: React.FC<any> = () => {
           <View style={[styles.profileCardBody, { flexDirection: 'column' }]}>
             <View>
               <Text style={styles.title}>Description</Text>
-              <Text style={[styles.value]}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse volutpat auctor laoreet. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </Text>
+              <Text style={[styles.value]}>{pet?.extra}</Text>
             </View>
           </View>
         </View>
