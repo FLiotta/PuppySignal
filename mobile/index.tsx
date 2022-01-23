@@ -5,6 +5,7 @@ import { AppRegistry, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider, useDispatch, useSelector } from 'react-redux'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { MenuProvider } from 'react-native-popup-menu';
 
 // @Project
 import { selectSessionTokens } from 'selectors/session';
@@ -21,7 +22,9 @@ import { IThunkDispatcher } from 'interfaces';
 const EntryPoint: React.FC<any> = () => {
   return (
     <Provider store={store}>
-      <App />
+      <MenuProvider>
+        <App />
+      </MenuProvider>
     </Provider>
   )
 }

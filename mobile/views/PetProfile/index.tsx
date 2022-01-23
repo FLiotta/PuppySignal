@@ -37,7 +37,7 @@ const PetProfile: React.FC<IProps> = ({
   }, [])
 
   const onCodesPress = () => {
-    // TODO
+    navigation.navigate("QRsPage", { id: route.params.id })
   }
 
   const onLocationsPress = () => {

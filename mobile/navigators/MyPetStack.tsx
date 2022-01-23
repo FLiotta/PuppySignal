@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 // @Project
 import MyPets from 'views/MyPets';
 import PetProfile from 'views/PetProfile';
+import QRsPage from 'views/QRPage';
 
 // @Own
 import { COLORS } from 'styles';
@@ -27,6 +28,15 @@ const MyPetStack = () => {
         options={{
           headerTransparent: true,
           title: '',
+          headerTintColor: COLORS.primary_color,
+        }}
+      />
+      <Stack.Screen
+        name="QRsPage"
+        component={QRsPage}
+        options={{
+          headerTransparent: true,
+          title: "Pet's QR Codes",
           headerTintColor: COLORS.primary_color,
         }}
       />
