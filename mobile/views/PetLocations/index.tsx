@@ -16,6 +16,7 @@ import Toast from 'react-native-toast-message';
 // @Own
 import styles from './styles';
 import StreetViewGenerator from './StreetViewGenerator';
+import { COLORS } from 'styles';
 
 
 // TODO: It should focus on the last locations when you enter the screen.
@@ -135,17 +136,9 @@ const PetLocations: React.FC<IProps> = ({ navigation, route }) => {
 
         console.log(locations)
         if(locations.length > 0) {
-          const parsed_locations = locations
-            .map((location: ILocation) => ({
-              // @ts-ignore
-              latitude: parseFloat(location.latitude),
-              // @ts-ignore
-              longitude: parseFloat(location.longitude),
-              id: location.id
-            })) // TODO: DELETE IT ONCE BACKEND RETURNS FLOATS.
-            .sort((a: any, b: any) => a.id - b.id)
+          locations.sort((a: any, b: any) => a.id - b.id)
 
-          setLocations(parsed_locations);
+          setLocations(locations);
         } else {
           setLocations([]);
         }
@@ -196,7 +189,7 @@ const PetLocations: React.FC<IProps> = ({ navigation, route }) => {
             latitude: location.latitude,
             longitude: location.longitude
           }))}
-          strokeColor='#FEA8B5'
+          strokeColor={COLORS.primary_color}
           strokeWidth={4}
         />
       </MapView>

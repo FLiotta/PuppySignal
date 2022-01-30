@@ -46,6 +46,10 @@ const Home: React.FC<any> = () => {
     
     setIsRefreshing(false)
   }
+
+  // TODO: MIGRATE THE NOTIFICATIONS SERVICE ONCE FOR ALL
+  // STOP PROCASTINATING IT
+
   return (
     <ScrollView
       style={styles.container}

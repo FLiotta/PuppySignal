@@ -17,7 +17,7 @@ export default StyleSheet.create({
     justifyContent: 'center'
   },
   container: {
-    backgroundColor: COLORS.bgColor,
+    backgroundColor: COLORS.bg_color,
     height: '100%',
     width: '100%',
     position: 'relative',
