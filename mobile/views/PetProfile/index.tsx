@@ -41,7 +41,7 @@ const PetProfile: React.FC<IProps> = ({
   }
 
   const onLocationsPress = () => {
-    // TODO
+    navigation.navigate("PetLocations", { id: route.params.id })
   }
 
   return (

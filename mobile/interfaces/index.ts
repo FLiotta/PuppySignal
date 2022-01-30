@@ -63,6 +63,8 @@ export interface ICode {
 
 export interface ILocation {
   id: number,
-  latitude: string,
-  longitude: string
+  latitude: number,
+  longitude: number,
+  created_at: Date,
+  updated_at: Date
 }

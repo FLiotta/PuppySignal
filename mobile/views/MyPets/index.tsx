@@ -17,8 +17,8 @@ const MyPets: React.FC<any> = ({ navigation }) => {
   const dispatch: IThunkDispatcher = useDispatch();
   const pets = useSelector(selectMyPetsPets);
 
-  const onQRPress = () => {
-    // TODO
+  const onQRPress = (petId: number) => {
+    navigation.navigate('QRsPage', { id: petId });
   }
   const onCardPress = (petId: number) => {
     navigation.navigate('PetProfile', { id: petId });
@@ -65,7 +65,7 @@ const MyPets: React.FC<any> = ({ navigation }) => {
                       <PetCard
                         pet={pet}
                         onPress={() => onCardPress(pet.id)}
-                        onQRPRess={onQRPress}
+                        onQRPRess={() => onQRPress(pet.id)}
                       />
                       {isNotLastOne && <View style={styles.divisor}></View>}
                     </Fragment>
