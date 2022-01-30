@@ -3,8 +3,8 @@ from pydantic import BaseModel
 
 class LocationSchema(BaseModel):
   id: int
-  latitude: str
-  longitude: str
+  latitude: float
+  longitude: float
 
   class Config:
     orm_mode = True

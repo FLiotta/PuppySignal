@@ -84,7 +84,7 @@ async def get_auth(
     "id": user_to_serialize.id,
     "uuid": str(user_to_serialize.uuid),
     "phone_verified": user_to_serialize.phone_verified,
-    "exp": datetime.utcnow() + timedelta(minutes=5),
+    "exp": datetime.utcnow() + timedelta(minutes=10),
     "iat": datetime.utcnow()
     },
     settings.JWT_SECRET,
