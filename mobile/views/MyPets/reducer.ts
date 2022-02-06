@@ -5,7 +5,7 @@ import { AnyAction } from 'redux'
 import { IPet } from "interfaces";
 
 // @Own
-import { GET_PETS } from './actions'
+import { ADD_NEW_PET, GET_PETS } from './actions'
 
 export interface IMyPetsState {
   pets: IPet[]
@@ -21,6 +21,10 @@ export default (state = defaultState, action: AnyAction) => {
       return {
         pets: action.payload
       };
+    case ADD_NEW_PET:
+      return {
+        pets: [...state.pets, action.payload]
+      }
     default:
       return state;
   }

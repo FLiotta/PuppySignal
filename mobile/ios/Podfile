@@ -14,6 +14,8 @@ target 'PuppySignal' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
   target 'PuppySignalTests' do
     inherit! :complete
     # Pods for testing

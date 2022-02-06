@@ -7,6 +7,8 @@ import MyPets from 'views/MyPets';
 import PetProfile from 'views/PetProfile';
 import QRsPage from 'views/QRPage';
 import PetLocations from 'views/PetLocations';
+import PetCreate from 'views/CreateNewPet';
+import Camera from 'views/Camera';
 
 // @Own
 import { COLORS } from 'styles';
@@ -47,6 +49,24 @@ const MyPetStack = () => {
         options={{
           headerTransparent: true,
           title: "Pet's Locations",
+          headerTintColor: COLORS.primary_color,
+        }}
+      />
+      <Stack.Screen
+        name="PetCreate"
+        component={PetCreate}
+        options={{
+          headerTransparent: true,
+          title: "New Pet",
+          headerTintColor: COLORS.primary_color,
+        }}
+      />
+      <Stack.Screen
+        name="Camera"
+        component={Camera}
+        options={{
+          headerTransparent: true,
+          title: '',
           headerTintColor: COLORS.primary_color,
         }}
       />

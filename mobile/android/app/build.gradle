@@ -137,6 +137,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        missingDimensionStrategy 'react-native-camera', 'general'
     }
     splits {
         abi {
@@ -187,6 +189,10 @@ android {
 
         }
     }
+
+    dexOptions {
+       javaMaxHeapSize "3g"
+    }
 }
 
 dependencies {
@@ -219,6 +225,7 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-auth:20.0.0'
     implementation "androidx.browser:browser:1.2.0"
+    implementation 'com.android.support:multidex:1.0.3'
 }
 
 // Run this once to be able to run the application with BUCK

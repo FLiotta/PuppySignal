@@ -18,6 +18,7 @@ import store from './store'
 import { name as appName } from './app.json';
 import { refreshSessionToken } from 'actions/session';
 import { IThunkDispatcher } from 'interfaces';
+import { fetchSpecies } from 'actions/app';
 
 const EntryPoint: React.FC<any> = () => {
   return (
@@ -35,6 +36,8 @@ const App: React.FC<any> = () => {
   const dispatch: IThunkDispatcher = useDispatch()
 
   useEffect(() => {
+    dispatch(fetchSpecies());
+
     AsyncStorage.getItem('authentication_tokens')
       .then((storage_tokens) => {
         if (!storage_tokens) throw new Error("No previous token")

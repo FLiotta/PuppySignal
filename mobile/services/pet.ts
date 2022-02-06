@@ -29,7 +29,7 @@ export const createPet = (payload: CreatePetBody): AxiosPromise<BackendResponse<
     }
   };
 
-  return http.post('/pet', bodyAsFormData, {
+  return http.post('/pet/', bodyAsFormData, {
     headers: {'Content-Type': 'multipart/form-data'}
   });
 }

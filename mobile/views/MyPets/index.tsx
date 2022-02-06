@@ -25,16 +25,12 @@ const MyPets: React.FC<any> = ({ navigation }) => {
   }
 
   const onRegisterPetPress = () => {
-    // TODO
+    navigation.navigate('PetCreate');
   }
 
   useEffect(() => {
     dispatch(getPetsProfile())
   }, [])
-
-  useEffect(() => {
-    console.log(pets)
-  }, [pets])
 
   return (
     <View style={styles.container}>
