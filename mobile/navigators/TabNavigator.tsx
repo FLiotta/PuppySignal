@@ -11,6 +11,7 @@ import { COLORS } from 'styles';
 import HomeScreen from 'views/Home';
 import SettingsScreen from 'views/Settings';
 import MyPetStack from './MyPetStack';
+import ScannerStack from 'views/Scan';
 import { selectSessionProfile } from 'selectors/session';
 
 const Tab = createBottomTabNavigator();
@@ -59,7 +60,7 @@ const TabsNavigator: React.FC<any> = ({ navigation }) => {
       />
       <Tab.Screen 
         name="Scan" 
-        component={SettingsScreen} 
+        component={ScannerStack} 
         options={({ navigation }) => ({
           tabBarVisible: false,
           headerShown: false,

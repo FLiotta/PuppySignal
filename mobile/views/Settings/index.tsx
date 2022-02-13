@@ -1,6 +1,6 @@
 // @Packages
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Text, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, Image, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 // @Project
@@ -35,7 +35,6 @@ const More: React.FC<any> = () => {
       })
       .catch((e) => {
         console.log("Ohm no")
-        console.log(e)
       })
   }
 
