@@ -21,7 +21,7 @@ export const getProfile = (): AxiosPromise<BackendResponse<IUser>> => {
 }
 
 export const updateProfile = (payload: UpdateProfileBody): AxiosPromise<AxiosResponse<any>> => {
-  return http.patch('/profile', payload)
+  return http.patch('/profile/', payload)
 }
 
 export const getProfilePets = (): AxiosPromise<BackendResponse<IPet[]>> => {

@@ -8,23 +8,16 @@ import {
   REFRESH_TOKEN,
   UPDATE_TOKENS,
   GET_PROFILE,
+  UPDATE_PROFILE
 } from 'actions/session';
+import { IUser } from 'interfaces';
 
 export interface ISessionState {
   auth: {
     access_token?: string,
     refresh_token?: string
   },
-  profile: {
-    id?: number
-    uuid?: string
-    first_name?: string
-    last_name?: string
-    email?: string
-    profile_picture?: string
-    phone_number?: string
-    phone_verified?: Boolean
-  }
+  profile: Partial<IUser>
 }
 
 const defaultState: ISessionState = {
@@ -67,6 +60,14 @@ export default (state = defaultState, action: AnyAction) => {
       return {
         ...state,
         profile: action.payload
+      }
+    case UPDATE_PROFILE:
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          ...action.payload
+        }
       }
     default:
       return state;

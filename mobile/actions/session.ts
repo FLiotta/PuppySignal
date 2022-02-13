@@ -4,14 +4,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 // @Project
 import { IThunkDispatcher } from "interfaces";
 import { googleAuth, refreshToken } from "services/auth";
-import { getProfile } from 'services/profile';
+import { getProfile, updateProfile } from 'services/profile';
 
 export const GOOGLE_SIGN_IN = '[AUTH] GOOGLE'
 export const REFRESH_TOKEN = '[AUTH] REFRESH TOKEN'
 export const UPDATE_TOKENS = '[AUTH] UPDATE TOKENS'
 export const LOG_OUT = '[AUTH] LOGOUT'
-export const GET_PROFILE = '[PROFILE] GET'
 
+export const GET_PROFILE = '[PROFILE] GET'
+export const UPDATE_PROFILE = '[PROFILE] UPDATE'
 
 export const getUserProfile = () => {
   return (dispatch: IThunkDispatcher) => {
@@ -23,6 +24,23 @@ export const getUserProfile = () => {
           type: GET_PROFILE,
           payload: data
         })
+      })
+  }
+}
+
+export const updateUserProfile = (attrsToUpdate: any) => {
+  return (dispatch: IThunkDispatcher) => {
+    console.log("ABC")
+    return updateProfile(attrsToUpdate)
+      .then((response) => {
+        console.log("@Llego aca")
+        dispatch({
+          type: UPDATE_PROFILE,
+          payload: attrsToUpdate
+        })
+      })
+      .catch(e => {
+        console.log(e)
       })
   }
 }

@@ -5,12 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // @Project
 import { COLORS } from 'styles';
-import { logOut } from 'actions/session';
+import { logOut, updateUserProfile } from 'actions/session';
 import { selectSessionProfile } from 'selectors/session';
+import UpdateProfileModal, { FormPayload } from 'components/ProfileUpdateModal'
+import { IThunkDispatcher } from 'interfaces';
 
 const More: React.FC<any> = () => {
-  const dispatch = useDispatch()
+  const dispatch: IThunkDispatcher = useDispatch()
   const profile = useSelector(selectSessionProfile)
+
+  const [updateProfileModal, setUpdateProfileModal] = useState<boolean>(true);
 
   const onLogoutPress = () => {
     dispatch(logOut())
@@ -20,16 +24,30 @@ const More: React.FC<any> = () => {
     // TODO
   }
 
-  const onUpdateProfilePress = () => {
-    // TODO
-  }
-
   const onDownloadDataPress = () => {
     // TODO
   }
 
+  const onProfileUpdates = (formPayload: FormPayload): Promise<void> => {
+    return dispatch(updateUserProfile(formPayload))
+      .then(() => {
+        console.log("Done")
+      })
+      .catch((e) => {
+        console.log("Ohm no")
+        console.log(e)
+      })
+  }
+
   return (
     <ScrollView style={styles.container}>
+      <UpdateProfileModal
+        onSubmit={onProfileUpdates}
+        onClose={() => setUpdateProfileModal(false)}
+        isVisible={updateProfileModal}
+        title="Update my profile!"
+        profile={profile}
+      />
       <View style={styles.wrapper}>
         <View style={styles.profileCard}>
           <View style={styles.profileCardAvatarWrapper}>
@@ -69,7 +87,7 @@ const More: React.FC<any> = () => {
             <Text style={styles.buttoncta}>Logout</Text>
           </TouchableOpacity>
           <TouchableOpacity>
-            <Text style={styles.buttoncta} onPress={() => {}}>Update profile</Text>
+            <Text style={styles.buttoncta} onPress={() => setUpdateProfileModal(true)}>Update profile</Text>
           </TouchableOpacity>
           <TouchableOpacity>
             <Text style={styles.buttoncta}>Download my data</Text>
