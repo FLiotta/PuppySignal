@@ -6,12 +6,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Provider, useDispatch, useSelector } from 'react-redux'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { MenuProvider } from 'react-native-popup-menu';
+import Toast from 'react-native-toast-message';
 
 // @Project
-import { selectSessionTokens } from 'selectors/session';
+import { selectSessionPhoneValidated, selectSessionTokenPayload, selectSessionTokens } from 'selectors/session';
 import AuthStack from 'navigators/AuthStack';
 import TabNavigator from 'navigators/TabNavigator';
 import Loading from 'views/Loading'
+import PhoneValidation from 'views/PhoneValidation';
 
 // @Own
 import store from './store'
@@ -19,6 +21,7 @@ import { name as appName } from './app.json';
 import { refreshSessionToken } from 'actions/session';
 import { IThunkDispatcher } from 'interfaces';
 import { fetchSpecies } from 'actions/app';
+
 
 const EntryPoint: React.FC<any> = () => {
   return (
@@ -33,6 +36,7 @@ const EntryPoint: React.FC<any> = () => {
 const App: React.FC<any> = () => {
   const [loading, setLoading] = useState<Boolean>(true);
   const tokens = useSelector(selectSessionTokens)
+  const phoneValidated = useSelector(selectSessionPhoneValidated)
   const dispatch: IThunkDispatcher = useDispatch()
 
   useEffect(() => {
@@ -59,8 +63,13 @@ const App: React.FC<any> = () => {
   return (
     <NavigationContainer>
       {
-        tokens.access_token ? <TabNavigator /> : <AuthStack />
+        tokens.access_token 
+          ? phoneValidated
+            ? <TabNavigator />
+            : <PhoneValidation />
+          : <AuthStack />
       }
+      <Toast />
     </NavigationContainer>
   )
 }

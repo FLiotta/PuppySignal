@@ -14,7 +14,7 @@ const More: React.FC<any> = () => {
   const dispatch: IThunkDispatcher = useDispatch()
   const profile = useSelector(selectSessionProfile)
 
-  const [updateProfileModal, setUpdateProfileModal] = useState<boolean>(true);
+  const [updateProfileModal, setUpdateProfileModal] = useState<boolean>(false);
 
   const onLogoutPress = () => {
     dispatch(logOut())

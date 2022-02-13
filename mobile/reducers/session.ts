@@ -1,5 +1,6 @@
 // @Packages
 import { AnyAction } from 'redux'
+import jwtDecode from 'jwt-decode';
 
 // @Project
 import { 
@@ -10,12 +11,13 @@ import {
   GET_PROFILE,
   UPDATE_PROFILE
 } from 'actions/session';
-import { IUser } from 'interfaces';
+import { IUser, AccessTokenPayload } from 'interfaces';
 
 export interface ISessionState {
   auth: {
     access_token?: string,
     refresh_token?: string
+    access_token_payload?: AccessTokenPayload
   },
   profile: Partial<IUser>
 }
@@ -42,17 +44,29 @@ export default (state = defaultState, action: AnyAction) => {
     case GOOGLE_SIGN_IN:
       return {
         ...state,
-        auth: action.payload
+        auth: {
+          access_token: action.payload.access_token,
+          refresh_token: action.payload.refresh_token,
+          access_token_payload: jwtDecode(action.payload.access_token)
+        }
       }
     case REFRESH_TOKEN:
       return {
         ...state,
-        auth: action.payload
+        auth: {
+          access_token: action.payload.access_token,
+          refresh_token: action.payload.refresh_token,
+          access_token_payload: jwtDecode(action.payload.access_token)
+        }
       }
     case UPDATE_TOKENS:
       return {
         ...state,
-        auth: action.payload
+        auth: {
+          access_token: action.payload.access_token,
+          refresh_token: action.payload.refresh_token,
+          access_token_payload: jwtDecode(action.payload.access_token)
+        }
       }
     case LOG_OUT:
       return defaultState;
