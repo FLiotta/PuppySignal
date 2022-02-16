@@ -92,7 +92,7 @@ def verify_requested_phone_number_code(
   settings: Settings = Depends(get_settings)
 ):
   verify = twilio.verify.services(settings.TWILIO_SERVICE_ID)
-  print(body.code)
+
   try:
     verify.verification_checks.create(to=body.phone_number, code=body.code)
 
