@@ -1,6 +1,6 @@
 // @Packages
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Image, Dimensions, Button, PermissionsAndroid } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, PermissionsAndroid } from 'react-native';
 import Share from 'react-native-share';
 import Carousel from 'react-native-snap-carousel';
 import QR from 'react-native-qrcode-svg';

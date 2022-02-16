@@ -1,13 +1,13 @@
 // @Packages
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, Image, ScrollView } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
+import QR from 'react-native-qrcode-svg';
 
 // @Project
-import QR from 'assets/qr.png'
-import MAP from 'assets/maps.png'
-import FeatureCard from 'components/FeatureCard'
-import { IPet, IThunkDispatcher } from 'interfaces'
+import Map from 'components/Map';
+import { ILocation, IThunkDispatcher } from 'interfaces'
+import { getPetLocations } from 'services/pet';
 import { COLORS } from 'styles'
 
 // @Own
@@ -29,11 +29,37 @@ const PetProfile: React.FC<IProps> = ({
   navigation,
   route
 }) => {
-  const dispatch: IThunkDispatcher = useDispatch()
-  const pet = useSelector(selectPetProfile)
+  const dispatch: IThunkDispatcher = useDispatch();
+  const [locations, setLocations] = useState<ILocation[]>([]);
+  const [locationsLoading, setLocationsLoading] = useState<boolean>(true);
+  const pet = useSelector(selectPetProfile);
 
   useEffect(() => {
-    dispatch(getPetProfile(route.params.id))
+    const petId = route.params.id;
+
+    dispatch(getPetProfile(petId))
+
+
+    /*
+      What would be a better idea regard to locations?
+      They're only used here and in the PetLocations view.
+
+      Should I store them in the pet profile reducer?
+    */
+    getPetLocations(petId)
+      .then((response) => {
+        const locations = response.data.data;
+
+        if(locations.length > 0) {
+          locations.sort((a: any, b: any) => a.id - b.id)
+
+          setLocations(locations);
+        } else {
+          setLocations([]);
+        }
+      })
+      .catch(console.log)
+      .finally(() => setLocationsLoading(false))
   }, [])
 
   const onCodesPress = () => {
@@ -73,28 +99,62 @@ const PetProfile: React.FC<IProps> = ({
         </View>
         {/* Description */}
         <View style={[styles.profileCard, { marginTop: 30, paddingVertical: 25 }]}>
-          <View style={[styles.profileCardBody, { flexDirection: 'column' }]}>
+          <View style={[styles.profileCardBody]}>
             <View>
               <Text style={styles.title}>Description</Text>
               <Text style={[styles.value]}>{pet?.extra}</Text>
             </View>
           </View>
         </View>
-        <View style={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", marginTop: 25}}>
-          <FeatureCard
-            style={{ width: '48%' }}
-            onPress={onCodesPress}
-            title="Codes"
-            subtitle="List your pet's QR Codes"
-            imageSource={QR}
-          />
-          <FeatureCard
-            style={{ width: '48%' }}
-            onPress={onLocationsPress}
-            title="Locations"
-            subtitle="Inspect your pet's locations"
-            imageSource={MAP}
-          />
+        {/* Code */}
+        <View style={[styles.profileCard, { marginTop: 30, paddingVertical: 25 }]}>
+          <View style={[styles.profileCardBody, { flexDirection: 'row' }]}>
+            <View>
+              <Text style={styles.title}>QR Codes</Text>
+              <Text style={[styles.value]}>
+                Your pet currently has 14{'\n'}active codes assigned.{'\n'}
+              </Text>
+              <Text style={[styles.value, { color: COLORS.primary_color, paddingVertical: 10 }]} onPress={onCodesPress}>
+                Manage codes
+              </Text>
+            </View>
+            <View style={{ justifyContent: 'center' }}>
+              <QR
+                value={`This QR Code is only for decoration purposes =). Click in MANAGE CODES to see your pet codes.`}
+              />
+            </View>
+          </View>
+        </View>
+        {/* Locations */}
+        <View style={[styles.profileCard, { marginTop: 30, paddingVertical: 25 }]}>
+          <View style={[styles.profileCardBody, { flexDirection: 'column' }]}>
+            <View>
+              <Text style={styles.title}>Locations</Text>
+              <Text style={[styles.value]}>
+                Here you can preview the last location from where the code was scanned.
+              </Text>
+              <Text
+                style={[styles.value, { color: COLORS.primary_color, paddingVertical: 10 }]}
+                onPress={onLocationsPress}
+              >
+                {"\n"}
+                For a better preview, expand the map.
+                {"\n"}
+              </Text>
+            </View>
+            <View style={{ justifyContent: 'center', height: 250 }}>
+              {!locationsLoading && (
+                <Map 
+                  locations={locations}
+                  scrollEnabled={false}
+                  zoomEnabled={false}
+                  zoomControlEnabled={false}
+                  zoomTapEnabled={false}
+                  rotateEnabled={false}
+                />
+              )}
+            </View>
+          </View>
         </View>
       </View>
     </ScrollView>

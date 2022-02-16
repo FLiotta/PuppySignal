@@ -17,7 +17,7 @@ export default StyleSheet.create({
   profileCard: {
     width: '100%',
     paddingVertical: 50,
-    borderRadius: 16,
+    borderRadius: 8,
     backgroundColor: '#fff',
     position: 'relative'
   },
@@ -46,6 +46,7 @@ export default StyleSheet.create({
   title: {
     fontWeight: '700',
     fontSize: 16,
+    color: "#000"
   },
   value: {
     fontSize: 16
