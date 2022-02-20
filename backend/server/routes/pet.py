@@ -112,13 +112,23 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_u
   }
 
 # TODO: rate limiter
-# TODO: pagination?
+# Nose cuantos codigos puede tener asociado una mascota, supongo que paginas de 5 seran suficientes.
 
 @router.get("/{pet_id}/codes", response_model=PetCodesResponse, dependencies=[Depends(protected_route)])
-def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_user)):
-  pet = db.query(Pet).filter(
-    (Pet.id == pet_id) & (Pet.owners.any(id=u['id']))
-  ).first()
+def get_pet_by_id(
+  pet_id: int, 
+  limit: int = 5,
+  offset: int = 0,
+  db: Session = Depends(get_db), 
+  u = Depends(get_user)
+):
+  pet = (
+    db.query(Pet)
+    .filter((Pet.id == pet_id) & (Pet.owners.any(id=u['id'])))
+    .limit(limit)
+    .offset(offset)
+    .first()
+  )
 
   if not pet:
     raise HTTPException(status_code=404, detail="Pet not found")
@@ -136,12 +146,20 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_u
   }
 
 # TODO: rate limiter
+# TODO: Pagination
+# ¿Deberian traerse todas las localizaciones o paginado?
+# ¿Tal vez que se vayan cargando dependiendo donde scrollea el mapa?
+# En ese caso la paginacion seria un poco mas complicada. Por el momento, que devuelva todas.
 
+# TEMPORAL_FIX: Limit 50 hardcoded.
 @router.get("/{pet_id}/locations", response_model=PetLocationsResponse, dependencies=[Depends(protected_route)])
 def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_user)):
-  pet = db.query(Pet) \
-    .filter((Pet.id == pet_id) & (Pet.owners.any(id=u['id']))) \
+  pet = (
+    db.query(Pet)
+    .filter((Pet.id == pet_id) & (Pet.owners.any(id=u['id'])))
+    .limit(50) 
     .first()
+  )
 
   if not pet:
     raise HTTPException(status_code=404, detail="Pet not found")

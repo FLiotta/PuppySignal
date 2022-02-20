@@ -118,6 +118,7 @@ async def get_auth(
   }
 
 # TODO: DB Transaction & Rollback.
+# CRITICAL: Refresh token not being deleted when user signout.
 
 @router.post("/jwt/refresh", response_model=RefreshTokenResponse)
 async def jwt_refresh(

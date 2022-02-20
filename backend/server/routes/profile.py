@@ -45,26 +45,44 @@ def update_profile(body: ProfilePatchBody, db: Session = Depends(get_db), u: Use
   db.commit()
 
 # TODO: rate limtier
-# TODO: pagination?
 
 @router.get("/pets", response_model=ProfilePetsResponse, dependencies=[Depends(protected_route)])
-def get_user_pets(db: Session = Depends(get_db), u: UserSchema = Depends(get_user)):
-  pets = db.query(Pet).filter(
-    Pet.owners.any(id=u['id'])
-  ).options(joinedload(Pet.specie)).all()
+def get_user_pets(
+  limit: int = 5,
+  offset: int = 0,
+  db: Session = Depends(get_db), 
+  u: UserSchema = Depends(get_user)
+):
+  pets = (
+    db.query(Pet)
+      .filter(Pet.owners.any(id=u['id']))
+      .limit(limit)
+      .offset(offset)
+      .options(joinedload(Pet.specie))
+      .all()
+  )
 
   return {
     "data": pets
   }
 
 # TODO: rate limiter
-# TODO: pagination?
 
 @router.get("/notifications", response_model=ProfileNotificationsResponse, dependencies=[Depends(protected_route)])
-def get_user_notifications(db: Session = Depends(get_db), u: UserSchema = Depends(get_user)):
-  notifications = db.query(Notification).filter(
-    Notification.owners.any(id=u['id'])
-  ).options(joinedload(Notification.pet)).all()
+def get_user_notifications(
+  limit: int = 5,
+  offset: int = 0,
+  db: Session = Depends(get_db), 
+  u: UserSchema = Depends(get_user)
+):
+  notifications = (
+    db.query(Notification)
+    .filter(Notification.owners.any(id=u['id']))
+    .limit(limit)
+    .offset(offset)
+    .options(joinedload(Notification.pet))
+    .all()
+  )
 
   return {
     "data": notifications
