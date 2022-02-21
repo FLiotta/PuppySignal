@@ -10,6 +10,9 @@ class Settings(BaseSettings):
   b2_application_key_id: str = None
   b2_application_key: str = None
   b2_bucket: str = None
+
+  redis_host: str = None
+  redis_port: str = None
   
   class Config:
     env_file = ".env"

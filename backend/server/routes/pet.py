@@ -4,20 +4,20 @@ import numpy
 
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form, Request
 from sqlalchemy.orm import Session, joinedload
 
 from server.schemas import UserSchema, ScannedQRCodeResponse, PetByIdResponse, PetCodesResponse, PetLocationsResponse, CreatePetSchema
-from server.utils import get_db, get_user, protected_route, get_settings, fully_validated_user
+from server.utils import get_db, get_user, protected_route, get_settings, fully_validated_user, limiter
 from server.config import Settings
 from server.models import Pet, Code, UserPet, UserNotification, Notification
 
 router = APIRouter()
 
-# TODO: rate limiter
-
 @router.post("/", response_model=CreatePetSchema, status_code=200, dependencies=[Depends(protected_route), Depends(fully_validated_user)])
+@limiter("5/hour")
 def create_pet(
+  request: Request,
   file: UploadFile = File(...),
   name: str = Form(...),
   description: str = Form(...),
@@ -96,10 +96,15 @@ def create_pet(
       db.rollback()
       raise HTTPException(status_code=500, detail="Pet can't be created.")
 
-# TODO: rate limiter
 
 @router.get("/{pet_id}", response_model=PetByIdResponse, dependencies=[Depends(protected_route)])
-def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_user)):
+@limiter("5/minute")
+def get_pet_by_id(
+  request: Request,
+  pet_id: int, 
+  db: Session = Depends(get_db), 
+  u = Depends(get_user)
+):
   pet = db.query(Pet).filter(
     (Pet.id == pet_id) & (Pet.owners.any(id=u['id']))
   ).first()
@@ -111,17 +116,18 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_u
     "data": pet
   }
 
-# TODO: rate limiter
-# Nose cuantos codigos puede tener asociado una mascota, supongo que paginas de 5 seran suficientes.
 
 @router.get("/{pet_id}/codes", response_model=PetCodesResponse, dependencies=[Depends(protected_route)])
+@limiter("5/minute")
 def get_pet_by_id(
+  request: Request,
   pet_id: int, 
   limit: int = 5,
   offset: int = 0,
   db: Session = Depends(get_db), 
   u = Depends(get_user)
 ):
+  # Nose cuantos codigos puede tener asociado una mascota, supongo que paginas de 5 seran suficientes.
   pet = (
     db.query(Pet)
     .filter((Pet.id == pet_id) & (Pet.owners.any(id=u['id'])))
@@ -145,7 +151,7 @@ def get_pet_by_id(
     "data": parsed_codes
   }
 
-# TODO: rate limiter
+
 # TODO: Pagination
 # ¿Deberian traerse todas las localizaciones o paginado?
 # ¿Tal vez que se vayan cargando dependiendo donde scrollea el mapa?
@@ -153,7 +159,13 @@ def get_pet_by_id(
 
 # TEMPORAL_FIX: Limit 50 hardcoded.
 @router.get("/{pet_id}/locations", response_model=PetLocationsResponse, dependencies=[Depends(protected_route)])
-def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_user)):
+@limiter("5/minute")
+def get_pet_by_id(
+  request: Request,
+  pet_id: int, 
+  db: Session = Depends(get_db), 
+  u = Depends(get_user)
+):
   pet = (
     db.query(Pet)
     .filter((Pet.id == pet_id) & (Pet.owners.any(id=u['id'])))
@@ -169,10 +181,15 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db),  u = Depends(get_u
   }
 
   
-# TODO: rate limiter (QR special case)
+# TODO: Validar RATE LIMITER
 
 @router.get("/scanned/{qr_code}", response_model=ScannedQRCodeResponse)
-def scan_qr_code(qr_code: str, db: Session = Depends(get_db)):
+@limiter("5/hour")
+def scan_qr_code(
+  request: Request,
+  qr_code: str, 
+  db: Session = Depends(get_db)
+):
   code = db.query(Code).filter(Code.code == qr_code).options(
       joinedload(Code.pet).joinedload(Pet.owners)
     ).first()

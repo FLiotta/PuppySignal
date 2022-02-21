@@ -16,6 +16,8 @@ router = APIRouter()
 # TODO: Only administrator should be allowed to generate codes.
 # TODO: Only administrator should be allowed to generate codes.
 # TODO: rate limtier
+# TODO: Volar todo esto a la recalcadisima concha de la lora.
+# Habria que hacer un panel de control ahora que lo pienso 🤔 
 
 @router.post('/generate_codes', status_code=201)
 def generate_codes(db: Session = Depends(get_db)):
@@ -27,6 +29,7 @@ def generate_codes(db: Session = Depends(get_db)):
 
 # PRIORITY
 # PRIORITY
+# Volar esto tambien.
 
 @router.get('/jwt/{user_id}', status_code=201)
 def get_user_jwt(
@@ -37,8 +40,11 @@ def get_user_jwt(
   user = db.query(User).filter(User.id == user_id).first()
 
   jwt_token = jwt.encode({
-    **UserSchema.from_orm(user).dict(),
-    "exp": datetime.utcnow() + timedelta(days=7)
+    "id": user.id,
+    "uuid": str(user.uuid),
+    "phone_verified": user.phone_verified,
+    "exp": datetime.utcnow() + timedelta(days=10),
+    "iat": datetime.utcnow()
     },
     settings.JWT_SECRET,
     algorithm="HS256"

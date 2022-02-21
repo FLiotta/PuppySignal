@@ -1,6 +1,8 @@
-import fastapi
 import uvicorn
+import redis as redis_pkg
+
 from os.path import join, dirname, pardir
+from os import environ
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
