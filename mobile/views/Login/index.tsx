@@ -13,7 +13,7 @@ import styles from './styles'
 
 const Login: React.FC = () => {
   GoogleSignin.configure({
-    webClientId: '1082575679142-9v99hb5kicdm795ht1b8oui3k0vr7jup.apps.googleusercontent.com',
+    webClientId: process.env.googlewebclientid,
     offlineAccess: true,
   });
 
@@ -25,7 +25,9 @@ const Login: React.FC = () => {
       await GoogleSignin.signIn();
       
       const { accessToken } = await GoogleSignin.getTokens();
-      
+      console.log({
+        accessToken
+      })
       dispatch(googleSignIn(accessToken))
     } catch (error) {
       // TODO: Handle error.

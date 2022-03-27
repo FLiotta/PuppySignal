@@ -1,6 +1,6 @@
 // @Packages
-import React, { Fragment, useEffect } from 'react';
-import { View, FlatList, Text } from 'react-native';
+import React, { Fragment, useEffect, useState } from 'react';
+import { View, FlatList, Text, RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 // @Project
@@ -14,6 +14,7 @@ import { IThunkDispatcher } from 'interfaces';
 import { selectMyPetsPets } from './selectors';
 
 const MyPets: React.FC<any> = ({ navigation }) => {
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
   const dispatch: IThunkDispatcher = useDispatch();
   const pets = useSelector(selectMyPetsPets);
 
@@ -28,9 +29,18 @@ const MyPets: React.FC<any> = ({ navigation }) => {
     navigation.navigate('PetCreate');
   }
 
+
   useEffect(() => {
     dispatch(getPetsProfile())
   }, [])
+
+  const onRefresh = async () => {
+    setIsRefreshing(true)
+
+    dispatch(getPetsProfile())
+    
+    setIsRefreshing(false)
+  }
 
   return (
     <View style={styles.container}>
@@ -51,6 +61,12 @@ const MyPets: React.FC<any> = ({ navigation }) => {
           {pets.length > 0 
             ? (
               <FlatList
+                refreshControl={
+                  <RefreshControl
+                    refreshing={isRefreshing}
+                    onRefresh={onRefresh}
+                  />
+                }
                 data={pets}
                 renderItem={(item: any) => {
                   const isNotLastOne = item.index < pets.length - 1;

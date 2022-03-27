@@ -31,7 +31,7 @@ export default StyleSheet.create({
   activity: {
     width: '100%',
     flex: 1,
-    marginTop: 25,
+    marginTop: 25
   },
   activityTitle: {
     fontWeight: '400',
@@ -44,4 +44,9 @@ export default StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
   },
+  activityPlaceholder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 })

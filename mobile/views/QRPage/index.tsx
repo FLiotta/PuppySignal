@@ -214,7 +214,7 @@ const QRPage: React.FC<IProps> = ({
 
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         qrsCodesRefs[index].toDataURL((data: any) => {
-          const imagePath = `${RNFS.PicturesDirectoryPath}/testqrcode.png`;
+          const imagePath = `${RNFS.PicturesDirectoryPath}/${codes[index].code}.png`;
           RNFS.writeFile(imagePath, data, 'base64')
             .then(() => {
               Toast.show({
@@ -227,7 +227,7 @@ const QRPage: React.FC<IProps> = ({
               Toast.show({
                 text1: "QRCode can't be saved",
                 text2: 'Try again later.',
-                type: 'warning',
+                type: 'error',
                 position: 'bottom'
               })
             })
@@ -249,6 +249,7 @@ const QRPage: React.FC<IProps> = ({
     
     generatePdfFromQr(focusedQrIndex, w, h);
   }
+
   return (
     <View style={styles.container}>
       <SizeSelectModal

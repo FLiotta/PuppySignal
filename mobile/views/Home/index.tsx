@@ -6,26 +6,34 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // @Project
+import HearthNPC from 'assets/corazon.png'
 import BannerCTA from 'components/BannerCTA'
 import NotificationCard from 'components/NotificationCard'
 import { selectSessionProfile } from 'selectors/session';
 import { IThunkDispatcher } from 'interfaces';
 import { getUserProfile } from 'actions/session';
+import { getLastNotifications } from './actions';
 
 // @Own
-import activities from './mock_data.json'
 import styles from './styles';
+import { selectLastNotifications } from './selectors';
 
 dayjs.extend(relativeTime)
 
 const Home: React.FC<any> = () => {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
   const profile = useSelector(selectSessionProfile)
+  const activities = useSelector(selectLastNotifications)
   const dispatch: IThunkDispatcher = useDispatch()
+
+  const loadProfile = () => {
+    dispatch(getUserProfile())
+    dispatch(getLastNotifications())
+  }
 
   useEffect(() => {
     if(!profile.id) {
-      dispatch(getUserProfile())
+      loadProfile()
     }
   }, [])
 
@@ -42,7 +50,7 @@ const Home: React.FC<any> = () => {
   const onRefresh = async () => {
     setIsRefreshing(true)
 
-    await dispatch(getUserProfile())
+    loadProfile()
     
     setIsRefreshing(false)
   }
@@ -95,7 +103,19 @@ const Home: React.FC<any> = () => {
                 />
               )
             })
-            : <Text>There are no activities yet, come back later!</Text>
+            : (
+              <View style={styles.activityPlaceholder}>
+                <Image
+                  source={HearthNPC}
+                  style={{
+                    marginTop: 25,
+                    width: 150,
+                    height: 150
+                  }}
+                />
+                <Text>No activities yet, come back later!</Text>
+              </View>
+            )
           }
         </View>
       </View>

@@ -48,8 +48,10 @@ export const updateUserProfile = (attrsToUpdate: any) => {
 
 export const googleSignIn = (accessToken: string): any => {
   return (dispatch: IThunkDispatcher) => {
+    console.log("Llamando auth")
     return googleAuth(accessToken)
       .then((response) => {
+        console.log(response)
         const data = response.data.data
 
         AsyncStorage.setItem("authentication_tokens", JSON.stringify(data))
@@ -59,6 +61,7 @@ export const googleSignIn = (accessToken: string): any => {
           payload: data
         })
       })
+      .catch((e) => console.log)
   }
 };
 
