@@ -58,6 +58,7 @@ const PetLocations: React.FC<IProps> = ({ navigation, route }) => {
           showLocationsSidebar
           zoomEnabled
           zoomTapEnabled
+          zoomControlEnabled
           rotateEnabled
           scrollEnabled
         />
