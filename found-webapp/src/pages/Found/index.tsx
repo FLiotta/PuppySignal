@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import qs from 'qs';
+import cn from 'classnames'
 import cogoToast from 'cogo-toast';
 import { RouteComponentProps } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -14,7 +15,6 @@ import { ReactComponent as Logo } from 'assets/logo.svg';
 // @Own
 import './styles.scss';
 import { BackendResponse } from 'interfaces/app';
-import { fetchPetImage } from 'utils';
 
 interface IMatch {
   petId: any
@@ -27,19 +27,24 @@ const Found: React.FC<IProps> = ({
   location,
 }) => {
   const history = useHistory();
+  const [qrCode, setQrCode] = useState<string | undefined>();
   const [pet, setPet] = useState<Pet | undefined>();
+  const [locationShared, setLocationShared] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const { register, handleSubmit } = useForm();
 
-  const fetchQR = (qr: string) => {
-    setLoading(true);
-
-    PetService.scanned(qr)
+  const fetchPetDataByCode = (code: string) => {
+    PetService.scanned(code)
       .then((response: BackendResponse) => {
+        cogoToast.success(`You found ${response.data.name}!`, { 
+          position: 'bottom-center',
+          renderIcon: () => '🔎'
+        });
+        setQrCode(code)
         setPet(response.data);
       })
       .catch(() => {
-        cogoToast.warn('QR Invalid', { position: 'bottom-right' });
+        cogoToast.warn('QR Invalid', { position: 'bottom-center' });
       })
       .then(() => setLoading(false));
   }
@@ -48,38 +53,54 @@ const Found: React.FC<IProps> = ({
     const { qr } = qs.parse(location.search, { ignoreQueryPrefix: true }) as { qr: string };
 
     if(qr) {
-      fetchQR(qr);
+      fetchPetDataByCode(qr)
     }
   }, []);
-
-  useEffect(() => {
-    if(pet) {
-      navigator.geolocation.getCurrentPosition(
-        (location) => {
-          const { latitude, longitude } = location.coords;
-
-          PetService.createPetLocation(pet.id, latitude, longitude);
-        }
-      )
-    }
-  }, [pet]);
 
   const handleManualSearch = (payload: any) => {
     const { qr } = payload;
 
-    console.log(qr);
     if(qr) {
-      console.log("aa")
-      fetchQR(qr);
+      fetchPetDataByCode(qr)
     }
   }
 
+  const handleShareLocation = () => {
+    if(!pet || !qrCode || locationShared) {
+      return
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (location) => {
+        const { latitude, longitude } = location.coords;
+
+        PetService.createPetLocation(pet.id, qrCode, latitude, longitude)
+          .then(() => {
+            setLocationShared(true);
+            cogoToast.success(`Location shared with ${pet.name}'s owner!`, {
+              position: 'bottom-center',
+              renderIcon: () => '🎉'
+            })
+          })
+      }
+    )
+  }
+
+  const popLocationAlert = (e: any) => {
+    e.preventDefault();
+
+    const message = `Your current latitude and longitude will be shared with the owner, along with the current datetime and qr code.`
+    
+    alert(message);
+  }
+
   const generateWspHyperlink = () => {
-    const firstOwner = pet?.owners[0];
+    /*const firstOwner = pet?.owners[0];
 
-    const text = `Hello ${firstOwner?.first_name}! I got your number by scanning *${pet?.name}* PuppySignal code 🐶!`
+    const text = `Hello ! I got your number by scanning *${pet?.name}* PuppySignal code 🐶!`
 
-    return `https://wa.me/${firstOwner?.phone_number}?text=${text}`
+    return `https://wa.me/${firstOwner?.phone_number}?text=${text}`*/
+    return ""
   }
 
   return (
@@ -101,7 +122,7 @@ const Found: React.FC<IProps> = ({
               ref={register({ 
                 required: true,
                 minLength: {
-                  value: 10,
+                  value: 2,
                   message: "QR Codes have more characters."
                 },
                 maxLength: {
@@ -118,34 +139,31 @@ const Found: React.FC<IProps> = ({
       )}
       {pet && (
         <div className="found__body">
-          <img src={fetchPetImage(pet?.profile_picture)} className="found__body-pfp" />
+          <img src={pet?.profile_picture} className="found__body-pfp" />
           <h1 className="found__body-name">{pet?.name}</h1>
-          <p className="phrase">
-            You have just scanned {pet?.name}, he may be lost.
-            <br/><br/>
+          <p>
+            You have just scanned <strong>{pet?.name}</strong>, He may be lost.
+          </p>
+          <p>
             A brief description let by his owner:
-            <br/><br/>
-            <q>{pet?.extra}</q>
-            <br/><br/>
-            His owner was notified with your current location! You can help <strong>{pet?.name}</strong> come back house.
-            <br/><br/>
-            <strong>How?:</strong> Get in contact with his owner with the button below!
+          </p>
+          <q>
+            <i>{pet?.extra}</i>
+          </q>
+          <hr style={{width: 100}}/>
+          <p>
+            You can help <strong>{pet?.name}</strong> come back house. Share your current location with his owner.
           </p>
           <div className="ctas">
-            {pet?.owners[0].phone_number && (
-              <>
-                <a href={generateWspHyperlink()} target="_blank">
-                  <div className="wsp">
-                    <i className="fab fa-whatsapp"></i> Whatsapp
-                  </div>
-                </a>
-                <a href={`tel:${pet?.owners[0].phone_number}`} target="_blank"> 
-                  <div className="call">
-                    <i className="fas fa-phone-alt"></i> Call
-                  </div>
-                </a>
-              </>
-            )}
+            <div 
+              className={cn("location", {
+                "location--disabled": locationShared
+              })}
+              onClick={handleShareLocation}
+            >
+              <i className="fa fa-location-arrow"></i> Send my current location!
+            </div>
+            <a href="!#" onClick={popLocationAlert}><i>What data is sent to the owner?</i></a>
           </div>
         </div>
       )}

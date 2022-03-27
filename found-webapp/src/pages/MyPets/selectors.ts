@@ -1,1 +1,0 @@
-export const selectPets = (state: any) => state.mypets.pets;

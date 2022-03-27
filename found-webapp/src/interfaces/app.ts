@@ -1,7 +1,5 @@
 export interface BackendResponse {
-  code?: number,
-  msg?: string,
-  error?: any,
+  detail?: string
   data?: any,
 };
 

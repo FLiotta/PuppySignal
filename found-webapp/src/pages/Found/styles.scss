@@ -1,4 +1,4 @@
-$red: #fd5a5f;
+$red: #8779F5;
 $white: #ffffff;
 
 .found {
@@ -71,6 +71,10 @@ $white: #ffffff;
       border: 6px solid #ffffff;
       background-color: #ffffff;
       z-index: 10;
+      height: 150px;
+      display: block;
+      width: 150px;
+      object-fit: cover;
     }
 
     &-name {
@@ -86,35 +90,25 @@ $white: #ffffff;
       width: 100%;
       flex-direction: column;
 
-      & > * {
-        margin-bottom: 15px;
-        text-decoration: none;
-        color: #fff;
-      }
-
-      .wsp {
-        background-color: #25D366;
-        padding: 10px 25px;
-        cursor: pointer;
-        width: 100%;
-  
-        &:hover, &:active, &:focus {
-          background-color: #128C7E;
-          color: #eee;
-        }
-      }
-  
-      .call {
+      .location {
         background-color: $red;
         padding: 10px 25px;
         cursor: pointer;
         width: 100%;
 
+        color: #fff;
+
+        &--disabled {
+          background-color: #cfc9ff;
+          cursor: not-allowed;
+        }
+
         &:hover, &:active, &:focus {
-          background-color: #d24b4f;
+          background-color: #8779F5;
           color: #eee;
         }
       }
+      
     }
   }
 }
