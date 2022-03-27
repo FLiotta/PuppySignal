@@ -61,5 +61,10 @@ class PetCodesResponse(BaseModel):
 class PetLocationsResponse(BaseModel):
   data: List[LocationSchema]
 
+class CreatePetLocationBody(BaseModel):
+  qr_code: str
+  lng: str
+  lat: str
+
 class CreatePetSchema(BaseModel):
   data: PetSchema

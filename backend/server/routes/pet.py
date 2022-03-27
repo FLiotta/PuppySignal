@@ -7,10 +7,19 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form, Request
 from sqlalchemy.orm import Session, joinedload
 
-from server.schemas import UserSchema, ScannedQRCodeResponse, PetByIdResponse, PetCodesResponse, PetLocationsResponse, CreatePetSchema
+from server.schemas import (
+  UserSchema, 
+  ScannedQRCodeResponse, 
+  PetByIdResponse, 
+  PetCodesResponse, 
+  PetLocationsResponse, 
+  CreatePetSchema, 
+  CreatePetLocationBody,
+  location
+)
 from server.utils import get_db, get_user, protected_route, get_settings, fully_validated_user, limiter
 from server.config import Settings
-from server.models import Pet, Code, UserPet, UserNotification, Notification
+from server.models import Pet, Code, UserPet, UserNotification, Notification, Location, PetLocation
 
 router = APIRouter()
 
@@ -171,9 +180,9 @@ def get_pet_by_id(
 ):
   pet = (
     db.query(Pet)
-    .filter((Pet.id == pet_id) & (Pet.owners.any(id=u['id'])))
-    .limit(50) 
-    .first()
+      .filter((Pet.id == pet_id) & (Pet.owners.any(id=u['id'])))
+      .limit(50) 
+      .first()
   )
 
   if not pet:
@@ -181,6 +190,43 @@ def get_pet_by_id(
 
   return {
     "data": pet.locations
+  }
+
+# TODO: RATE LIMITER
+
+@router.post("/{pet_id}/locations")
+def create_pet_location(
+  request: Request,
+  pet_id: int,
+  body: CreatePetLocationBody,
+  db: Session = Depends(get_db)
+):
+  code = (
+     db.query(Code)
+      .filter((Code.code == body.qr_code) & (Code.pet_id == pet_id))
+      .first()
+  )
+
+  if not code:
+    raise HTTPException(status_code=404, detail="Invalid pet_id or code")
+
+  new_location = Location(latitude=body.lat, longitude=body.lng)
+
+  db.add(new_location)
+  db.commit()
+  
+  new_pet_location = PetLocation(
+    pet_id=pet_id,
+    location_id=new_location.id,
+    method="SCANNED"
+  )
+
+  db.add(new_pet_location)
+  db.commit()
+  
+
+  return {
+    "data": new_location
   }
 
   
@@ -193,9 +239,12 @@ def scan_qr_code(
   qr_code: str, 
   db: Session = Depends(get_db)
 ):
-  code = db.query(Code).filter(Code.code == qr_code).options(
-      joinedload(Code.pet).joinedload(Pet.owners)
-    ).first()
+  code = (
+    db.query(Code)
+    .filter(Code.code == qr_code)
+    .options(joinedload(Code.pet).joinedload(Pet.owners))
+    .first()
+  )
 
   db.close()
 
