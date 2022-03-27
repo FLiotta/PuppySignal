@@ -105,9 +105,12 @@ def get_pet_by_id(
   db: Session = Depends(get_db), 
   u = Depends(get_user)
 ):
-  pet = db.query(Pet).filter(
-    (Pet.id == pet_id) & (Pet.owners.any(id=u['id']))
-  ).first()
+  pet = (
+    db.query(Pet)
+      .filter((Pet.id == pet_id) & (Pet.owners.any(id=u['id'])))
+      .options(joinedload(Pet.specie))
+      .first()
+  )
 
   if not pet:
     raise HTTPException(status_code=404, detail="Pet not found")
