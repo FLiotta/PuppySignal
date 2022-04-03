@@ -79,7 +79,7 @@ const MyPets: React.FC<any> = ({ navigation }) => {
                         onPress={() => onCardPress(pet.id)}
                         onQRPRess={() => onQRPress(pet.id)}
                       />
-                      {isNotLastOne && <View style={styles.divisor}></View>}
+                      {isNotLastOne ? <View style={styles.divisor}></View> : <View style={{marginBottom: 20}}></View>}
                     </Fragment>
                   )
                 }}

@@ -38,6 +38,10 @@ export const getPet = (id: number): AxiosPromise<BackendResponse<IPet>> => {
   return http.get(`/pet/${id}`)
 }
 
+export const deletePet = (id: number): AxiosPromise<BackendResponse<null>> => {
+  return http.delete(`/pet/${id}`)
+}
+
 export const getPetCodes = (id: number): AxiosPromise<BackendResponse<ICode[]>> => {
   return http.get(`/pet/${id}/codes`)
 }

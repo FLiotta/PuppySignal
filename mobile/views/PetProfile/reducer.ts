@@ -5,14 +5,22 @@ import { AnyAction } from 'redux'
 import { IPet } from "interfaces";
 
 // @Own
-import { GET_PET } from './actions'
+import { 
+  GET_PET,
+  OPEN_DELETE_PET_MODAL,
+  CLOSE_DELETE_PET_MODAL,
+} from './actions'
 
 export interface IPetProfileState {
-  pet?: IPet
+  pet?: IPet,
+  deleteModalOpen: boolean,
+  editModalOpen: boolean,
 }
 
 const defaultState: IPetProfileState = {
-  pet: undefined
+  pet: undefined,
+  editModalOpen: false,
+  deleteModalOpen: false
 }
 
 export default (state = defaultState, action: AnyAction) => {
@@ -22,6 +30,16 @@ export default (state = defaultState, action: AnyAction) => {
         ...state,
         pet: action.payload
       };
+    case OPEN_DELETE_PET_MODAL:
+      return {
+        ...state,
+        deleteModalOpen: true,
+      }
+    case CLOSE_DELETE_PET_MODAL:
+      return {
+        ...state,
+        deleteModalOpen: false,
+      }
     default:
       return state;
   }

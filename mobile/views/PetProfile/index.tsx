@@ -3,18 +3,21 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, Image, ScrollView } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import QR from 'react-native-qrcode-svg';
+import { RouteProp } from '@react-navigation/native'
+import Toast from "react-native-toast-message";
 
 // @Project
 import Map from 'components/Map';
 import { ILocation, IThunkDispatcher } from 'interfaces'
-import { getPetLocations } from 'services/pet';
+import { getPetLocations, deletePet } from 'services/pet';
 import { COLORS } from 'styles'
+import ConfirmModal from "components/ConfirmModal"
+import { removePetById } from 'views/MyPets/actions';
 
 // @Own
-import { getPetProfile } from './actions'
-import { selectPetProfile } from './selectors'
+import { closeDeleteModal, getPetProfile } from './actions'
+import { selectPetProfile, selectDeletePetModalVisibility } from './selectors'
 import styles from './styles'
-import { RouteProp } from '@react-navigation/native'
 
 interface IProps {
   navigation: any,
@@ -32,7 +35,9 @@ const PetProfile: React.FC<IProps> = ({
   const dispatch: IThunkDispatcher = useDispatch();
   const [locations, setLocations] = useState<ILocation[]>([]);
   const [locationsLoading, setLocationsLoading] = useState<boolean>(true);
+  const [loadingPetDelete, setLoadingPetDelete] = useState<boolean>(false);
   const pet = useSelector(selectPetProfile);
+  const deletePetModalVisible = useSelector(selectDeletePetModalVisibility);
 
   useEffect(() => {
     const petId = route.params.id;
@@ -70,8 +75,61 @@ const PetProfile: React.FC<IProps> = ({
     navigation.navigate("PetLocations", { id: route.params.id })
   }
 
+  const handleDeletePetProfile = () => {
+    if(!pet?.id) {
+      return
+    }
+
+    setLoadingPetDelete(true)
+
+    deletePet(pet?.id)
+      .then(() => {
+        Toast.show({
+          type: 'info',
+          position: 'bottom',
+          text1: `${pet.name} deleted!`,
+          text2: "Its location and codes associated were removed, neither won't on previous notifications.",
+          visibilityTime: 5000,
+          autoHide: true,
+        });
+      })
+      .catch(() => {
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          text1: `Something happened!`,
+          text2: "Please try again later.",
+          visibilityTime: 5000,
+          autoHide: true,
+        });
+      })
+      .finally(() => {
+        setLoadingPetDelete(false);
+        handleCloseDeleteModal();
+        dispatch(removePetById(pet.id))
+        navigation.goBack();
+      })
+      
+  }
+
+  const handleCloseDeleteModal = () => {
+    dispatch(closeDeleteModal());
+  }
+
   return (
     <ScrollView style={styles.container}>
+      <ConfirmModal
+        loading={loadingPetDelete}
+        visible={deletePetModalVisible}
+        title='Delete pet'
+        description={
+          `Are you sure you want to delete ${pet?.name}'s profile?
+          \n\nThis will delete its profile, codes and locations associated, also remove its profile from previous notifications.
+          \n\nThis action can not be reversed.`
+        }
+        onAccept={handleDeletePetProfile}
+        onCancel={handleCloseDeleteModal}
+      />
       <View style={styles.wrapper}>
         <View style={styles.profileCard}>
           <View style={styles.profileCardAvatarWrapper}>
@@ -112,7 +170,7 @@ const PetProfile: React.FC<IProps> = ({
             <View>
               <Text style={styles.title}>QR Codes</Text>
               <Text style={[styles.value]}>
-                Your pet currently has 14{'\n'}active codes assigned.{'\n'}
+                Your pet currently has 1{'\n'}active codes assigned.{'\n'}
               </Text>
               <Text style={[styles.value, { color: COLORS.primary_color, paddingVertical: 10 }]} onPress={onCodesPress}>
                 Manage codes
