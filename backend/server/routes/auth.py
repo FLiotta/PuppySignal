@@ -31,7 +31,7 @@ router = APIRouter()
 # TODO: DB Transaction & Rollbacks.
 
 @router.post("/google", response_model=OAuthGoogleResponse)
-@limiter("3/hour")
+#@limiter("500/hour") // TODO FIX THIS, SOMEHOW RESPONSE DOESNT WORK PROPERLY WHEN RATE LIMTIED
 async def get_auth(
   request: Request,
   body: GoogleOAuthBody,
@@ -124,7 +124,7 @@ async def get_auth(
 # CRITICAL: Refresh token not being deleted when user signout.
 
 @router.post("/jwt/refresh", response_model=RefreshTokenResponse)
-@limiter("10/hour")
+#@limiter("10/hour")
 async def jwt_refresh(
   request: Request,
   refresh_token: str = Header(...),

@@ -9,7 +9,7 @@ class Notification(Base):
 
   id = Column(Integer, primary_key=True, autoincrement=True)
   type = Column(String(100), nullable=False)
-  scanned_pet_id = Column(Integer, ForeignKey('pet.id'), nullable=False)
+  scanned_pet_id = Column(Integer, ForeignKey('pet.id'))
   created_at = Column(Date, default=datetime.now, nullable=False)
   updated_at = Column(Date, default=datetime.now, nullable=False)
 

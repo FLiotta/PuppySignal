@@ -128,6 +128,26 @@ def get_pet_by_id(
     "data": pet
   }
 
+@router.delete("/{pet_id}", status_code=200, dependencies=[Depends(protected_route), Depends(fully_validated_user)])
+@limiter("5/minute")
+def delete_pet_by_id(
+  request: Request,
+  pet_id: int,
+  db: Session = Depends(get_db),
+  u = Depends(get_user)
+):
+  pet = (
+    db.query(Pet)
+      .filter((Pet.id == pet_id) & (Pet.owners.any(id=u['id'])))
+      .first()
+  )
+
+  if not pet:
+    raise HTTPException(status_code=400, detail="Request cannot be fullfiled.")
+
+  db.delete(pet)
+
+  db.commit()
 
 @router.get("/{pet_id}/codes", response_model=PetCodesResponse, dependencies=[Depends(protected_route)])
 @limiter("5/minute")

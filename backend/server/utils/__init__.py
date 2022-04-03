@@ -84,7 +84,7 @@ def limiter(request_slash_timeunit: str):
     @wraps(endpoint)
     def wrapper(*args, **kwargs):
       request: Request = kwargs["request"]
-      user_data: JWTPayload = kwargs["u"]
+      user_data: JWTPayload = kwargs.get("u", None)  
 
       # Identifier: IP|UUID:PING:PATH
       # IP in case the endpoints doesnt require client to be authenticated, uuid in case it does.
@@ -99,7 +99,8 @@ def limiter(request_slash_timeunit: str):
         ttl = redis.ttl(identifier)
 
       if requested_by_client > request_per_time:
-        raise HTTPException(status_code=429)
+        pass # TODO UNCOMMENT THIS ONLY DEBUG
+        #raise HTTPException(status_code=429)
 
       return endpoint(*args, **kwargs)
     
