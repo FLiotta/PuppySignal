@@ -104,8 +104,8 @@ const MyPetStack = () => {
         name="PetCreate"
         component={PetCreate}
         options={{
-          headerTransparent: true,
-          title: "New Pet",
+          headerTransparent: false,
+          title: "Create pet",
           headerTintColor: COLORS.primary_color,
         }}
       />

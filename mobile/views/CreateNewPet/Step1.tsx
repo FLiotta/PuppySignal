@@ -31,7 +31,7 @@ const Step1: React.FC<IProps> = ({ onConfirm }) => {
         Toast.show({
           type: 'success',
           position: 'bottom',
-          text1: `That's a great one! 📸`,
+          text1: `That's a really good one! ❤️😭📸`,
           visibilityTime: 2000,
           autoHide: true,
         });
@@ -51,6 +51,12 @@ const Step1: React.FC<IProps> = ({ onConfirm }) => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={handleOpenCamera} style={styles.imageContainer}>
+        {imageUri
+          ? <Image source={{ uri: imageUri }} style={styles.image} />
+          : <Text style={styles.imageContainerText}>Take a photo of your pet 🐶{'\n'} Press me to take a photo 📷!</Text>
+        }
+      </TouchableOpacity>
       <View style={styles.header}>
         <View style={{
           width: '100%',
@@ -58,15 +64,14 @@ const Step1: React.FC<IProps> = ({ onConfirm }) => {
         }}>
         </View>
         <Text style={styles.headerTitle}>
-          You are about to register your pet in our systems!</Text>
-        <Text style={styles.headerSubtitle}>It won't take any longer, lets start with a photo, you can edit your pet's information after submitted ✏️.</Text>
+          Let first take a picture!
+        </Text>
+        <Text style={styles.headerSubtitle}>
+          It won't take any longer, lets start with a photo.
+          {'\n\n'}
+          Remember to follow the rules, No 🍆, neither 🍑 😒
+        </Text>
       </View>
-      <TouchableOpacity onPress={handleOpenCamera} style={styles.imageContainer}>
-        {imageUri
-          ? <Image source={{ uri: imageUri }} style={styles.image} />
-          : <Text style={styles.imageContainerText}>First a picture! 📷{'\n'}Click me to select one!</Text>
-        }
-      </TouchableOpacity>
       <View style={{ alignItems: 'flex-end', marginTop: 25}}>
         <Button
           disabled={!imageUri}
@@ -85,20 +90,21 @@ const styles = StyleSheet.create({
     minHeight: '100%',
     backgroundColor: '#F8F9FD',
     paddingHorizontal: 40,
-    paddingTop: 60,
+    paddingTop: 15,
   },
   header: {
     width: '100%',
+    marginTop: 25
   },
   headerTitle: {
-    textAlign: 'left',
+    textAlign: 'center',
     fontSize: 16,
     fontWeight: '700',
     color: COLORS.primary_color,
     fontFamily: 'RedHatDisplayRegular',
   },
   headerSubtitle: {
-    textAlign: 'left',
+    textAlign: 'center',
     color: COLORS.primary_color_darker,
     fontFamily: 'RedHatDisplayRegular',
     marginTop: 10,
@@ -114,8 +120,8 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     padding: 10,
-    width: 325,
-    height: 275,
+    width: 250,
+    height: 250,
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',

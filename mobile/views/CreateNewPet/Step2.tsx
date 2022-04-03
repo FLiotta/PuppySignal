@@ -1,6 +1,6 @@
 // @Packages
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Button, TextInput, Keyboard, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Formik } from 'formik';
@@ -46,12 +46,16 @@ const Step2: React.FC<IProps> = ({ onBack, onConfirm, loading }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <View style={styles.header}>
         <Text style={styles.headerTitle}>
-          We need you to provide some basic information about your pet before finishing the process.
+          Now it's time to fullfil your pet's information.
         </Text>
-        <Text style={styles.headerSubtitle}>You can always edit your pet's information after submitted ✏️</Text>
+        <Text style={styles.headerSubtitle}>
+          This information will be shown to people whom scans your pet code.
+          {'\n\n'}
+          You can update this information later ✏️
+        </Text>
       </View>
       <Formik
         initialValues={formInitialValues}
@@ -83,6 +87,8 @@ const Step2: React.FC<IProps> = ({ onBack, onConfirm, loading }) => {
                   open={specieDropdownOpen}
                   setOpen={setSpecieDropdownOpen}
                   closeAfterSelecting
+                  style={styles.selectInput}
+                  listMode="SCROLLVIEW"
                 />
               </View>
             </View>
@@ -113,7 +119,7 @@ const Step2: React.FC<IProps> = ({ onBack, onConfirm, loading }) => {
           </>
         )}
       </Formik>
-    </View>
+    </ScrollView>
   )
 };
 
@@ -123,10 +129,11 @@ const styles = StyleSheet.create({
     minHeight: '100%',
     backgroundColor: '#F8F9FD',
     paddingHorizontal: 40,
-    paddingTop: 60,
+    paddingTop: 15,
   },
   header: {
     width: '100%',
+    marginTop: 25
   },
   headerTitle: {
     textAlign: 'left',
@@ -182,7 +189,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     borderRadius: 5,
     paddingHorizontal: 10,
-    minHeight: 45,
+    height: 45,
     color: '#000',
     zIndex: 100000
   }

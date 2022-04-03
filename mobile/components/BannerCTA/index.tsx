@@ -19,12 +19,21 @@ interface IProps {
 }
 
 const CTABanner: React.FC<IProps> = ({ title, description, image, imageStyle, onPress, pulse }) => {
-  const animScale: any = new Animated.Value(1);
+  const animScaleX: any = new Animated.Value(1);
+  const animScaleY: any = new Animated.Value(1);
   const animOp: any = new Animated.Value(1);
 
-  let scaleLoop = Animated.loop(
-    Animated.timing(animScale, {
+  let scaleLoopX = Animated.loop(
+    Animated.timing(animScaleX, {
       toValue: 1.06,
+      duration: 1000,
+      useNativeDriver: true,
+    })
+  );
+
+  let scaleLoopY = Animated.loop(
+    Animated.timing(animScaleY, {
+      toValue: 1.15,
       duration: 1000,
       useNativeDriver: true,
     })
@@ -39,7 +48,8 @@ const CTABanner: React.FC<IProps> = ({ title, description, image, imageStyle, on
   );
 
   if(pulse) {
-    scaleLoop.start();
+    scaleLoopX.start();
+    scaleLoopY.start();
     opLoop.start();
   }
 
@@ -61,9 +71,9 @@ const CTABanner: React.FC<IProps> = ({ title, description, image, imageStyle, on
             position: 'absolute',
             width: '100%',
             opacity: animOp,
-            borderWidth: 2,
+            borderWidth: 0,
             borderColor: COLORS.primary_color_darker,
-            transform: [{ scale: animScale }]
+            transform: [{ scaleX: animScaleX }, { scaleY: animScaleY }]
           }
         ]}
       >
