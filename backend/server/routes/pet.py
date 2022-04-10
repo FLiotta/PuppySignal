@@ -74,8 +74,9 @@ def create_pet(
       db.add(new_pet)
       db.flush()
 
-      empty_code = db.query(Code).filter(Code.pet_id == None).first()
-      empty_code.pet_id = new_pet.id
+      code = Code(new_pet.id)
+
+      db.add(code)
 
       new_user_pet = UserPet(
         pet_id=new_pet.id,
