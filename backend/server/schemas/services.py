@@ -68,3 +68,8 @@ class CreatePetLocationBody(BaseModel):
 
 class CreatePetSchema(BaseModel):
   data: PetSchema
+
+class UpdatePetBody(BaseModel):
+  extra: Optional[str]
+  name: Optional[str]
+  specie_id: Optional[int]

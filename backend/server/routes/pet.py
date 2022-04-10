@@ -6,6 +6,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form, Request
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.exc import DataError, IntegrityError
 
 from server.schemas import (
   UserSchema, 
@@ -15,7 +16,7 @@ from server.schemas import (
   PetLocationsResponse, 
   CreatePetSchema, 
   CreatePetLocationBody,
-  location
+  UpdatePetBody
 )
 from server.utils import get_db, get_user, protected_route, get_settings, fully_validated_user, limiter
 from server.config import Settings
@@ -127,6 +128,50 @@ def get_pet_by_id(
   return {
     "data": pet
   }
+
+@router.patch("/{pet_id}", status_code=200, dependencies=[Depends(protected_route)])
+@limiter("5/minute")
+def get_pet_by_id(
+  request: Request,
+  body: UpdatePetBody,
+  pet_id: int, 
+  db: Session = Depends(get_db), 
+  u = Depends(get_user)
+):
+  if not body.name and not body.extra and not body.specie_id:
+    raise HTTPException(status_code=400, detail="Params not provided.")
+
+  pet = (
+    db.query(Pet)
+      .filter((Pet.id == pet_id) & (Pet.owners.any(id=u['id'])))
+      .options(joinedload(Pet.specie))
+      .first()
+  )
+
+  if not pet:
+    raise HTTPException(status_code=404, detail="Pet not found")
+
+  try:
+    if body.name:
+      pet.name = body.name
+
+    if body.extra:
+      pet.extra = body.extra
+
+    if body.specie_id:
+      pet.specie_id = body.specie_id
+
+    db.commit()
+  except IntegrityError as e:
+    raise HTTPException(status_code=400, detail="Invalid specie_id")
+  except DataError as e:
+    error_message = e.args[0]
+
+    if "value too long" in error_message:
+      raise HTTPException(status_code=400, detail="Value too long")
+    
+    raise HTTPException(status_code=400, detail="Invalid parameters")
+  
 
 @router.delete("/{pet_id}", status_code=200, dependencies=[Depends(protected_route), Depends(fully_validated_user)])
 @limiter("5/minute")
