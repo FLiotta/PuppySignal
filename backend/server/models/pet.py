@@ -10,7 +10,7 @@ class Pet(Base):
   __tablename__ = "pet"
 
   id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-  uuid = Column(UUID(as_uuid=True), default=uuid.uuid4,nullable=False)
+  uuid = Column(String(80), default=uuid.uuid4,nullable=False)
   name = Column(String(50), nullable=False)
   profile_picture = Column(String(150))
   extra = Column(String(220))

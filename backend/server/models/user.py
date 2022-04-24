@@ -7,11 +7,16 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from server.database import Base
 
+def get_uuid():
+  _ = uuid.uuid4()
+
+  return str(_)
+
 class User(Base):
   __tablename__ = "user"
 
   id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-  uuid = Column(UUID(as_uuid=True), unique=True, default=uuid.uuid4, nullable=False)
+  uuid = Column(String(80), unique=True, default=get_uuid, nullable=False)
   first_name = Column(String(50), nullable=False)
   last_name = Column(String(50), nullable=False)
   email = Column(String(50), nullable=False)
