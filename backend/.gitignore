@@ -3,4 +3,5 @@ venv
 **/.pytest_cache
 .idea
 .env
+.coverage
 test.db

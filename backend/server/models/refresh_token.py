@@ -6,7 +6,7 @@ class RefreshToken(Base):
   __tablename__ = "refresh_token"
 
   id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-  token = Column(String(2000), unique=True, nullable=False)
+  token = Column(String(2000), nullable=False)
   user_id = Column(Integer, ForeignKey('user.id'))
   valid_until = Column(Date, nullable=False)
 

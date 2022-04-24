@@ -1,12 +1,18 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, Request
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session, joinedload
 from twilio.rest import Client
 
 from server.models import User, Notification, Pet
-from server.schemas import UserSchema, ProfileResponse, ProfilePatchBody, ProfilePetsResponse, PhoneNumberBody, PhoneNumberVerifyBody, ProfileNotificationsResponse
+from server.schemas import (
+  UserSchema, 
+  ProfileResponse, 
+  ProfilePatchBody, 
+  ProfilePetsResponse, 
+  PhoneNumberBody, 
+  PhoneNumberVerifyBody, 
+  ProfileNotificationsResponse
+)
 from server.utils import get_db, protected_route, get_user, get_settings, limiter
 from server.config import Settings
 

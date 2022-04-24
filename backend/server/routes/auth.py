@@ -138,8 +138,8 @@ async def jwt_refresh(
   if not token:
     raise HTTPException(status_code=404, detail="Refresh token not found.")
 
-  actual_time = datetime.date(datetime.utcnow())
-  valid_until = datetime.date(token.valid_until)
+  actual_time = datetime.utcnow().date()
+  valid_until = token.valid_until
 
   if actual_time > valid_until:
     raise HTTPException(status_code=400, detail="Expired refresh token.")
