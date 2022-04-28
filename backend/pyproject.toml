@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "backend-v2"
+version = "0.1.0"
+description = ""
+authors = ["FLiotta <liottafabrizio@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+alembic = "1.7.7"
+uvicorn = "0.15.0"
+SQLAlchemy = "1.4.28"
+redis = "4.1.4"
+PyJWT = "2.3.0"
+flake8 = "4.0.1"
+fastapi = "0.70.0"
+databases = "0.5.3"
+boto3 = "1.20.24"
+numpy = "1.21.5"
+opencv-python = "4.5.4.60"
+pre-commit = "2.16.0"
+psycopg2 = "2.9.3"
+nanoid = "2.0.0"
+pytest = "6.2.5"
+python-multipart = "0.0.5"
+python-dateutil = "2.8.2"
+python-dotenv = "0.19.2"
+twilio = "7.4.0"
+aiosqlite = "^0.17.0"
+coverage = "^6.3.2"
+pytest-cov = "^3.0.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
