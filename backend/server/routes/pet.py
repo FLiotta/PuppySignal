@@ -43,12 +43,16 @@ def create_pet(
   # Saves and upload the image
   # Assigns the image path to pet
   try:
-    uploaded_pet_avatar = cv2.imdecode(numpy.fromstring(file.file.read(), numpy.uint8), cv2.IMREAD_UNCHANGED)
+    # TODO: Aca hubo cambio, validar que siga funcionando
+    # from bubffer de fromstring
+    uploaded_pet_avatar = cv2.imdecode(numpy.frombuffer(memoryview(file.file.read()), numpy.uint8), cv2.IMREAD_UNCHANGED)
   except Exception as e:
     raise HTTPException(status_code=400, detail="Error reading image")
   
-  h, w, _ = uploaded_pet_avatar.shape
+  h = uploaded_pet_avatar.shape[0]
+  w = uploaded_pet_avatar.shape[1]
 
+  print((h, w))
   if h > 640 or w > 640:
     raise HTTPException(status_code=400, detail="Image can't be larger than 640x640")
   elif h % w != 0:
@@ -74,7 +78,7 @@ def create_pet(
       db.add(new_pet)
       db.flush()
 
-      code = Code(new_pet.id)
+      code = Code(pet_id=new_pet.id)
 
       db.add(code)
 
@@ -89,9 +93,9 @@ def create_pet(
       avatar_key = f"pets/{new_pet.uuid}.jpg"
 
       new_pet.profile_picture = f"{settings.b2_endpoint_url}/{settings.b2_bucket}/{avatar_key}"
-
-      to_upload_pet_avatar = cv2.imencode('.jpg', uploaded_pet_avatar)[1].tostring()
-
+      #TODO aca hubo cambio, validar que siga funcionando (.TOBYTES FROM TOSTRING)
+      to_upload_pet_avatar = cv2.imencode('.jpg', uploaded_pet_avatar)[1].tobytes()
+      
       s3.put_object(
         Bucket=settings.b2_bucket,
         Key=avatar_key,
@@ -105,6 +109,7 @@ def create_pet(
       }
     except Exception as e:
       db.rollback()
+      print(e, flush=True)
       raise HTTPException(status_code=500, detail="Pet can't be created.")
 
 

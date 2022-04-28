@@ -10,10 +10,8 @@ from sqlalchemy.orm.session import Session
 
 from server.database import SessionLocal, Base, engine, database
 from server.factory import create_app
-from server.models.pet import Pet
-from server.models.user_pet import UserPet
 from server.utils import get_settings
-from server.models import Specie, User
+from server.models import Specie, User, Pet, UserPet, Location, Code, PetLocation
 
 settings = get_settings()
 
@@ -50,7 +48,18 @@ class BaseTestCase(IsolatedAsyncioTestCase):
       first_name="user",
       last_name="lastuser",
       profile_picture="nose.com",
-      email="lol@com"
+      email="lol@com",
+      phone_number="+5493413200000",
+      phone_verified=True,
+    )
+
+    self.user_2 = User(
+      first_name="soyun",
+      last_name="usuario",
+      profile_picture="nqee.com",
+      email="lol@com",
+      phone_number="+5493411234000",
+      phone_verified=True,
     )
 
     self.pet_1 = Pet(
@@ -62,9 +71,16 @@ class BaseTestCase(IsolatedAsyncioTestCase):
     )
 
     self.db.add(self.user)
+    self.db.add(self.user_2)
     self.db.add(self.pet_1)
 
     self.db.commit()
+
+    self.location = Location(latitude=1, longitude=2)
+    self.code = Code(pet_id=self.pet_1.id)
+
+    self.db.add(self.location)
+    self.db.add(self.code)
 
     self.db.add(
       UserPet(
@@ -75,10 +91,30 @@ class BaseTestCase(IsolatedAsyncioTestCase):
 
     self.db.commit()
 
+    self.db.add(
+      PetLocation(
+        pet_id=self.pet_1.id,
+        location_id=self.location.id,
+        method="SCANNED"
+      )
+    )
+
+    self.db.commit()
     self.token = jwt.encode({
       "id": self.user.id,
       "uuid": str(self.user.uuid),
       "phone_verified": self.user.phone_verified,
+      "exp": datetime.utcnow() + timedelta(minutes=10),
+      "iat": datetime.utcnow()
+      },
+      settings.JWT_SECRET,
+      algorithm="HS256"
+    )
+
+    self.token_2 = jwt.encode({
+      "id": self.user_2.id,
+      "uuid": str(self.user_2.uuid),
+      "phone_verified": self.user_2.phone_verified,
       "exp": datetime.utcnow() + timedelta(minutes=10),
       "iat": datetime.utcnow()
       },

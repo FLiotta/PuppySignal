@@ -153,6 +153,10 @@ class TestProfileAPI(BaseTestCase):
   
   @patch.object(Verify, "services", lambda *_: FakeTwilioServices())
   def test_profile_phone_number(self):
+    self.user.phone_verified = False
+    self.db.add(self.user)
+    self.db.commit()
+
     with TestClient(self.app) as client:
       headers = {
         "token": f"{self.token}"
