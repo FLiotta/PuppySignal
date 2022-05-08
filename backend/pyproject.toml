@@ -28,6 +28,7 @@ twilio = "7.4.0"
 aiosqlite = "^0.17.0"
 coverage = "^6.3.2"
 pytest-cov = "^3.0.0"
+asyncpg = "^0.25.0"
 
 [tool.poetry.dev-dependencies]
 

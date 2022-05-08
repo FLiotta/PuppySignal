@@ -9,7 +9,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.sql import expression
-from models.code import code_generator
+from server.models.code import code_generator
 
 
 # revision identifiers, used by Alembic.
@@ -63,7 +63,7 @@ def upgrade():
       sa.Column("id"     , sa.Integer(), nullable=False),
       sa.Column("uuid", sa.String(80), nullable=False),
       sa.Column("name", sa.String(50), nullable=False),
-      sa.Column("profile_picture", sa.String(150), nullable=False),
+      sa.Column("profile_picture", sa.String(150)),
       sa.Column("extra", sa.String(220), nullable=False),
       sa.Column("color", sa.String(50)),
       sa.PrimaryKeyConstraint("id")
