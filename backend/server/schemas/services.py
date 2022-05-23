@@ -73,3 +73,6 @@ class UpdatePetBody(BaseModel):
   extra: Optional[str]
   name: Optional[str]
   specie_id: Optional[int]
+
+class NotificationSuscribeBody(BaseModel):
+  token: str

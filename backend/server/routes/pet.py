@@ -4,6 +4,7 @@ import numpy
 
 from typing import List
 
+from firebase_admin import messaging
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form, Request
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import DataError, IntegrityError
@@ -328,24 +329,35 @@ def scan_qr_code(
       db.add(new_notification)
       db.flush()
 
+      owners_uuids = []
+      
       for owner in code.pet.owners:
+        owners_uuids.append(owner.uuid)
+
         new_user_notification = UserNotification(
           user_id=owner.id,
           notification_id=new_notification.id
         )
 
         db.add(new_user_notification)
-      
+
       db.commit()
 
-      # TODO Send push notification
-      # ...
-      # TODO Send email
-      # ...
+      for uuid in owners_uuids:
+        message = messaging.Message(
+          notification=messaging.Notification(
+            title=f"{code.pet.name} was scanned!",
+            body="Check your pet profile to see more!",
+            image=code.pet.profile_picture
+          ),
+          topic=uuid
+        )
+        messaging.send(message)
 
       return {
         "data": code.pet
       }
     except Exception as e:
       db.rollback()
+      print(e)
       raise HTTPException(status_code=500, detail="QR Code can't be scanned.")

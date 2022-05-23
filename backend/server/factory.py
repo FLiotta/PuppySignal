@@ -5,12 +5,17 @@ from os.path import join, dirname, pardir
 from os import environ
 
 from dotenv import load_dotenv
+
+import firebase_admin
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from server.routes import api_router
 
 load_dotenv(join(dirname(__file__), pardir, '.env'))
+
+
+firebase_admin.initialize_app(credential=firebase_admin.credentials.Certificate("./firebase_admin_key.json"))
 
 def create_app():
   description = "PuppySignal API"
@@ -31,6 +36,7 @@ def create_app():
   )
 
   init_db_hooks(app)
+
   app.include_router(api_router, prefix="/api/v2")
 
   return app

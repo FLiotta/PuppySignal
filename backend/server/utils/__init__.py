@@ -23,11 +23,10 @@ def get_db():
 def get_settings() -> config.Settings:
     return config.Settings()
 
-
 settings = get_settings()
 
 redis = redis_pkg.Redis(host=settings.redis_host, port=settings.redis_port)
-    
+
 async def get_user(token: str = Header(...), settings: config.Settings = Depends(get_settings)):
   decoded_user = jwt.decode(token, settings.JWT_SECRET, algorithms='HS256')
     
