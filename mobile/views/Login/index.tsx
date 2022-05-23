@@ -4,8 +4,10 @@ import { View, Text } from 'react-native';
 import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import messaging from '@react-native-firebase/messaging'; 
 
 // @Project
+import { suscribeToNotifications } from 'services/notifications';
 import { googleSignIn } from 'actions/session';
 
 // @Own
@@ -25,15 +27,42 @@ const Login: React.FC = () => {
       await GoogleSignin.signIn();
       
       const { accessToken } = await GoogleSignin.getTokens();
-      console.log({
-        accessToken
-      })
-      dispatch(googleSignIn(accessToken))
+
+      await dispatch(googleSignIn(accessToken))
+
+      await handleNotificationSuscribe()
     } catch (error) {
       // TODO: Handle error.
       console.log(error)
     }
   };
+
+  const handleNotificationSuscribe = async () => {
+    try {
+      const permissions = await messaging().hasPermission();
+
+      if(!permissions) {
+        await messaging().requestPermission();
+      }
+
+      let fcmToken = await AsyncStorage.getItem("fcmToken");
+
+      if(!fcmToken) { 
+        fcmToken = await messaging().getToken()
+      }
+    
+      await AsyncStorage.setItem("fcmToken", fcmToken)
+
+      await suscribeToNotifications(fcmToken);
+    } catch(error) {
+      AsyncStorage.removeItem("fcmToken");
+      console.error({ 
+        error_type: "push_notification",
+        error_view: "auth",
+        error: error
+      });
+    }
+  }
 
   return (
     <View style={styles.container}>

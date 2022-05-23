@@ -16,6 +16,8 @@ target 'PuppySignal' do
 
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
 
+  pod 'RNFBApp', :path => '../node_modules/@react-native-firebase/app'
+
   target 'PuppySignalTests' do
     inherit! :complete
     # Pods for testing

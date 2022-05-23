@@ -35,7 +35,8 @@ const Step1: React.FC<IProps> = ({ onConfirm }) => {
           visibilityTime: 2000,
           autoHide: true,
         });
-      });
+      })
+      .catch((e) => console.log({ e }))
   }
 
   const handleOpenCamera = () => {

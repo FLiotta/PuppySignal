@@ -18,5 +18,6 @@ export const fetchSpecies = () => {
           payload: data
         })
       })
+      .catch((e) => console.log({ e }))
   }
 }

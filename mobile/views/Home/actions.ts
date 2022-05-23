@@ -15,5 +15,6 @@ export const getLastNotifications = () => {
           payload: data
         });
       })
+      .catch((e) => console.log({ e }))
   }
 }

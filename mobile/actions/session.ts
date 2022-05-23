@@ -1,10 +1,11 @@
 // @Packages
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // @Project
 import { IThunkDispatcher } from "interfaces";
 import { googleAuth, refreshToken } from "services/auth";
 import { getProfile, updateProfile } from 'services/profile';
+import { unsuscribeToNotifications } from 'services/notifications';
 
 export const GOOGLE_SIGN_IN = '[AUTH] GOOGLE'
 export const REFRESH_TOKEN = '[AUTH] REFRESH TOKEN'
@@ -25,6 +26,7 @@ export const getUserProfile = () => {
           payload: data
         })
       })
+      .catch((e) => console.log({ e }))
   }
 }
 
@@ -45,23 +47,20 @@ export const updateUserProfile = (attrsToUpdate: any) => {
   }
 }
 
-
 export const googleSignIn = (accessToken: string): any => {
   return (dispatch: IThunkDispatcher) => {
-    console.log("Llamando auth")
     return googleAuth(accessToken)
       .then((response) => {
-        console.log(response)
         const data = response.data.data
 
         AsyncStorage.setItem("authentication_tokens", JSON.stringify(data))
-
+      
         dispatch({
           type: GOOGLE_SIGN_IN,
           payload: data
         })
       })
-      .catch((e) => console.log)
+      .catch((e) => console.log({ e }))
   }
 };
 
@@ -90,6 +89,7 @@ export const refreshSessionToken = ()  => {
           payload: data
         })
       })
+      .catch((e) => console.log({ e }))
   }
 };
 
@@ -103,10 +103,18 @@ export const updateSessionTokens = (tokens: any)  => {
 };
 
 export const logOut = (): any => {
-  return (dispatch: IThunkDispatcher) => {
+  return async (dispatch: IThunkDispatcher) => {
+    console.log("Logging out")
+    const fcmToken = await AsyncStorage.getItem("fcmToken");
+    console.log(fcmToken)
+    if (fcmToken) {
+      console.log("Eliminando token")
+      await unsuscribeToNotifications(fcmToken)
+    }
+    console.log("Out")
     AsyncStorage.clear()
-
-     dispatch({
+    
+    dispatch({
       type: LOG_OUT
     })
   }

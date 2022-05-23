@@ -6,7 +6,7 @@ interface Config {
 }
 
 const config_development: Config = {
-  API_URL: 'http://192.168.0.140:8000/api/v2',
+  API_URL: 'http://192.168.0.140:8005/api/v2',
   FOUND_QR_PATH: 'http://localhost:4000?qr='
 };
 

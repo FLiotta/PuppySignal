@@ -7,6 +7,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
@@ -25,6 +28,7 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+      <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:launchMode="singleTop" />
       <meta-data
         android:name="com.google.android.geo.API_KEY"
         android:value="${GEO_API_KEY}"/>
