@@ -53,6 +53,7 @@ const App: React.FC<any> = () => {
     async function validateFCMToken() {
       if(!tokens.access_token_payload?.uuid) {
         // Not logged yet
+        return
       }
 
       console.log("Checkeando si el token cambio al inicio.")
