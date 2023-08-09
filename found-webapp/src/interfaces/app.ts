@@ -1,9 +1,4 @@
-export interface BackendResponse {
+export interface IBackendResponse<T> {
   detail?: string
-  data?: any,
-};
-
-export interface Specie {
-  id: number,
-  name: string
+  data?: T,
 };

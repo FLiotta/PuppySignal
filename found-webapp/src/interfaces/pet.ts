@@ -1,4 +1,4 @@
-export interface Owner {
+export interface IOwner {
   email: string
   first_name: string
   last_name: string
@@ -10,12 +10,12 @@ export interface Owner {
   phone_number?: number;
 }
 
-export interface Pet {
+export interface IPet {
   uuid: string;
   id: number;
-  name?: string;
+  name: string;
   specie_id: number;
   extra?: string;
-  profile_picture?: string;
-  owners: Owner[]
+  profile_picture: string;
+  owners: IOwner[]
 }

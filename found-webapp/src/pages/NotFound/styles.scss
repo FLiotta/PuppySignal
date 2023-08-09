@@ -1,0 +1,19 @@
+.notfoundpage {
+    line-height: 0.75;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+
+    &-sadface {
+        font-size: 10rem;
+        line-height: 0;
+    }
+
+    &-redirect {
+        cursor: pointer;
+        color: #fff;
+    }
+}
