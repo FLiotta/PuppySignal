@@ -13,6 +13,5 @@ class Settings(BaseSettings):
 
   redis_host: str = None
   redis_port: str = None
-  
-  class Config:
-    env_file = ".env"
+
+settings = Settings()

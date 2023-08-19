@@ -14,9 +14,8 @@ from server.schemas import (
   ProfileNotificationsResponse
 )
 from server.utils import get_db, protected_route, get_user, get_settings, limiter
-from server.config import Settings
+from server.config import Settings, settings
 
-settings = get_settings()
 router = APIRouter()
 twilio = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
