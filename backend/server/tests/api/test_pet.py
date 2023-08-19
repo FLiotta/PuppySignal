@@ -1,4 +1,5 @@
 import boto3
+import os
 from pathlib import Path
 from unittest.mock import patch
 
@@ -38,7 +39,11 @@ class TestPetAPI(BaseTestCase):
         data=pet_payload,
         headers=headers,
         files = {
-          "file": ("filename.png", open('./test_photo.png', "rb"), "image/png")
+          "file": (
+            "filename.png",
+            open(os.path.join(os.path.dirname( __file__ ), '..', 'test_photo.png'), "rb"),
+            "image/png"
+          )
         }, 
       )
       resp_data = resp.json()
@@ -67,8 +72,12 @@ class TestPetAPI(BaseTestCase):
         data=pet_payload,
         headers=headers,
         files = {
-          "file": ("filename.png", open('./test_photo.png', "rb"), "image/png")
-        }, 
+          "file": (
+            "filename.png",
+            open(os.path.join(os.path.dirname(__file__), '..', 'test_photo.png'), "rb"),
+            "image/png"
+          )
+        },
       )
       resp_data = resp.json()
       
@@ -96,7 +105,11 @@ class TestPetAPI(BaseTestCase):
         data=pet_payload,
         headers=headers,
         files = {
-          "file": ("filename.png", open('./test_photo_bigger.png', "rb"), "image/png")
+          "file": (
+            "filename.png",
+            open(os.path.join(os.path.dirname(__file__), '..', 'test_photo_bigger.png'), "rb"),
+            "image/png"
+          )
         }, 
       )
       resp_data = resp.json()
@@ -125,8 +138,12 @@ class TestPetAPI(BaseTestCase):
         data=pet_payload,
         headers=headers,
         files = {
-          "file": ("filename.png", open('./test_photo_aspect_ratio.png', "rb"), "image/png")
-        }, 
+          "file": (
+            "filename.png",
+            open(os.path.join(os.path.dirname(__file__), '..', 'test_photo_aspect_ratio.png'), "rb"),
+            "image/png"
+          )
+        }
       )
       resp_data = resp.json()
       
