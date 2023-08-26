@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
+from sqlalchemy.orm import Session
 from server.utils import get_db, limiter
 from server.models import Pet, Code, UserNotification, Notification, Location
 from server.schemas import ScannedQRCodeResponse
