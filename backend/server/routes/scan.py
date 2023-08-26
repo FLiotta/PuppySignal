@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from server.utils import get_db, limiter
 from server.models import Pet, Code, UserNotification, Notification, Location
+from server.schemas import ScannedQRCodeResponse
 
 
 # TODO: Validar RATE LIMITER
