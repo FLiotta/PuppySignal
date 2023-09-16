@@ -1,9 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from simplelimiter import Limiter
 
 router = APIRouter()
 
-# TODO: rate limiter
-
-@router.get("/", status_code=200)
+@router.get(
+  "/",
+  status_code=200,
+  dependencies=[Depends(Limiter("5/minute"))]
+)
 def health():
-  return
+  return {"status": "ok"}

@@ -6,12 +6,13 @@ from fastapi import Request
 from fastapi.exceptions import HTTPException
 from fastapi.params import Depends, Header
 from fastapi.routing import APIRouter
+from simplelimiter import Limiter
 from sqlalchemy.orm.session import Session
 
 from server.schemas import OAuthGoogleResponse, GoogleOAuthBody, RefreshTokenResponse
 from server.models import UserAuth, User, RefreshToken
 from server.config import Settings
-from server.utils import get_db, get_settings, limiter
+from server.utils import get_db, get_settings
 
 router = APIRouter()
 
@@ -25,13 +26,14 @@ router = APIRouter()
   Not personal info should be in the token, it's only for validations purposes.
 """
 
-# User shouldn't be allowed to access these endpoints if they're already authenticated.
-
-# TODO: Validar que este funcionando el rate limiter y los valores sean adeacuados.
+# TODO: User shouldn't be allowed to access these endpoints if they're already authenticated.
 # TODO: DB Transaction & Rollbacks.
 
-@router.post("/google", response_model=OAuthGoogleResponse)
-#@limiter("500/hour") // TODO FIX THIS, SOMEHOW RESPONSE DOESNT WORK PROPERLY WHEN RATE LIMTIED
+@router.post(
+  "/google", 
+  response_model=OAuthGoogleResponse,
+  dependencies=[Depends(Limiter("20/hour"))]
+)
 async def get_auth(
   request: Request,
   body: GoogleOAuthBody,
@@ -123,8 +125,11 @@ async def get_auth(
 # TODO: DB Transaction & Rollback.
 # CRITICAL: Refresh token not being deleted when user signout.
 
-@router.post("/jwt/refresh", response_model=RefreshTokenResponse)
-#@limiter("10/hour")
+@router.post(
+  "/jwt/refresh", 
+  response_model=RefreshTokenResponse,
+  dependencies=[Depends(Limiter("10/hour"))]
+)
 async def jwt_refresh(
   request: Request,
   refresh_token: str = Header(...),

@@ -5,6 +5,7 @@ import numpy
 from typing import List
 
 from firebase_admin import messaging
+from simplelimiter import Limiter
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form, Request
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import DataError, IntegrityError
@@ -19,16 +20,20 @@ from server.schemas import (
   CreatePetLocationBody,
   UpdatePetBody
 )
-from server.utils import get_db, get_user, protected_route, get_settings, fully_validated_user, limiter
+from server.utils import get_db, get_user, protected_route, get_settings, fully_validated_user
 from server.config import Settings
 from server.models import Pet, Code, UserPet, UserNotification, Notification, Location, PetLocation
 
 router = APIRouter()
 
-@router.post("/", response_model=CreatePetSchema, status_code=200, dependencies=[Depends(protected_route), Depends(fully_validated_user)])
-@limiter("5/hour")
+
+@router.post(
+    "/",
+    response_model=CreatePetSchema,
+    status_code=200,
+    dependencies=[Depends(protected_route), Depends(Limiter("5/hour"))]
+)
 def create_pet(
-  request: Request,
   file: UploadFile = File(...),
   name: str = Form(...),
   description: str = Form(...),
@@ -53,7 +58,6 @@ def create_pet(
   h = uploaded_pet_avatar.shape[0]
   w = uploaded_pet_avatar.shape[1]
 
-  print((h, w))
   if h > 640 or w > 640:
     raise HTTPException(status_code=400, detail="Image can't be larger than 640x640")
   elif h % w != 0:
@@ -96,7 +100,7 @@ def create_pet(
       new_pet.profile_picture = f"{settings.b2_endpoint_url}/{settings.b2_bucket}/{avatar_key}"
       #TODO aca hubo cambio, validar que siga funcionando (.TOBYTES FROM TOSTRING)
       to_upload_pet_avatar = cv2.imencode('.jpg', uploaded_pet_avatar)[1].tobytes()
-      
+
       s3.put_object(
         Bucket=settings.b2_bucket,
         Key=avatar_key,
@@ -114,10 +118,11 @@ def create_pet(
       raise HTTPException(status_code=500, detail="Pet can't be created.")
 
 
-@router.get("/{pet_id}", response_model=PetByIdResponse, dependencies=[Depends(protected_route)])
-@limiter("5/minute")
+@router.get(
+    "/{pet_id}",
+    response_model=PetByIdResponse,
+    dependencies=[Depends(protected_route), Depends(Limiter("5/minute"))])
 def get_pet_by_id(
-  request: Request,
   pet_id: int, 
   db: Session = Depends(get_db), 
   u = Depends(get_user)
@@ -136,10 +141,12 @@ def get_pet_by_id(
     "data": pet
   }
 
-@router.patch("/{pet_id}", status_code=200, dependencies=[Depends(protected_route)])
-@limiter("5/minute")
+@router.patch(
+    "/{pet_id}",
+    status_code=200,
+    dependencies=[Depends(protected_route), Depends(Limiter("5/minute"))]
+)
 def get_pet_by_id(
-  request: Request,
   body: UpdatePetBody,
   pet_id: int, 
   db: Session = Depends(get_db), 
@@ -180,10 +187,12 @@ def get_pet_by_id(
     raise HTTPException(status_code=400, detail="Invalid parameters")
   
 
-@router.delete("/{pet_id}", status_code=200, dependencies=[Depends(protected_route), Depends(fully_validated_user)])
-@limiter("5/minute")
+@router.delete(
+    "/{pet_id}",
+    status_code=200,
+    dependencies=[Depends(protected_route), Depends(fully_validated_user), Depends(Limiter("5/minute"))]
+)
 def delete_pet_by_id(
-  request: Request,
   pet_id: int,
   db: Session = Depends(get_db),
   u = Depends(get_user)
@@ -201,10 +210,11 @@ def delete_pet_by_id(
 
   db.commit()
 
-@router.get("/{pet_id}/codes", response_model=PetCodesResponse, dependencies=[Depends(protected_route)])
-@limiter("5/minute")
+@router.get(
+    "/{pet_id}/codes",
+    response_model=PetCodesResponse,
+    dependencies=[Depends(protected_route), Depends(Limiter("5/minute"))])
 def get_pet_by_id(
-  request: Request,
   pet_id: int, 
   limit: int = 5,
   offset: int = 0,
@@ -242,10 +252,12 @@ def get_pet_by_id(
 # En ese caso la paginacion seria un poco mas complicada. Por el momento, que devuelva todas.
 
 # TEMPORAL_FIX: Limit 50 hardcoded.
-@router.get("/{pet_id}/locations", response_model=PetLocationsResponse, dependencies=[Depends(protected_route)])
-@limiter("5/minute")
+@router.get(
+    "/{pet_id}/locations",
+    response_model=PetLocationsResponse,
+    dependencies=[Depends(protected_route), Depends(Limiter("5/minute"))]
+)
 def get_pet_by_id(
-  request: Request,
   pet_id: int, 
   db: Session = Depends(get_db), 
   u = Depends(get_user)
@@ -264,8 +276,8 @@ def get_pet_by_id(
     "data": pet.locations
   }
 
-# TODO: RATE LIMITER
 
+# TODO: RATE LIMITER
 @router.post("/{pet_id}/locations")
 def create_pet_location(
   request: Request,

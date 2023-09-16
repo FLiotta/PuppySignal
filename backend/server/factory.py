@@ -1,21 +1,14 @@
-import redis as redis_pkg
-import logging
-
-from os.path import join, dirname, pardir
-from os import environ
-
-from dotenv import load_dotenv
-
+import redis
 import firebase_admin
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from simplelimiter import Limiter
 from server.routes import api_router
-
-load_dotenv(join(dirname(__file__), pardir, '.env'))
-
+from server.utils import settings
 
 firebase_admin.initialize_app(credential=firebase_admin.credentials.Certificate("./firebase_admin_key.json"))
+
 
 def create_app():
   description = "PuppySignal API"
@@ -26,7 +19,7 @@ def create_app():
     description=description,
     redoc_url=None
   )
-  
+
   app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -41,13 +34,18 @@ def create_app():
 
   return app
 
+
 def init_db_hooks(app: FastAPI) -> None:
   from server.database import database
 
   @app.on_event("startup")
   async def startup():
     await database.connect()
-  
+    redis_url = f"redis://{settings.redis_host}:{settings.redis_port}"
+    r = redis.from_url(redis_url, encoding="utf-8", decode_responses=True)
+
+    Limiter.init(redis_instance=r, debug=True)
+
   @app.on_event("shutdown")
   async def shutdown():
     await database.disconnect()

@@ -1,19 +1,21 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from server.utils import get_db, limiter
+from simplelimiter import Limiter
+from server.utils import get_db
 from server.models import Pet, Code, UserNotification, Notification, Location
 from server.schemas import ScannedQRCodeResponse
 
-
-# TODO: Validar RATE LIMITER
 router = APIRouter()
 
-@router.get("/{qr_code}", response_model=ScannedQRCodeResponse)
-@limiter("5/hour")
+
+@router.get(
+    "/{qr_code}",
+    response_model=ScannedQRCodeResponse,
+    dependencies=[Depends(Limiter("5/hour"))]
+)
 def scan_qr_code(
-        request: Request,
-        qr_code: str,
-        db: Session = Depends(get_db)
+    qr_code: str,
+    db: Session = Depends(get_db)
 ):
     code = (
         db.query(Code)
