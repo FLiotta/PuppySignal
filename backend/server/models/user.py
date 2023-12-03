@@ -22,7 +22,6 @@ class User(Base):
   email = Column(String(50), nullable=False)
   profile_picture = Column(String(150))
   phone_number = Column(String(50))
-  phone_verified = Column(Boolean, default=False)
   created_at = Column(Date, default=datetime.now, nullable=False)
   updated_at = Column(Date, default=datetime.now, nullable=False)
 

@@ -21,7 +21,6 @@ router = APIRouter()
 
   @id: Int
   @uuid: UUIDv4
-  @phone_verified: Boolean
 
   Not personal info should be in the token, it's only for validations purposes.
 """
@@ -88,7 +87,6 @@ async def get_auth(
   jwt_token = jwt.encode({
     "id": user_to_serialize.id,
     "uuid": str(user_to_serialize.uuid),
-    "phone_verified": user_to_serialize.phone_verified,
     "exp": datetime.utcnow() + timedelta(minutes=10),
     "iat": datetime.utcnow()
     },
@@ -160,7 +158,6 @@ async def jwt_refresh(
   access_token = jwt.encode({
     "id": user.id,
     "uuid": str(user.uuid),
-    "phone_verified": user.phone_verified,
     "exp": datetime.utcnow() + timedelta(minutes=10),
     "iat": datetime.utcnow()
     },

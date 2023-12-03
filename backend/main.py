@@ -9,6 +9,6 @@ if __name__ == "__main__":
     "main:app", 
     log_level="debug", 
     reload=True,
-    host="192.168.0.140",
-    port=8005
+    host="0.0.0.0",
+    port=8000
   )

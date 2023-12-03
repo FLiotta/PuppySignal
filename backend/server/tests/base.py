@@ -50,7 +50,6 @@ class BaseTestCase(IsolatedAsyncioTestCase):
       profile_picture="nose.com",
       email="lol@com",
       phone_number="+5493413200000",
-      phone_verified=True,
     )
 
     self.user_2 = User(
@@ -59,7 +58,6 @@ class BaseTestCase(IsolatedAsyncioTestCase):
       profile_picture="nqee.com",
       email="lol@com",
       phone_number="+5493411234000",
-      phone_verified=True,
     )
 
     self.pet_1 = Pet(
@@ -103,7 +101,6 @@ class BaseTestCase(IsolatedAsyncioTestCase):
     self.token = jwt.encode({
       "id": self.user.id,
       "uuid": str(self.user.uuid),
-      "phone_verified": self.user.phone_verified,
       "exp": datetime.utcnow() + timedelta(minutes=10),
       "iat": datetime.utcnow()
       },
@@ -114,7 +111,6 @@ class BaseTestCase(IsolatedAsyncioTestCase):
     self.token_2 = jwt.encode({
       "id": self.user_2.id,
       "uuid": str(self.user_2.uuid),
-      "phone_verified": self.user_2.phone_verified,
       "exp": datetime.utcnow() + timedelta(minutes=10),
       "iat": datetime.utcnow()
       },

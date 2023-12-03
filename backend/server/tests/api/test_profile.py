@@ -4,20 +4,6 @@ from starlette.testclient import TestClient
 from server.tests.base import BaseTestCase
 from server.models import Pet, UserPet, Notification, UserNotification
 
-from twilio.rest.verify import Verify
-
-class FakeTwilioService:
-  def __init__(self, *_):
-    pass
-
-  def create(self, *args, **kwargs):
-    pass
-
-class FakeTwilioServices:
-  def __init__(self, *_):
-    self.verifications = FakeTwilioService()
-    self.verification_checks = FakeTwilioService()
-
 class TestProfileAPI(BaseTestCase):
   def setUp(self) -> None:
       super().setUp()
@@ -126,66 +112,3 @@ class TestProfileAPI(BaseTestCase):
       self.assertEqual(resp.status_code, 200)
       self.assertIsNotNone(resp_data["data"])
       self.assertGreater(len(resp_data["data"]), 0)
-  
-  @patch.object(Verify, "services", lambda *_: FakeTwilioServices())
-  def test_profile_phone_number(self):
-    with TestClient(self.app) as client:
-      headers = {
-        "token": f"{self.token}"
-      }
-
-      # No phone number param
-      body = {}
-      resp = client.post('/api/v2/profile/phone_number', json=body, headers=headers)
-      resp_data = resp.json()
-
-      self.assertEqual(resp.status_code, 422)
-
-      # Correct flow
-      body = {
-        "phone_number": "+5493413200000"
-      }
-      resp = client.post('/api/v2/profile/phone_number', json=body, headers=headers)
-      resp_data = resp.json()
-
-      self.assertIsNone(resp_data)
-      self.assertEqual(resp.status_code, 200)
-  
-  @patch.object(Verify, "services", lambda *_: FakeTwilioServices())
-  def test_profile_phone_number(self):
-    self.user.phone_verified = False
-    self.db.add(self.user)
-    self.db.commit()
-
-    with TestClient(self.app) as client:
-      headers = {
-        "token": f"{self.token}"
-      }
-
-      # No param
-      body = {}
-      resp = client.post('/api/v2/profile/phone_number/verify', json=body, headers=headers)
-
-      self.assertEqual(resp.status_code, 422)
-
-      body = {"phone_number": "+5493413200000"}
-      resp = client.post('/api/v2/profile/phone_number/verify', json=body, headers=headers)
-
-      self.assertEqual(resp.status_code, 422)
-
-      body = {"code": "123456"}
-      resp = client.post('/api/v2/profile/phone_number/verify', json=body, headers=headers)
-
-      self.assertEqual(resp.status_code, 422)
-
-      # Correct flow
-      body = {
-        "phone_number": "+5493413200000",
-        "code": "123456"
-      }
-
-      resp = client.post('/api/v2/profile/phone_number/verify', json=body, headers=headers)
-      resp_data = resp.json()
-
-      self.assertIsNone(resp_data)
-      self.assertEqual(resp.status_code, 200)

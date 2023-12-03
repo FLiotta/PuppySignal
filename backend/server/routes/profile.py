@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session, joinedload
 from simplelimiter import Limiter
-from twilio.rest import Client
 
 from server.models import User, Notification, Pet
 from server.schemas import (
@@ -20,7 +19,6 @@ from server.config import Settings
 settings = get_settings()
 router = APIRouter()
 
-twilio = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
 @router.get(
     "/",
@@ -113,47 +111,3 @@ def get_user_notifications(
   return {
     "data": notifications
   }
-
-
-@router.post(
-    "/phone_number", 
-    status_code=200, 
-    dependencies=[Depends(protected_route), Depends(Limiter("3/hour"))]
-)
-def request_phone_number_code(
-  body: PhoneNumberBody, 
-  settings: Settings = Depends(get_settings)
-):
-  verify = twilio.verify.services(settings.TWILIO_SERVICE_ID)
-
-  try:
-    verify.verifications.create(to=body.phone_number, channel='sms')
-    return
-  except Exception as e:
-    return HTTPException(status_code=400, detail=e)
-
-
-@router.post(
-    "/phone_number/verify", 
-    status_code=200, 
-    dependencies=[Depends(protected_route), Depends(Limiter("3/hour"))]
-)
-def verify_requested_phone_number_code(
-  body: PhoneNumberVerifyBody,
-  db: Session = Depends(get_db),
-  u: UserSchema = Depends(get_user),
-  settings: Settings = Depends(get_settings)
-):
-  verify = twilio.verify.services(settings.TWILIO_SERVICE_ID)
-
-  try:
-    verify.verification_checks.create(to=body.phone_number, code=body.code)
-
-    user = db.query(User).get(u['id'])
-
-    user.phone_number = body.phone_number
-    user.phone_verified = True
-
-    db.commit()
-  except Exception as e:
-    return HTTPException(status_code=400, detail=e)

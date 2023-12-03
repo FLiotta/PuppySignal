@@ -7,8 +7,6 @@ from starlette.testclient import TestClient
 from server.tests.base import BaseTestCase
 from server.models import Pet, UserPet, Notification, UserNotification
 
-from twilio.rest.verify import Verify
-
 
 class FakeB3Client:
   def __init__(self, fail: bool = False):

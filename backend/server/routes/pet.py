@@ -31,7 +31,7 @@ router = APIRouter()
     "/",
     response_model=CreatePetSchema,
     status_code=200,
-    dependencies=[Depends(protected_route), Depends(Limiter("5/hour"))]
+    dependencies=[Depends(protected_route), Depends(Limiter("20/hour"))]
 )
 def create_pet(
   file: UploadFile = File(...),
@@ -62,16 +62,16 @@ def create_pet(
     raise HTTPException(status_code=400, detail="Image can't be larger than 640x640")
   elif h % w != 0:
     raise HTTPException(status_code=400, detail="Pet avatar must be 1:1 aspect ratio.")
-  
+
   try:
-    s3 = boto3.client('s3',
-      endpoint_url=settings.b2_endpoint_url,
-      aws_access_key_id = settings.b2_application_key_id,
-      aws_secret_access_key=settings.b2_application_key
+    s3 = boto3.client(
+      's3',
+      aws_access_key_id=settings.aws_application_key_id,
+      aws_secret_access_key=settings.aws_application_key,
     )
   except Exception as e:
     raise HTTPException(status_code=500, detail="Cannot initialize s3.")
-
+  
   with db.begin():
     try:
       new_pet = Pet(
@@ -95,14 +95,13 @@ def create_pet(
       db.add(new_user_pet)
       db.flush()
 
-      avatar_key = f"pets/{new_pet.uuid}.jpg"
+      avatar_key = f"{new_pet.uuid}.jpg"
 
-      new_pet.profile_picture = f"{settings.b2_endpoint_url}/{settings.b2_bucket}/{avatar_key}"
+      new_pet.profile_picture = avatar_key
       #TODO aca hubo cambio, validar que siga funcionando (.TOBYTES FROM TOSTRING)
       to_upload_pet_avatar = cv2.imencode('.jpg', uploaded_pet_avatar)[1].tobytes()
-
       s3.put_object(
-        Bucket=settings.b2_bucket,
+        Bucket=settings.s3_bucket,
         Key=avatar_key,
         Body=to_upload_pet_avatar
       )
@@ -110,7 +109,7 @@ def create_pet(
       db.commit()
 
       return {
-        "data": new_pet
+        "data": new_pet,
       }
     except Exception as e:
       db.rollback()
@@ -286,7 +285,7 @@ def create_pet_location(
   db: Session = Depends(get_db)
 ):
   code = (
-     db.query(Code)
+    db.query(Code)
       .filter((Code.code == body.qr_code) & (Code.pet_id == pet_id))
       .first()
   )

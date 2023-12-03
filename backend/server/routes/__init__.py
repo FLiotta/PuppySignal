@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from server.routes import auth, data, profile, pet, health, notification
+from server.routes import auth, data, profile, pet, health, notification, scan
 
 api_router = APIRouter()
 

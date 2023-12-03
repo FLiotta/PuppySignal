@@ -43,7 +43,7 @@ async def protected_route(token: str = Header(...), settings: config.Settings = 
     raise HTTPException(status_code=403, detail="Expired token.")
   except: 
     raise HTTPException(status_code=403, detail="Invalid Token.")
- 
+
 async def fully_validated_user(token: str = Header(...), settings: config.Settings = Depends(get_settings)):
   if token is None:
     raise HTTPException(status_code=401, detail="Authorization token not found.")
@@ -54,8 +54,5 @@ async def fully_validated_user(token: str = Header(...), settings: config.Settin
     user = jwt.decode(token, settings.JWT_SECRET, algorithms='HS256')
   except:
     raise HTTPException(status_code=403, detail="Invalid JWT Token.")
-
-  if not user['phone_verified']:
-    raise HTTPException(status_code=401, detail="You must validate your phone number first.")
 
   pass
