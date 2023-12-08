@@ -12,33 +12,37 @@ from sqlalchemy.orm.session import Session
 from server.schemas import OAuthGoogleResponse, GoogleOAuthBody, RefreshTokenResponse
 from server.models import UserAuth, User, RefreshToken
 from server.config import Settings
-from server.utils import get_db, get_settings
+from server.utils import get_db
 
 router = APIRouter()
 
-"""
+
+def generate_jwt(user_id: int, user_uuid: str, exp: datetime):
+  """
   access_tokens must only have the next fields:
 
   @id: Int
   @uuid: UUIDv4
 
   Not personal info should be in the token, it's only for validations purposes.
-"""
+  """
+  settings: Settings = Settings()
 
-# TODO: User shouldn't be allowed to access these endpoints if they're already authenticated.
-# TODO: DB Transaction & Rollbacks.
+  payload = {
+    "id": user_id,
+    "uuid": user_uuid,
+    "exp": exp,
+    "iat": datetime.utcnow()
+  }
+
+  return jwt.encode(payload, settings.JWT_SECRET, algorithm="HS256")
 
 @router.post(
-  "/google", 
+  "/google",
   response_model=OAuthGoogleResponse,
   dependencies=[Depends(Limiter("20/hour"))]
 )
-async def get_auth(
-  request: Request,
-  body: GoogleOAuthBody,
-  settings: Settings = Depends(get_settings),
-  db: Session = Depends(get_db)
-):
+async def get_auth(body: GoogleOAuthBody, db: Session = Depends(get_db)):
   token: str = body.token
 
   response = requests.get(f"https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token={token}")
@@ -84,24 +88,20 @@ async def get_auth(
     except Exception as e:
       raise HTTPException(status_code=500, detail="User cannot be created.")
 
-  jwt_token = jwt.encode({
-    "id": user_to_serialize.id,
-    "uuid": str(user_to_serialize.uuid),
-    "exp": datetime.utcnow() + timedelta(minutes=10),
-    "iat": datetime.utcnow()
-    },
-    settings.JWT_SECRET,
-    algorithm="HS256"
+  access_token = generate_jwt(
+    user_id=user_to_serialize.id,
+    user_uuid=str(user_to_serialize.uuid),
+    exp=datetime.utcnow() + timedelta(minutes=10)
   )
 
-  refresh_token_expiration_time = datetime.utcnow() + timedelta(days=31)
-  refresh_token = jwt.encode({
-    "exp": refresh_token_expiration_time,
-    "iat": datetime.utcnow()
-    },
-    settings.JWT_SECRET,
-    algorithm="HS256"
+
+  refresh_token_expiration_time = datetime.utcnow() + timedelta(days=7)
+  refresh_token = generate_jwt(
+    user_id=user_to_serialize.id,
+    user_uuid=str(user_to_serialize.uuid),
+    exp=refresh_token_expiration_time
   )
+
 
   db.add(
     RefreshToken(
@@ -115,78 +115,50 @@ async def get_auth(
 
   return {
     "data": {
-      "access_token": jwt_token,
+      "access_token": access_token,
       "refresh_token": refresh_token
     }
   }
 
-# TODO: DB Transaction & Rollback.
-# CRITICAL: Refresh token not being deleted when user signout.
-
 @router.post(
-  "/jwt/refresh", 
+  "/jwt/refresh",
   response_model=RefreshTokenResponse,
   dependencies=[Depends(Limiter("10/hour"))]
 )
-async def jwt_refresh(
-  request: Request,
+async def refresh_json_web_token(
   refresh_token: str = Header(...),
-  settings: Settings = Depends(get_settings),
   db: Session = Depends(get_db)
 ):
-  token = db.query(RefreshToken).filter(
+  # We check if the refresh token exists on the database and validate if its expired
+  saved_token = db.query(RefreshToken).filter(
     RefreshToken.token==refresh_token
   ).first()
 
-  if not token:
+  if not saved_token:
     raise HTTPException(status_code=404, detail="Refresh token not found.")
 
-  actual_time = datetime.date(datetime.utcnow())
+  current_time = datetime.date(datetime.utcnow())
 
-  if type(token.valid_until) is datetime:
-    valid_until = datetime.date(token.valid_until)
+  if type(saved_token.valid_until) is datetime:
+    valid_until = datetime.date(saved_token.valid_until)
   else:
-    valid_until = token.valid_until
+    valid_until = saved_token.valid_until
 
-  if actual_time > valid_until:
+  # If the token is expired, we just delete it, user will have to auth again.
+  if current_time > valid_until:
+    db.delete(saved_token)
+    db.commit()
+
     raise HTTPException(status_code=400, detail="Expired refresh token.")
 
-  user = token.user
-
-  db.delete(token)
-
-  access_token = jwt.encode({
-    "id": user.id,
-    "uuid": str(user.uuid),
-    "exp": datetime.utcnow() + timedelta(minutes=10),
-    "iat": datetime.utcnow()
-    },
-    settings.JWT_SECRET,
-    algorithm="HS256"
+  access_token = generate_jwt(
+    user_id=saved_token.user.id,
+    user_uuid=str(saved_token.user.uuid),
+    exp=datetime.utcnow() + timedelta(minutes=10)
   )
-
-  new_refresh_token_expiration_time = datetime.utcnow() + timedelta(days=31)
-  new_refresh_token = jwt.encode({
-    "exp": new_refresh_token_expiration_time,
-    "iat": datetime.utcnow()
-    },
-    settings.JWT_SECRET,
-    algorithm="HS256"
-  )
-
-  db.add(
-    RefreshToken(
-      token=new_refresh_token,
-      user_id=user.id,
-      valid_until=new_refresh_token_expiration_time
-    )
-  )
-
-  db.commit()
 
   return {
     "data": {
-      "access_token": access_token,
-      "refresh_token": new_refresh_token
+      "access_token": access_token
     }
   }

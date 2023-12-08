@@ -5,7 +5,6 @@ from server.schemas import SpecieSchema, UserSchema, PetSchema, NotificationWith
 
 class RefreshTokenPayload(BaseModel):
   access_token: str
-  refresh_token: str
 
 class RefreshTokenResponse(BaseModel):
   data: RefreshTokenPayload
