@@ -8,7 +8,7 @@ from server.schemas import NotificationSuscribeBody, UserSchema
 from server.utils import protected_route, get_user, get_db
 
 router = APIRouter(
-  dependencies=[Depends(protected_route)]#, Depends(Limiter("1/day"))]
+  dependencies=[Depends(protected_route), Depends(Limiter("1/day"))]
 )
 
 @router.post("/suscribe_personal_topic")
