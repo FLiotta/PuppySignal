@@ -7,9 +7,6 @@ from simplelimiter import Limiter
 from server.routes import api_router
 from server.utils import settings
 
-firebase_admin.initialize_app(credential=firebase_admin.credentials.Certificate("./firebase_admin_key.json"))
-
-
 def create_app():
   description = "PuppySignal API"
   app = FastAPI(
@@ -40,7 +37,10 @@ def init_db_hooks(app: FastAPI) -> None:
 
   @app.on_event("startup")
   async def startup():
+    firebase_admin.initialize_app(credential=firebase_admin.credentials.Certificate("./firebase_admin_key.json"))
+
     await database.connect()
+
     redis_url = f"redis://{settings.redis_host}:{settings.redis_port}"
     r = redis.from_url(redis_url, encoding="utf-8", decode_responses=True)
 
