@@ -65,8 +65,17 @@ class CreatePetBody(BaseModel):
     specie_id: int
 
 
+class ScannedQRCodeOwnerResponse(BaseModel):
+    first_name: str
+    last_name: str
+    phone_number: str
+    email: str
+
+
 class ScannedQRCodeResponse(BaseModel):
-    data: PetSchema
+    pet: PetSchema
+    owners: List[ScannedQRCodeOwnerResponse]
+    code: str
 
 
 class ProfileNotificationsResponse(BaseModel):

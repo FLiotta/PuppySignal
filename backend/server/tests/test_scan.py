@@ -11,8 +11,13 @@ class TestScanAPI(BaseTestCase):
             url="/api/v2/scan",
             json={"qr_code": self.code.code, "lat": 1.20, "lng": 1.50},
         )
+        resp_data = resp.json()
 
         self.assertEqual(resp.status_code, 200)
+
+        self.assertIn("pet", resp_data)
+        self.assertIn("owners", resp_data)
+        self.assertIn("code", resp_data)
 
         # We check the post-scan information was created.
         last_location = self.code.pet.locations.pop()
