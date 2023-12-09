@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 
 RUN pip install poetry
 RUN poetry config virtualenvs.create false
-RUN poetry install -n --no-root --no-dev
+RUN poetry install -n --no-root
 
 EXPOSE 8000
 CMD ["python", "main.py"]

@@ -16,12 +16,9 @@ databases = "0.5.3"
 boto3 = "1.20.24"
 numpy = "1.21.5"
 opencv-python = "4.5.4.60"
-pre-commit = "2.16.0"
 nanoid = "2.0.0"
-pytest = "6.2.5"
 python-multipart = "0.0.5"
 python-dateutil = "2.8.2"
-twilio = "7.4.0"
 aiosqlite = "^0.17.0"
 coverage = "^6.3.2"
 pytest-cov = "^3.0.0"
@@ -33,6 +30,12 @@ simplelimiter = "^0.1.2"
 redis = "5.0.0"
 
 [tool.poetry.dev-dependencies]
+
+[tool.poetry.group.dev.dependencies]
+httpx = "^0.25.2"
+pytest = "6.2.5"
+black = "^23.11.0"
+pre-commit = "^3.5.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
