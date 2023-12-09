@@ -3,7 +3,7 @@ import cv2
 import numpy
 
 from simplelimiter import Limiter
-from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form, Request
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import DataError, IntegrityError
 
@@ -13,7 +13,6 @@ from server.schemas import (
     PetCodesResponse,
     PetLocationsResponse,
     CreatePetSchema,
-    CreatePetLocationBody,
     UpdatePetBody,
 )
 from server.utils import (
@@ -24,7 +23,7 @@ from server.utils import (
     fully_validated_user,
 )
 from server.config import Settings
-from server.models import Pet, Code, UserPet, Location, PetLocation
+from server.models import Pet, Code, UserPet
 
 router = APIRouter()
 
@@ -258,35 +257,3 @@ def get_pet_locations_by_id(
         raise HTTPException(status_code=404, detail="Pet not found")
 
     return {"data": pet.locations}
-
-
-# TODO: RATE LIMITER
-@router.post("/{pet_id}/locations")
-def create_pet_location(
-    request: Request,
-    pet_id: int,
-    body: CreatePetLocationBody,
-    db: Session = Depends(get_db),
-):
-    code = (
-        db.query(Code)
-        .filter((Code.code == body.qr_code) & (Code.pet_id == pet_id))
-        .first()
-    )
-
-    if not code:
-        raise HTTPException(status_code=404, detail="Invalid pet_id or code")
-
-    new_location = Location(latitude=body.lat, longitude=body.lng)
-
-    db.add(new_location)
-    db.commit()
-
-    new_pet_location = PetLocation(
-        pet_id=pet_id, location_id=new_location.id, method="SCANNED"
-    )
-
-    db.add(new_pet_location)
-    db.commit()
-
-    return {"data": new_location}

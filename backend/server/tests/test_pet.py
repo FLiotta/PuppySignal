@@ -264,23 +264,3 @@ class TestPetAPI(BaseTestCase):
         )
 
         self.assertEqual(resp.status_code, 404)
-
-    def test_create_pet_location(self):
-        headers = {"token": self.token}
-        payload = {"qr_code": self.code.code, "lng": "12.3042", "lat": "11.1234"}
-
-        resp = self.client.post(
-            f"/api/v2/pet/{self.pet_1.id}/locations", json=payload, headers=headers
-        )
-
-        self.assertEqual(resp.status_code, 200)
-
-    def test_create_pet_location_invalid_code(self):
-        headers = {"token": self.token}
-        payload = {"qr_code": "hola mundo", "lng": "12.3042", "lat": "11.1234"}
-
-        resp = self.client.post(
-            f"/api/v2/pet/{self.pet_1.id}/locations", json=payload, headers=headers
-        )
-
-        self.assertEqual(resp.status_code, 404)

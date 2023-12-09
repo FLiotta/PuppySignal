@@ -3,34 +3,51 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from simplelimiter import Limiter
 from server.utils import get_db
-from server.models import Pet, Code, UserNotification, Notification
-from server.schemas import ScannedQRCodeResponse
+from server.models import (
+    Pet,
+    Code,
+    UserNotification,
+    Notification,
+    Location,
+    PetLocation,
+)
+from server.schemas import ScannedQRCodeResponse, ScanningPetQRCodeBody
 from sqlalchemy.orm import joinedload
 
 router = APIRouter()
 
 
-@router.get(
-    "/{qr_code}",
+@router.post(
+    "/",
     response_model=ScannedQRCodeResponse,
     dependencies=[Depends(Limiter("5/hour"))],
 )
-def scan_qr_code(qr_code: str, db: Session = Depends(get_db)):
+def scan_qr_code(body: ScanningPetQRCodeBody, db: Session = Depends(get_db)):
     code = (
         db.query(Code)
-        .filter(Code.code == qr_code)
+        .filter(Code.code == body.qr_code)
         .options(joinedload(Code.pet).joinedload(Pet.owners))
         .first()
     )
 
+    if not code:
+        raise HTTPException(status_code=404, detail="Code not found.")
     db.close()
 
-    print(code, flush=True)
     with db.begin():
         try:
+            new_location = Location(latitude=body.lat, longitude=body.lng)
             new_notification = Notification(type="SCANNED", scanned_pet_id=code.pet.id)
+
+            db.add(new_location)
             db.add(new_notification)
             db.flush()
+
+            new_pet_location = PetLocation(
+                pet_id=code.pet.id, location_id=new_location.id, method="SCANNED"
+            )
+
+            db.add(new_pet_location)
 
             owners_uuids = []
 
