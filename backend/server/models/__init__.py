@@ -1,12 +1,13 @@
-from server.models.user import User
-from server.models.pet import Pet
-from server.models.specie import Specie
-from server.models.code import Code
-from server.models.user_pet import UserPet
-from server.models.notification import Notification
-from server.models.pet_location import PetLocation
-from server.models.user_auth import UserAuth
-from server.models.user_notification import UserNotification
-from server.models.location import Location
-from server.models.refresh_token import RefreshToken
-from server.models.fcmtoken import FCMToken
+from server.models.user import User  # noqa: F401
+from server.models.pet import Pet  # noqa: F401
+from server.models.specie import Specie  # noqa: F401
+from server.models.code import Code  # noqa: F401
+from server.models.user_pet import UserPet  # noqa: F401
+from server.models.notification import Notification  # noqa: F401
+from server.models.pet_location import PetLocation  # noqa: F401
+from server.models.user_auth import UserAuth  # noqa: F401
+from server.models.user_notification import UserNotification  # noqa: F401
+from server.models.location import Location  # noqa: F401
+from server.models.refresh_token import RefreshToken  # noqa: F401
+from server.models.fcmtoken import FCMToken  # noqa: F401
+from server.models.breed import Breed  # noqa: F401
