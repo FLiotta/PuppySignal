@@ -68,7 +68,7 @@ class CreatePetBody(BaseModel):
 class ScannedQRCodeOwnerResponse(BaseModel):
     first_name: str
     last_name: str
-    phone_number: str
+    phone_number: Optional[str]
     email: str
 
 

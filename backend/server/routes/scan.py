@@ -22,13 +22,14 @@ router = APIRouter()
 @router.post(
     "/",
     response_model=ScannedQRCodeResponse,
-    dependencies=[Depends(Limiter("5/hour"))],
+    dependencies=[Depends(Limiter("10/hour"))],
 )
 def scan_qr_code(body: ScanningPetQRCodeBody, db: Session = Depends(get_db)):
     code = (
         db.query(Code)
         .filter(Code.code == body.qr_code)
         .options(joinedload(Code.pet).joinedload(Pet.owners))
+        .options(joinedload(Code.pet).joinedload(Pet.specie))
         .first()
     )
 
