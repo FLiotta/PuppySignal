@@ -1,11 +1,64 @@
 $main_purple_color: #8779f4;
 
+.congratulations-text {
+    text-align: center;
+    line-height: 0.5;
+    margin-top: 25px;
+    color: $main_purple_color;
+}
+
 .wrapper {
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.btn {
+    width: 125px;
+    height: 40px;
+    border: 1px solid #fff;
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 6px;
+    align-self: end;
+    color: $main_purple_color;
+
+    &:hover, &:disabled {
+        background-color: #c9c9c9;
+        color: $main_purple_color;
+        border-color: #c9c9c9;
+    }
+
+    &:disabled {
+        cursor: progress;
+    }
+}
+
+.btn-alt {
+    width: 125px;
+    height: 40px;
+    border: 1px solid #fff;
+    background-color: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    align-self: end;
+    color: #fff;
+
+    &:hover, &:disabled {
+        background-color: transparent;
+        color: #c9c9c9;
+        border-color: #c9c9c9;
+    }
+
+    &:disabled {
+        cursor: progress;
+    }
+}
+
+.ml-2 {
+    margin-left: 6px;
 }
 
 .foundpage {
@@ -19,6 +72,8 @@ $main_purple_color: #8779f4;
     flex-direction: column;
     align-items: center;
 
+    position: relative;
+
     box-shadow:
         0px 1.1px 2.2px rgba(0, 0, 0, 0.008),
         0px 2.6px 5.3px rgba(0, 0, 0, 0.012),
@@ -28,6 +83,33 @@ $main_purple_color: #8779f4;
         0px 39px 80px rgba(0, 0, 0, 0.03)
     ;
 
+    &-toast {
+        position: absolute;
+        background: #8779f4;
+        width: 100%;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 1px 2px 36px -5px rgba(0,0,0,.5);
+        border: 5px solid #fff;
+        overflow: hidden;
+        color: #fff;
+        line-height: 0.5;
+        transition: 1s all;
+
+        &__buttons {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        &--hidden {
+            bottom: -800px;
+        }
+
+        &--visible {
+            bottom: 0px;
+        }
+    }
     &-logo {
         color: $main_purple_color !important;
         margin-bottom: 25px;
@@ -143,3 +225,4 @@ $main_purple_color: #8779f4;
         }
     }
 }
+
