@@ -24,7 +24,6 @@ const FoundPage = () => {
     const [locationModalSuccess, setLocationModalSuccess] = useState(false);
 
     useEffect(() => {
-        getLocation()
         const { qr } = qs.parse(location.search, { ignoreQueryPrefix: true }) as { qr: string };
 
         if (qr) {
@@ -63,14 +62,6 @@ const FoundPage = () => {
             .finally(() => {
                 setLoading(false);
             })
-    }
-
-    const getLocation = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(console.log);
-        } else {
-            console.log(":(")
-        }
     }
 
     const handleCloseLocationModal = () => {
