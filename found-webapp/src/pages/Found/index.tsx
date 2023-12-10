@@ -1,22 +1,24 @@
 // @Packages
 import { useEffect, useState } from 'react';
 import qs from 'qs';
+import dayjs from 'dayjs';
 
 // @Project
 import logo from 'assets/logo.svg';
 import { scanQR } from 'services/petservices';
-import {IPet} from 'interfaces/pet';
+import {IScanPetResponse} from 'interfaces/pet';
 
 // @Own
 import './styles.scss';
 
 const FoundPage = () => {
-    const [petFound, setPetFound] = useState<IPet | null>(null)
+    const [petFound, setPetFound] = useState<IScanPetResponse | null>(null)
     const [scanInputValue, setScanInputValue] = useState('');
     const [error, setError] = useState<String | null>(null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        getLocation()
         const { qr } = qs.parse(location.search, { ignoreQueryPrefix: true }) as { qr: string };
         
         if(qr) {
@@ -25,7 +27,7 @@ const FoundPage = () => {
     }, [])
 
     const handleSearchCode = (code: string) => {
-        if(code.length < 6) {
+        if(code.length < 10) {
             return
         }
 
@@ -34,12 +36,12 @@ const FoundPage = () => {
 
         scanQR(code)
             .then((response) => {
-                const scannedPet = response.data.data;
+                const scannedPet = response.data;
 
                 if(!scannedPet) {
                     throw new Error("Pet not returned from server")
                 }
-
+                
                 setPetFound(scannedPet);
             })
             .catch(e  => {
@@ -56,8 +58,12 @@ const FoundPage = () => {
             })
     }
 
-    const capitalizeFirstLetter = (text: string) => {
-        return text.charAt(0).toUpperCase() + text.slice(1);
+    const getLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(console.log);
+        } else { 
+            console.log(":(")
+        }
     }
 
     return (
@@ -73,8 +79,8 @@ const FoundPage = () => {
                             id="found-code-input" 
                             name="found-code-input" 
                             required 
-                            maxLength={6}
-                            minLength={6}
+                            maxLength={10}
+                            minLength={10}
                             onChange={e => setScanInputValue(e.target.value)}
                             disabled={loading}
                         />
@@ -88,19 +94,29 @@ const FoundPage = () => {
                         <div className='foundpage-found__header'>
                             <img src="https://i.imgur.com/3Fi8UmQ.jpg" width={150} height={150}/>
                             <div className='foundpage-found__header-information'>
-                                <h3 className='mt-0'>{capitalizeFirstLetter(petFound.name)} </h3>
-                                <p>Specie: Dog</p>
-                                <p>Race: Dachshund</p>
-                                <p>Lost since: 18/02/2023</p>
-                                <p>Color: Gray</p>
+                                <h3 className='mt-0'>{petFound.pet.name} </h3>
+                                <p>Specie: {petFound.pet.specie.name}</p>
+                                <p>Race: {petFound.pet.breed?.name || 'Unknown' }</p>
+                                <p>Lost since: {
+                                    petFound.pet?.lost_since 
+                                        ? dayjs(petFound.pet.lost_since).format("DD/MM/YYYY")
+                                        : "Unknown"
+                                    }
+                                </p>
+                                <p>Color: {petFound.pet?.color || 'Unknown' }</p>
                             </div>    
                         </div>
-                        <p className='foundpage-found__description'><small>{petFound.extra}</small></p>
+                        <p className='foundpage-found__description'><small>{petFound.pet.extra}</small></p>
                         <hr/>
-                        <div className='foundpage-found__contact'>
-                            <p>Owner: Blanca P.</p>
-                            <p>Contact Information: +54 9 341 1001 0110</p> 
-                        </div>
+                        {petFound.owners.map(owner => (
+                            <div className='foundpage-found__contact'>
+                                <p>Owner: {owner.first_name} {owner.last_name}</p>
+                                <ul>
+                                    <li>{owner.phone_number}</li>
+                                    <li>{owner.email}</li>
+                                </ul>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>

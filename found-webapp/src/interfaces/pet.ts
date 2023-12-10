@@ -17,5 +17,21 @@ export interface IPet {
   specie_id: number;
   extra?: string;
   profile_picture: string;
+  specie: {
+    id: number,
+    name: string
+  },
+  breed?: {
+    id: number,
+    name: string
+  },
+  lost_since?: string
+  owners: IOwner[]
+  color?: string
+}
+
+export interface IScanPetResponse {
+  code: string,
+  pet: IPet,
   owners: IOwner[]
 }
