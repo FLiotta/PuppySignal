@@ -64,6 +64,14 @@ const FoundPage = () => {
             })
     }
 
+    const getLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(console.log);
+        } else {
+            console.log(":(")
+        }
+    }
+
     const handleCloseLocationModal = () => {
         setLocationModalVisible(false)
     }
@@ -76,15 +84,20 @@ const FoundPage = () => {
         setLocationModalLoading(true);
 
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(geolocationPosition => {
-                shareLocation(petFound?.code, geolocationPosition.coords.latitude, geolocationPosition.coords.longitude)
-                    .then(() => {
-                        setLocationModalLoading(false)
-                        setLocationModalVisible(false)
-                        setLocationModalSuccess(true)
-                    })
-                    .catch(() => setLocationModalLoading(false))
-            });
+            navigator.geolocation.getCurrentPosition(
+                geolocationPosition => {
+                    shareLocation(petFound?.code, geolocationPosition.coords.latitude, geolocationPosition.coords.longitude)
+                        .then(() => {
+                            setLocationModalLoading(false)
+                            setLocationModalVisible(false)
+                            setLocationModalSuccess(true)
+                        })
+                        .catch(() => setLocationModalLoading(false))
+                },
+                () => {
+                    setLocationModalLoading(false);
+                }
+            );
         }
     }
 
