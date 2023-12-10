@@ -30,6 +30,7 @@ def scan_qr_code(qr_code: str, db: Session = Depends(get_db)):
         .filter(Code.code == qr_code)
         .options(joinedload(Code.pet).joinedload(Pet.owners))
         .options(joinedload(Code.pet).joinedload(Pet.specie))
+        .options(joinedload(Code.pet).joinedload(Pet.breed))
         .first()
     )
 
