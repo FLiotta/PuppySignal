@@ -13,7 +13,7 @@ from server.models import (
     Location,
     PetLocation,
 )
-from server.schemas import ScannedQRCodeResponse, ScanningPetCreateLocationBody
+from server.schemas.services import ScannedQRCodeResponse, ScanningPetCreateLocationBody
 from sqlalchemy.orm import joinedload
 
 router = APIRouter()

@@ -9,7 +9,7 @@ from server.database import SessionLocal, Base, engine
 from server.factory import create_app
 from server.config import Settings
 from server.utils import get_settings
-from server.models import Specie, User, Pet, UserPet, Location, Code, PetLocation
+from server.models import Specie, User, Pet, UserPet, Location, Code, PetLocation, Breed
 
 
 def get_settings_override():
@@ -70,6 +70,9 @@ class BaseTestCase(TestCase):
         self.db.add(self.pet_1)
 
         self.db.commit()
+
+        self.db.add(Breed(name="Dogo Argentino", specie_id=1))
+        self.db.add(Breed(name="Dachshund", specie_id=1))
 
         self.location = Location(latitude=1, longitude=2)
         self.code = Code(pet_id=self.pet_1.id)

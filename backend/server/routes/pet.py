@@ -2,13 +2,14 @@ import boto3
 import cv2
 import numpy
 
+from typing import Optional
 from simplelimiter import Limiter
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import DataError, IntegrityError
 
-from server.schemas import (
-    UserSchema,
+from server.schemas.user import UserSchema
+from server.schemas.services import (
     PetByIdResponse,
     PetCodesResponse,
     PetLocationsResponse,
@@ -39,6 +40,7 @@ def create_pet(
     name: str = Form(...),
     description: str = Form(...),
     specie_id: int = Form(...),
+    breed_id: Optional[int] = Form(None),
     db: Session = Depends(get_db),
     settings: Settings = Depends(get_settings),
     u: UserSchema = Depends(get_user),
@@ -82,7 +84,9 @@ def create_pet(
 
     with db.begin():
         try:
-            new_pet = Pet(name=name, extra=description, specie_id=specie_id)
+            new_pet = Pet(
+                name=name, extra=description, specie_id=specie_id, breed_id=breed_id
+            )
 
             db.add(new_pet)
             db.flush()

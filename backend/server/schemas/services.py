@@ -1,14 +1,13 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
-from server.schemas import (
-    SpecieSchema,
-    UserSchema,
-    PetSchema,
-    NotificationWithPetSchema,
-    CodeSchema,
-    LocationSchema,
-)
+from server.schemas.specie import SpecieSchema
+from server.schemas.user import UserSchema
+from server.schemas.pet import PetSchema
+from server.schemas.notification import NotificationWithPetSchema
+from server.schemas.code import CodeSchema
+from server.schemas.location import LocationSchema
+from server.schemas.breed import BreedSchema
 
 
 class RefreshTokenPayload(BaseModel):
@@ -34,6 +33,14 @@ class OAuthGoogleResponse(BaseModel):
 
 class DataSpeciesResponse(BaseModel):
     data: List[SpecieSchema]
+
+
+class DataBreedResponse(BaseModel):
+    data: List[BreedSchema]
+
+
+class DataBreedBody(BaseModel):
+    specie_id: int
 
 
 class ProfileResponse(BaseModel):

@@ -8,7 +8,11 @@ from fastapi.routing import APIRouter
 from simplelimiter import Limiter
 from sqlalchemy.orm.session import Session
 
-from server.schemas import OAuthGoogleResponse, GoogleOAuthBody, RefreshTokenResponse
+from server.schemas.services import (
+    OAuthGoogleResponse,
+    GoogleOAuthBody,
+    RefreshTokenResponse,
+)
 from server.models import UserAuth, User, RefreshToken
 from server.config import Settings
 from server.utils import get_db, get_settings
