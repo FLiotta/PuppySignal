@@ -111,3 +111,34 @@ class TestAuthAPI(BaseTestCase):
         )
 
         self.assertIsNone(expired_token)
+
+    def test_delete_refresh_token(self):
+        token = RefreshToken(
+            token="lorem.ipsum.token",
+            user_id=self.user.id,
+            valid_until=datetime(2023, 2, 15),
+        )
+
+        self.db.add(token)
+        self.db.commit()
+
+        headers = {"refresh-token": token.token}
+
+        resp = self.client.delete("/api/v2/oauth/jwt/refresh", headers=headers)
+
+        self.assertEqual(resp.status_code, 200)
+
+        deleted_token = (
+            self.db.query(RefreshToken)
+            .filter(RefreshToken.token == token.token)
+            .first()
+        )
+
+        self.assertIsNone(deleted_token)
+
+    def test_delete_refresh_token_not_found(self):
+        headers = {"refresh-token": "not.found.token"}
+
+        resp = self.client.delete("/api/v2/oauth/jwt/refresh", headers=headers)
+
+        self.assertEqual(resp.status_code, 404)
