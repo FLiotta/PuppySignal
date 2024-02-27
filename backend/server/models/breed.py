@@ -8,9 +8,9 @@ class Breed(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     name = Column(String(50), nullable=False)
-
     specie_id = Column(Integer, ForeignKey("specie.id"))
 
+    specie = relationship("Specie", back_populates="breeds")
     pets = relationship("Pet", back_populates="breed")
 
     def __str__(self):

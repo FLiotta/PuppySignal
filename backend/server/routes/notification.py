@@ -38,8 +38,6 @@ def subscribe_notification(
 
     messaging.subscribe_to_topic(body.token, user["uuid"])
 
-    return None
-
 
 @router.post("/unsuscribe")
 def unsubscribe_notification(
@@ -54,4 +52,3 @@ def unsubscribe_notification(
         db.commit()
 
     messaging.unsubscribe_from_topic(body.token, user["uuid"])
-    return None

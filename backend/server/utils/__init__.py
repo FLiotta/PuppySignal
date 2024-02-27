@@ -2,7 +2,6 @@ import jwt
 import redis as redis_pkg
 
 from functools import lru_cache
-from jwt.exceptions import ExpiredSignatureError, DecodeError
 
 from fastapi import Header
 from fastapi.param_functions import Depends
@@ -43,25 +42,8 @@ async def protected_route(
 ):
     if token is None:
         raise HTTPException(status_code=401, detail="Authorization token not found.")
-    try:
-        jwt.decode(token, settings.JWT_SECRET, algorithms="HS256")
-
-        pass
-    except ExpiredSignatureError:
-        raise HTTPException(status_code=403, detail="Expired token.")
-    except DecodeError:
-        raise HTTPException(status_code=403, detail="Invalid Token.")
-
-
-async def fully_validated_user(
-    token: str = Header(...), settings: config.Settings = Depends(get_settings)
-):
-    if token is None:
-        raise HTTPException(status_code=401, detail="Authorization token not found.")
 
     try:
         jwt.decode(token, settings.JWT_SECRET, algorithms="HS256")
-    except DecodeError:
-        raise HTTPException(status_code=403, detail="Invalid JWT Token.")
-
-    pass
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid Token.")

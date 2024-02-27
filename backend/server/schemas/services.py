@@ -1,60 +1,20 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
-from server.schemas.specie import SpecieSchema
-from server.schemas.user import UserSchema
 from server.schemas.pet import PetSchema
-from server.schemas.notification import NotificationWithPetSchema
-from server.schemas.code import CodeSchema
-from server.schemas.location import LocationSchema
-from server.schemas.breed import BreedSchema
 
 
-class RefreshTokenPayload(BaseModel):
-    access_token: str
-
-
-class RefreshTokenResponse(BaseModel):
-    data: RefreshTokenPayload
+# Bodies
 
 
 class GoogleOAuthBody(BaseModel):
     token: str
 
 
-class OAuthGooglePayload(BaseModel):
-    access_token: str
-    refresh_token: str
-
-
-class OAuthGoogleResponse(BaseModel):
-    data: OAuthGooglePayload
-
-
-class DataSpeciesResponse(BaseModel):
-    data: List[SpecieSchema]
-
-
-class DataBreedResponse(BaseModel):
-    data: List[BreedSchema]
-
-
-class DataBreedBody(BaseModel):
-    specie_id: int
-
-
-class ProfileResponse(BaseModel):
-    data: UserSchema
-
-
 class ProfilePatchBody(BaseModel):
     first_name: Optional[str]
     last_name: Optional[str]
-    birthday: Optional[str]
-
-
-class ProfilePetsResponse(BaseModel):
-    data: List[PetSchema]
+    phone_number: Optional[str]
 
 
 class PhoneNumberBody(BaseModel):
@@ -66,10 +26,37 @@ class PhoneNumberVerifyBody(BaseModel):
     code: int
 
 
-class CreatePetBody(BaseModel):
-    name: str
-    description: str
-    specie_id: int
+class ScanningPetCreateLocationBody(BaseModel):
+    qr_code: str
+    lng: str
+    lat: str
+
+
+class UpdatePetBody(BaseModel):
+    extra: Optional[str]
+    name: Optional[str]
+    specie_id: Optional[int]
+
+
+class NotificationSuscribeBody(BaseModel):
+    token: str
+
+
+# Responses
+
+
+class RefreshTokenResponse(BaseModel):
+    access_token: str
+
+
+class OAuthGoogleResponse(BaseModel):
+    access_token: str
+    refresh_token: str
+
+
+class ProfilePetsResponse(BaseModel):
+    data: List[PetSchema]
+    total: int
 
 
 class ScannedQRCodeOwnerResponse(BaseModel):
@@ -83,39 +70,3 @@ class ScannedQRCodeResponse(BaseModel):
     pet: PetSchema
     owners: List[ScannedQRCodeOwnerResponse]
     code: str
-
-
-class ProfileNotificationsResponse(BaseModel):
-    data: List[NotificationWithPetSchema]
-
-
-class PetByIdResponse(BaseModel):
-    data: PetSchema
-
-
-class PetCodesResponse(BaseModel):
-    data: List[CodeSchema]
-
-
-class PetLocationsResponse(BaseModel):
-    data: List[LocationSchema]
-
-
-class ScanningPetCreateLocationBody(BaseModel):
-    qr_code: str
-    lng: str
-    lat: str
-
-
-class CreatePetSchema(BaseModel):
-    data: PetSchema
-
-
-class UpdatePetBody(BaseModel):
-    extra: Optional[str]
-    name: Optional[str]
-    specie_id: Optional[int]
-
-
-class NotificationSuscribeBody(BaseModel):
-    token: str

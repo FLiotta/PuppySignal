@@ -2,27 +2,20 @@ import boto3
 import cv2
 import numpy
 
-from typing import Optional
+from datetime import datetime
+from typing import List, Optional
 from simplelimiter import Limiter
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import DataError, IntegrityError
+from server.models.breed import Breed
 
 from server.schemas.user import UserSchema
-from server.schemas.services import (
-    PetByIdResponse,
-    PetCodesResponse,
-    PetLocationsResponse,
-    CreatePetSchema,
-    UpdatePetBody,
-)
-from server.utils import (
-    get_db,
-    get_user,
-    protected_route,
-    get_settings,
-    fully_validated_user,
-)
+from server.schemas.pet import PetSchema
+from server.schemas.code import CodeSchema
+from server.schemas.location import LocationSchema
+from server.schemas.services import UpdatePetBody
+from server.utils import get_db, get_user, protected_route, get_settings
 from server.config import Settings
 from server.models import Pet, Code, UserPet
 
@@ -31,7 +24,7 @@ router = APIRouter()
 
 @router.post(
     "/",
-    response_model=CreatePetSchema,
+    response_model=PetSchema,
     status_code=200,
     dependencies=[Depends(protected_route), Depends(Limiter("20/hour"))],
 )
@@ -83,6 +76,14 @@ def create_pet(
         raise HTTPException(status_code=500, detail="Cannot initialize s3.")
 
     with db.begin():
+        if breed_id is not None:
+            breed = db.query(Breed).filter_by(id=breed_id, specie_id=specie_id).first()
+
+            if breed is None:
+                raise HTTPException(
+                    status_code=400, detail="Given breed doesn't belong to this specie"
+                )
+
         try:
             new_pet = Pet(
                 name=name, extra=description, specie_id=specie_id, breed_id=breed_id
@@ -113,9 +114,7 @@ def create_pet(
 
             db.commit()
 
-            return {
-                "data": new_pet,
-            }
+            return new_pet
         except Exception:
             db.rollback()
             raise HTTPException(status_code=500, detail="Pet can't be created.")
@@ -123,7 +122,7 @@ def create_pet(
 
 @router.get(
     "/{pet_id}",
-    response_model=PetByIdResponse,
+    response_model=PetSchema,
     dependencies=[Depends(protected_route), Depends(Limiter("5/minute"))],
 )
 def get_pet_by_id(pet_id: int, db: Session = Depends(get_db), u=Depends(get_user)):
@@ -131,13 +130,14 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db), u=Depends(get_user
         db.query(Pet)
         .filter((Pet.id == pet_id) & (Pet.owners.any(id=u["id"])))
         .options(joinedload(Pet.specie))
+        .options(joinedload(Pet.breed))
         .first()
     )
 
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
 
-    return {"data": pet}
+    return pet
 
 
 @router.patch(
@@ -152,10 +152,7 @@ def update_get_pet_by_id(
         raise HTTPException(status_code=400, detail="Params not provided.")
 
     pet = (
-        db.query(Pet)
-        .filter((Pet.id == pet_id) & (Pet.owners.any(id=u["id"])))
-        .options(joinedload(Pet.specie))
-        .first()
+        db.query(Pet).filter((Pet.id == pet_id) & (Pet.owners.any(id=u["id"]))).first()
     )
 
     if not pet:
@@ -186,7 +183,6 @@ def update_get_pet_by_id(
     status_code=200,
     dependencies=[
         Depends(protected_route),
-        Depends(fully_validated_user),
         Depends(Limiter("5/minute")),
     ],
 )
@@ -203,25 +199,41 @@ def delete_pet_by_id(pet_id: int, db: Session = Depends(get_db), u=Depends(get_u
     db.commit()
 
 
+@router.put(
+    "/{pet_id}/lost",
+    dependencies=[Depends(protected_route), Depends(Limiter("5/minute"))],
+)
+def toggle_pet_lost_since(
+    pet_id: int, db: Session = Depends(get_db), u=Depends(get_user)
+):
+    pet = (
+        db.query(Pet).filter((Pet.id == pet_id) & (Pet.owners.any(id=u["id"]))).first()
+    )
+
+    if not pet:
+        raise HTTPException(status_code=404, detail="Pet not found")
+
+    if pet.lost_since:
+        pet.lost_since = None
+    else:
+        pet.lost_since = datetime.now()
+
+    db.save(pet)
+    db.commit()
+
+
 @router.get(
     "/{pet_id}/codes",
-    response_model=PetCodesResponse,
+    response_model=List[CodeSchema],
     dependencies=[Depends(protected_route), Depends(Limiter("5/minute"))],
 )
 def get_pet_codes_by_id(
     pet_id: int,
-    limit: int = 5,
-    offset: int = 0,
     db: Session = Depends(get_db),
     u=Depends(get_user),
 ):
-    # Nose cuantos codigos puede tener asociado una mascota, supongo que paginas de 5 seran suficientes.
     pet = (
-        db.query(Pet)
-        .filter((Pet.id == pet_id) & (Pet.owners.any(id=u["id"])))
-        .limit(limit)
-        .offset(offset)
-        .first()
+        db.query(Pet).filter((Pet.id == pet_id) & (Pet.owners.any(id=u["id"]))).first()
     )
 
     if not pet:
@@ -232,32 +244,22 @@ def get_pet_codes_by_id(
     for code in pet.codes:
         parsed_codes.append({"id": code.id, "code": code.code})
 
-    return {"data": parsed_codes}
+    return parsed_codes
 
 
-# TODO: Pagination
-# ¿Deberian traerse todas las localizaciones o paginado?
-# ¿Tal vez que se vayan cargando dependiendo donde scrollea el mapa?
-# En ese caso la paginacion seria un poco mas complicada. Por el momento, que devuelva todas.
-
-
-# TEMPORAL_FIX: Limit 50 hardcoded.
 @router.get(
     "/{pet_id}/locations",
-    response_model=PetLocationsResponse,
+    response_model=List[LocationSchema],
     dependencies=[Depends(protected_route), Depends(Limiter("5/minute"))],
 )
 def get_pet_locations_by_id(
     pet_id: int, db: Session = Depends(get_db), u=Depends(get_user)
 ):
     pet = (
-        db.query(Pet)
-        .filter((Pet.id == pet_id) & (Pet.owners.any(id=u["id"])))
-        .limit(50)
-        .first()
+        db.query(Pet).filter((Pet.id == pet_id) & (Pet.owners.any(id=u["id"]))).first()
     )
 
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
 
-    return {"data": pet.locations}
+    return pet.locations

@@ -1,11 +1,10 @@
+from typing import List
 from fastapi import APIRouter, Depends
 from simplelimiter import Limiter
 from sqlalchemy.orm import Session
 
-from server.schemas.services import (
-    DataSpeciesResponse,
-    DataBreedResponse,
-)
+from server.schemas.breed import BreedSchema
+from server.schemas.specie import SpecieSchema
 from server.models import Specie, Breed
 from server.utils import get_db
 
@@ -17,21 +16,21 @@ router = APIRouter()
 
 @router.get(
     "/species",
-    response_model=DataSpeciesResponse,
+    response_model=List[SpecieSchema],
     dependencies=[Depends(Limiter("5/minute"))],
 )
 def get_species(limit: int = 10, offset: int = 0, db: Session = Depends(get_db)):
     species = db.query(Specie).limit(limit).offset(offset).all()
 
-    return {"data": species}
+    return species
 
 
 @router.get(
     "/breeds",
-    response_model=DataBreedResponse,
+    response_model=List[BreedSchema],
     dependencies=[Depends(Limiter("5/minute"))],
 )
 def get_breeds(specie_id: int, db: Session = Depends(get_db)):
     breeds = db.query(Breed).filter(Breed.specie_id == specie_id).all()
 
-    return {"data": breeds}
+    return breeds

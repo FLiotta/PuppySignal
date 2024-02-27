@@ -1,16 +1,15 @@
+from typing import List
+
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import func
 from simplelimiter import Limiter
 
 from server.models import User, Notification, Pet
 from server.schemas.user import UserSchema
-from server.schemas.services import (
-    ProfileResponse,
-    ProfilePatchBody,
-    ProfilePetsResponse,
-    ProfileNotificationsResponse,
-)
+from server.schemas.notification import NotificationWithPetSchema
+from server.schemas.services import ProfilePatchBody, ProfilePetsResponse
 from server.utils import get_db, protected_route, get_user, get_settings
 
 settings = get_settings()
@@ -19,7 +18,7 @@ router = APIRouter()
 
 @router.get(
     "/",
-    response_model=ProfileResponse,
+    response_model=UserSchema,
     dependencies=[Depends(protected_route), Depends(Limiter("5/hour"))],
 )
 def get_profile(db: Session = Depends(get_db), u: UserSchema = Depends(get_user)):
@@ -28,7 +27,7 @@ def get_profile(db: Session = Depends(get_db), u: UserSchema = Depends(get_user)
     if not user:
         raise HTTPException(status_code=404, detail="Profile not found.")
 
-    return {"data": user}
+    return user
 
 
 @router.patch(
@@ -41,9 +40,9 @@ def update_profile(
     db: Session = Depends(get_db),
     u: UserSchema = Depends(get_user),
 ):
-    if not body.first_name and not body.last_name:
+    if not body.first_name and not body.last_name and not body.phone_number:
         raise HTTPException(
-            status_code=400, detail="You must provide atleast one parameter to update"
+            status_code=400, detail="You must provide at least one parameter to update"
         )
 
     user = db.query(User).filter(User.id == u["id"]).first()
@@ -53,6 +52,9 @@ def update_profile(
 
     if body.last_name:
         user.last_name = body.last_name
+
+    if body.phone_number:
+        user.phone_number = body.phone_number
 
     db.commit()
 
@@ -77,12 +79,16 @@ def get_user_pets(
         .all()
     )
 
-    return {"data": pets}
+    pets_count = (
+        db.query(func.count(Pet.id)).filter(Pet.owners.any(id=u["id"])).scalar()
+    )
+
+    return {"data": pets, "total": pets_count}
 
 
 @router.get(
     "/notifications",
-    response_model=ProfileNotificationsResponse,
+    response_model=List[NotificationWithPetSchema],
     dependencies=[Depends(protected_route), Depends(Limiter("5/minute"))],
 )
 def get_user_notifications(
@@ -100,4 +106,4 @@ def get_user_notifications(
         .all()
     )
 
-    return {"data": notifications}
+    return notifications

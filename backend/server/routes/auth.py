@@ -119,7 +119,7 @@ async def get_auth(
 
     db.commit()
 
-    return {"data": {"access_token": access_token, "refresh_token": refresh_token}}
+    return {"access_token": access_token, "refresh_token": refresh_token}
 
 
 @router.post(
@@ -161,7 +161,7 @@ async def refresh_json_web_token(
         key=settings.JWT_SECRET,
     )
 
-    return {"data": {"access_token": access_token}}
+    return {"access_token": access_token}
 
 
 @router.delete("/jwt/refresh", dependencies=[Depends(Limiter("10/hour"))])

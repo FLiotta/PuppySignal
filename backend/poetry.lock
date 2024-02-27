@@ -1929,13 +1929,13 @@ testing-integration = ["build[virtualenv] (>=1.0.3)", "filelock (>=3.4.0)", "jar
 
 [[package]]
 name = "simplelimiter"
-version = "0.1.2"
+version = "0.1.3"
 description = "Simple FastAPI rate limiter"
 optional = false
 python-versions = ">=3.10,<4.0"
 files = [
-    {file = "simplelimiter-0.1.2-py3-none-any.whl", hash = "sha256:0f644b8ee34e919e5b0bd9a13218f1e318678269963c4ad006b564bab4daffb1"},
-    {file = "simplelimiter-0.1.2.tar.gz", hash = "sha256:41bf9b8fc6630929501a8ef8682e84831cb8090daf932b10300450a635dd71a8"},
+    {file = "simplelimiter-0.1.3-py3-none-any.whl", hash = "sha256:ed523d92585bb7ee65d55256db5564b9478dfc7a7d8b1d23b370b63138602785"},
+    {file = "simplelimiter-0.1.3.tar.gz", hash = "sha256:4251fa9dd0a3fceed9982e74e870ebb6e4d716fa718292c66f721821355e0b7c"},
 ]
 
 [package.dependencies]
@@ -2151,4 +2151,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "3f467e54014a74007a6f1865390aad1ed4a6dfda4b5e9df166aa726ba3616b2f"
+content-hash = "bfd799f13b051760de7b94e924378d92f64b640286cae7d9de7c2c85fbaa1bd0"
