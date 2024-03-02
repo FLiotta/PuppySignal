@@ -3,7 +3,7 @@ import requests
 
 from datetime import datetime, timedelta
 from fastapi.exceptions import HTTPException
-from fastapi.params import Depends, Header
+from fastapi.params import Depends
 from fastapi.routing import APIRouter
 from simplelimiter import Limiter
 from sqlalchemy.orm.session import Session
@@ -12,6 +12,8 @@ from server.schemas.services import (
     OAuthGoogleResponse,
     GoogleOAuthBody,
     RefreshTokenResponse,
+    RefreshTokenBody,
+    DeleteRefreshTokenBody,
 )
 from server.models import UserAuth, User, RefreshToken
 from server.config import Settings
@@ -128,13 +130,13 @@ async def get_auth(
     dependencies=[Depends(Limiter("10/hour"))],
 )
 async def refresh_json_web_token(
-    refresh_token: str = Header(...),
+    body: RefreshTokenBody,
     db: Session = Depends(get_db),
     settings: Settings = Depends(get_settings),
 ):
     # We check if the refresh token exists on the database and validate if its expired
     saved_token = (
-        db.query(RefreshToken).filter(RefreshToken.token == refresh_token).first()
+        db.query(RefreshToken).filter(RefreshToken.token == body.refresh_token).first()
     )
 
     if not saved_token:
@@ -166,10 +168,10 @@ async def refresh_json_web_token(
 
 @router.delete("/jwt/refresh", dependencies=[Depends(Limiter("10/hour"))])
 async def delete_refresh_token(
-    refresh_token: str = Header(...), db: Session = Depends(get_db)
+    body: DeleteRefreshTokenBody, db: Session = Depends(get_db)
 ):
     stored_token = (
-        db.query(RefreshToken).filter(RefreshToken.token == refresh_token).first()
+        db.query(RefreshToken).filter(RefreshToken.token == body.refresh_token).first()
     )
 
     if not stored_token:

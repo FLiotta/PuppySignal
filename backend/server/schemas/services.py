@@ -7,6 +7,14 @@ from server.schemas.pet import PetSchema
 # Bodies
 
 
+class DeleteRefreshTokenBody(BaseModel):
+    refresh_token: str
+
+
+class RefreshTokenBody(BaseModel):
+    refresh_token: str
+
+
 class GoogleOAuthBody(BaseModel):
     token: str
 

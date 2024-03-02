@@ -218,7 +218,6 @@ def toggle_pet_lost_since(
     else:
         pet.lost_since = datetime.now()
 
-    db.save(pet)
     db.commit()
 
 
