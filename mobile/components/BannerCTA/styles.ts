@@ -1,13 +1,15 @@
+// @ Packages
 import { StyleSheet } from 'react-native';
-import { COLORS } from 'styles';
+
+// @ Project
+import { PRIMARY_COLOR } from '../../styles';
 
 export default StyleSheet.create({
   presentation: {
     width: '100%',
     height: 150,
-    backgroundColor: COLORS.primary_color,
+    backgroundColor: PRIMARY_COLOR,
     borderRadius: 12,
-    marginTop: 25,
     justifyContent: 'flex-end',
     padding: 25,
     position: 'relative'

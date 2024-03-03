@@ -1,16 +1,23 @@
 // @Packages
-import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import FontAwesome6 from "react-native-vector-icons/FontAwesome6";
+import { useNavigation } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 
 // @Project
-import { IPet } from 'interfaces';
-import { COLORS } from 'styles';
+import { INotificationType, IPet } from '../../interfaces';
+import { PRIMARY_COLOR_LIGHT } from '../../styles';
+import { RootStackParamList } from '../../views/TabNavigator';
+
+// @ Own
+import styles from './styles';
+
 
 interface ActivityProps {
-  type: string,
-  title: string,
-  subtitle: string,
+  type: INotificationType,
+  title?: string,
+  subtitle?: string,
   pet?: IPet
 };
 
@@ -20,68 +27,61 @@ const Activity: React.FC<ActivityProps> = ({
   subtitle,
   pet
 }) => {
+  const [curatedTitle, setCuratedTitle] = useState(title);
+  const [curatedSubtitle, setCuratedSubtitle] = useState(subtitle);
+  const [curatedIcon, setCuratedIcon] = useState('question');
 
-  const getIcon = () => {
+  const navigation = useNavigation<BottomTabNavigationProp<RootStackParamList>>();
+
+  useEffect(() => {
     switch(type) {
-      case 'SCANNED':
-        return 'qrcode';
+      case "SCANNED":
+        setCuratedIcon('qrcode');
+
+        if (!curatedTitle) {
+          setCuratedTitle(`Someone scanned ${pet?.name}`);
+          setCuratedSubtitle('Your information was shared.')
+        }
+        break;
+      case 'LOCATION_SHARED':
+        setCuratedIcon('location-arrow');
+
+        if (!curatedTitle) {
+          setCuratedTitle(`Someone shared ${pet?.name}'s location`);
+          setCuratedSubtitle("Check your pet's profile.")
+        }
+        break;
       default:
-        return '';
+        setCuratedTitle(`Unknown notification.`);
+        setCuratedSubtitle("This is odd.")
+        break;
     }
-  }
+  }, [])
 
   const getOnPress = () => {
     switch(type) {
       case 'SCANNED':
+        navigation.navigate("PetStack", { screen: 'PetProfile', params: { id: pet!.id }});
         return
+      case 'LOCATION_SHARED':
+        navigation.navigate("PetStack", { screen: 'PetLocations', params: { id: pet!.id }});
+        break;
       default:
-        return () => {};
+        return
     }
   };
 
   return (
-    <TouchableOpacity style={styles.activityCard} onPress={getOnPress()}>
+    <TouchableOpacity style={styles.activityCard} onPress={getOnPress}>
       <View style={styles.activityCardIcon}>
-        <FontAwesome name={"qrcode"} size={25} color={COLORS.primary_color_darker} />
+        <FontAwesome6 name={curatedIcon} size={25} color={PRIMARY_COLOR_LIGHT} />
       </View>
-      <View style={styles.activityCardDescription}>
-        <Text style={styles.activityCardTitle}>{title}</Text>
-        <Text style={styles.activityCardSubtitle}>{subtitle}</Text>
+      <View>
+        <Text style={styles.activityCardTitle}>{curatedTitle}</Text>
+        <Text style={styles.activityCardSubtitle}>{curatedSubtitle}</Text>
       </View>
     </TouchableOpacity>
   )
 };
-
-const styles = StyleSheet.create({
-  activityCard: {
-    width: '100%',
-    minHeight: 75,
-    borderRadius: 16,
-    backgroundColor: '#ffffff',
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    marginBottom: 15
-  },
-  activityCardIcon: {
-    height: 50,
-    width: 50,
-    borderRadius: 12,
-    backgroundColor: COLORS.primary_color_light_2,
-    marginRight: 15,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  activityCardDescription: {
-    justifyContent: 'center'
-  },
-  activityCardTitle: {
-    fontWeight: '700'
-  },
-  activityCardSubtitle: {
-    marginTop: 2
-  },
-});
 
 export default Activity;

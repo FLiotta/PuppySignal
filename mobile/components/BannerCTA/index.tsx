@@ -1,24 +1,33 @@
 // @Packages
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Animated, StyleProp, ViewStyle} from 'react-native';
 
 // @Project
-import { COLORS } from 'styles'
+import { PRIMARY_COLOR } from '../../styles'
+
 // @Own
 import styles from './styles';
 
 
 interface IProps {
-  extraStyles?: any,
+  extraStyles?: StyleProp<ViewStyle>,
   title: string,
   description: string,
-  image: any,
+  image?: any,
   imageStyle?: any,
   pulse?: boolean
   onPress(): void
 }
 
-const CTABanner: React.FC<IProps> = ({ title, description, image, imageStyle, onPress, pulse }) => {
+const CTABanner: React.FC<IProps> = ({
+  title, 
+  description, 
+  image, 
+  imageStyle, 
+  onPress, 
+  pulse,
+  extraStyles
+}) => {
   const animScaleX: any = new Animated.Value(1);
   const animScaleY: any = new Animated.Value(1);
   const animOp: any = new Animated.Value(1);
@@ -54,14 +63,19 @@ const CTABanner: React.FC<IProps> = ({ title, description, image, imageStyle, on
   }
 
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} style={extraStyles}>
       <View style={styles.presentation}>
         <Text style={styles.presentationTitle}>{title}</Text>
         <Text style={styles.presentationDesc}>{description}</Text>
-        <Image source={image} style={{
-          ...styles.presentationImage,
-          ...imageStyle
-        }} />
+        {image && (
+          <Image
+            source={image} 
+            style={{
+              ...styles.presentationImage,
+              ...imageStyle
+            }} 
+          />
+        )}
       </View>
       <Animated.View 
         style={[
@@ -72,7 +86,7 @@ const CTABanner: React.FC<IProps> = ({ title, description, image, imageStyle, on
             width: '100%',
             opacity: animOp,
             borderWidth: 0,
-            borderColor: COLORS.primary_color_darker,
+            borderColor: PRIMARY_COLOR,
             transform: [{ scaleX: animScaleX }, { scaleY: animScaleY }]
           }
         ]}

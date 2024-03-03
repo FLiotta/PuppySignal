@@ -1,52 +1,44 @@
+// @Packages
 import { StyleSheet } from 'react-native';
-import { COLORS } from 'styles';
+
+// @ Project
+import { PRIMARY_COLOR, BG_GRAY } from '../../styles';
 
 export default StyleSheet.create({
   container: {
-    width: '100%',
+    backgroundColor: BG_GRAY,
     height: '100%',
-    backgroundColor: COLORS.bg_color,
-  },
-  wrapper: {
-    paddingHorizontal: 25,
-    paddingVertical: 25,
-  },
-  header: {
     width: '100%',
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    paddingHorizontal: 15,
+    paddingVertical: 30
   },
-  headerText: {
-    fontSize: 22,
-    color: COLORS.primary_color,
-    fontFamily: 'RedHatDisplayRegular',
+  title: {
+    fontFamily: 'RedHatDisplayBlack',
+    fontSize: 32,
+    color: PRIMARY_COLOR
   },
-  headerImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 20
+  subtitle: {
+    fontFamily: 'RedHatDisplayBlack',
+    fontSize: 26,
+    color: PRIMARY_COLOR,
+    marginTop: 15,
+    marginBottom: 15
   },
-  activity: {
-    width: '100%',
-    flex: 1,
-    marginTop: 25
-  },
-  activityTitle: {
-    fontWeight: '400',
-    fontFamily: 'RedHatDisplayRegular',
-    fontSize: 20,
-    marginBottom: 25
-  },
-  activityBody: {
-    flex: 1,
-    flexDirection: 'column',
+  notificationsView: {
+    marginBottom: 55,
     alignItems: 'center',
-  },
-  activityPlaceholder: {
-    flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    flexGrow: 1
+  },
+  notificationEmptyStatus: {
+    width: 125,
+    height: 225,
+    marginTop: 50
+  },
+  notificationsEmptyText: {
+    fontFamily: 'RedHatDisplayBlack',
+    fontSize: 15,
+    color: PRIMARY_COLOR,
+    marginTop: 5,
   }
-})
+});

@@ -1,126 +1,73 @@
 // @Packages
-import React, { useEffect, useState } from 'react';
-import { View, ScrollView, Text, Image, Linking, RefreshControl } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime'
+import {
+  Image, 
+  Linking, 
+  View, 
+  Text, 
+  ScrollView, 
+  ActivityIndicator, 
+  RefreshControl
+} from 'react-native';
 
 // @Project
-import HearthNPC from 'assets/corazon.png'
-import BannerCTA from 'components/BannerCTA'
-import NotificationCard from 'components/NotificationCard'
-import { selectSessionProfile } from 'selectors/session';
-import { IThunkDispatcher } from 'interfaces';
-import { getUserProfile } from 'actions/session';
-import { getLastNotifications } from './actions';
+import BannerCTA from '../../components/BannerCTA';
+import NotificationCard from '../../components/NotificationCard';
+import EmptyStatus from '../../assets/corazon.png';
+import { PRIMARY_COLOR } from '../../styles';
+import { useGetNotificationsQuery } from '../../api/profile';
 
 // @Own
 import styles from './styles';
-import { selectLastNotifications } from './selectors';
 
-dayjs.extend(relativeTime)
 
-const Home: React.FC<any> = () => {
-  const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
-  const profile = useSelector(selectSessionProfile)
-  const activities = useSelector(selectLastNotifications)
-  const dispatch: IThunkDispatcher = useDispatch()
+const FAQ_URL = 'https://www.puppysignal.com/faq';
 
-  const loadProfile = () => {
-    dispatch(getUserProfile())
-    dispatch(getLastNotifications())
-  }
-
-  useEffect(() => {
-    if(!profile.id) {
-      loadProfile()
-    }
-  }, [])
+const HomeView: React.FC = () => {
+  const { data, isLoading, isFetching, refetch } = useGetNotificationsQuery()
 
   const handleOpenFAQ = () => {
-    const path = 'https://www.puppysignal.com/faq';
-
-    Linking.canOpenURL(path).then(supported => {
-      if (supported) {
-        Linking.openURL(path);
-      }
-    });
+    Linking.openURL(FAQ_URL)
+      .catch(err => console.error("Couldn't load page", err));
   }
-
-  const onRefresh = async () => {
-    setIsRefreshing(true)
-
-    loadProfile()
-    
-    setIsRefreshing(false)
-  }
-
-  // TODO: MIGRATE THE NOTIFICATIONS SERVICE ONCE FOR ALL
-  // STOP PROCASTINATING IT
 
   return (
     <ScrollView
-      style={styles.container}
+      style={styles.container} 
+      contentContainerStyle={{flexGrow: 1}}
       refreshControl={
-        <RefreshControl
-          refreshing={isRefreshing}
-          onRefresh={onRefresh}
-        />
+        <RefreshControl refreshing={!isLoading && isFetching} onRefresh={refetch} colors={[PRIMARY_COLOR]}/>
       }
     >
-      <View style={styles.wrapper}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>
-            {profile.first_name} {profile.last_name}
-          </Text>
-          <Image
-            style={styles.headerImage}
-            source={{
-              uri: profile.profile_picture
-            }}
+      <Text style={styles.title}>Home</Text>
+      <BannerCTA
+        title='Have any question?'
+        description='We all did at some point, take a look at our FAQ.'
+        onPress={handleOpenFAQ}
+        extraStyles={{ marginVertical: 25 }}
+      />
+
+      <Text style={styles.subtitle}>Notifications</Text>
+      <View style={styles.notificationsView}>
+        {isLoading && (
+          <ActivityIndicator color={PRIMARY_COLOR} size='large' />
+        )}
+
+        {(!data?.length && !isLoading) && (
+          <>
+            <Image source={EmptyStatus} style={styles.notificationEmptyStatus}/>
+            <Text style={styles.notificationsEmptyText}>No notifications yet, come back later!</Text>
+          </>
+        )}
+        {!isLoading && data?.map((notification) => (
+          <NotificationCard
+            key={`notification_${notification.id}`}
+            type={notification.type}
+            pet={notification.pet}
           />
-        </View>
-        <BannerCTA
-          title="Have any question? 🕵🏻‍♀️"
-          description="We all did at some point, take a look at our FAQ."
-          onPress={handleOpenFAQ}
-          image={null}
-        />
-        <View style={styles.activity}>
-          <Text style={styles.activityTitle}>Recent activity</Text>
-          {activities && activities.length > 0
-            ? activities.map((act: any) => {
-              let actDate: string = dayjs(act.created_at).fromNow();
-
-              actDate = actDate.charAt(0).toUpperCase() + actDate.slice(1);
-
-              return (
-                <NotificationCard 
-                  key={`${act.id}_${act.scanned_pet_id}_scanned`}
-                  type={act.type} 
-                  title={`Someone scanned your pet ${act.pet?.name}`}
-                  subtitle={actDate}
-                />
-              )
-            })
-            : (
-              <View style={styles.activityPlaceholder}>
-                <Image
-                  source={HearthNPC}
-                  style={{
-                    marginTop: 25,
-                    width: 150,
-                    height: 150
-                  }}
-                />
-                <Text>No activities yet, come back later!</Text>
-              </View>
-            )
-          }
-        </View>
+        ))}
       </View>
     </ScrollView>
-  );
+  )
 }
 
-export default Home;
+export default HomeView;

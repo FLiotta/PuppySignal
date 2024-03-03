@@ -1,20 +1,45 @@
-// @Packages
-import React from 'react';
-import { View, Text } from 'react-native';
+// @ Packages
+import { TouchableOpacity, Text } from "react-native"
 
-interface IProps {
-  text: string
+// @ Project
+import { PRIMARY_COLOR, PRIMARY_COLOR_LIGHT } from "../../styles"
+
+
+interface IProp {
+  disabled?: boolean,
+  text: string,
+  light?: boolean,
+  onPress: () => void
 }
 
-const Button: React.FC<IProps> = ({
-  text
-}) => {
-
+const Button: React.FC<IProp> = ({ disabled, text, onPress, light }) => {
   return (
-    <View>
-      <Text>{text}</Text>
-    </View>
+    <TouchableOpacity
+      style={{
+        width: "100%",
+        padding: 10,
+        flex: 1,
+        justifyContent: "center",
+        alignItems: 'center',
+        backgroundColor: disabled 
+          ? "#eee" 
+          : light ? PRIMARY_COLOR_LIGHT : PRIMARY_COLOR,
+        borderRadius: 12
+      }}
+      disabled={disabled}
+      onPress={onPress}
+    >
+      <Text
+        style={{
+          color: light ? PRIMARY_COLOR : "#fff",
+          fontSize: 16,
+          fontFamily: 'RedHatDisplayBlack',
+        }}
+      >
+        {text}
+      </Text>
+    </TouchableOpacity>
   )
 }
 
-export default Button;
+export default Button

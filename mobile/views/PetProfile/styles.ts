@@ -1,10 +1,10 @@
 import { StyleSheet } from "react-native";
-import { COLORS } from 'styles'
+import { BG_GRAY } from "../../styles";
 
 export default StyleSheet.create({
   wrapper: {
     paddingHorizontal: 25,
-    paddingTop: 75,
+    paddingTop: 50,
     paddingBottom: 20
   },
   container: {
@@ -12,7 +12,7 @@ export default StyleSheet.create({
     height: '100%',
     width: '100%',
     position: 'relative',
-    backgroundColor: COLORS.bg_color
+    backgroundColor: BG_GRAY
   },
   profileCard: {
     width: '100%',
@@ -46,7 +46,7 @@ export default StyleSheet.create({
   title: {
     fontWeight: '700',
     fontSize: 16,
-    color: "#000"
+    color: "#000",
   },
   value: {
     fontSize: 16

@@ -1,70 +1,29 @@
-// @Packages
-import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
-import { RouteProp } from '@react-navigation/native';
-import Toast from 'react-native-toast-message';
+// @ Packages
+import { ActivityIndicator, View } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-// @Project
-import Map from 'components/Map';
-import { getPetLocations } from 'services/pet';
+// @ Project
+import Map from "../../components/Map";
+import { PetStackParamList } from "../PetStack";
+import { useGetPetLocationsQuery } from "../../api/pet";
+import { PRIMARY_COLOR } from "../../styles";
 
-// @Own
+// @ Own
 import styles from './styles';
 
-interface IProps {
-  navigation: any,
-  route: RouteProp<{
-    params: {
-      id: number
-    }
-  }, 'params'>
-}
 
-const PetLocations: React.FC<IProps> = ({ navigation, route }) => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [locations, setLocations] = useState<any>([]);
+type Props = NativeStackScreenProps<PetStackParamList, 'PetLocations'>;
 
-  useEffect(() => {
-    const id = route.params.id;
-
-    getPetLocations(id)
-      .then((response) => {
-        const locations = response.data.data;
-
-        if(locations.length > 0) {
-          locations.sort((a: any, b: any) => a.id - b.id)
-
-          setLocations(locations);
-        } else {
-          setLocations([]);
-        }
-      })
-      .catch(() => {
-        Toast.show({
-          text1: "Ohm no!",
-          text2: "Something failed while fetching the locations, would you please try again later?",
-          type: "error",
-          position: "bottom"
-        })
-      })
-      .finally(() => setLoading(false));
-  }, []);
+const PetLocationsView: React.FC<Props> = ({ route }) => {
+  const { data, isLoading, isSuccess } = useGetPetLocationsQuery(route.params.id);
 
   return (
     <View style={styles.container}>
-      {!loading && (
-        <Map
-          locations={locations}
-          showLocationsSidebar
-          zoomEnabled
-          zoomTapEnabled
-          zoomControlEnabled
-          rotateEnabled
-          scrollEnabled
-        />
-      )}
+      {isLoading && <ActivityIndicator color={PRIMARY_COLOR} size='large' />}
+
+      {isSuccess && <Map locations={data} zoomControlEnabled />}
     </View>
-  );
+  )
 }
 
-export default PetLocations;
+export default PetLocationsView;
