@@ -38,10 +38,9 @@ const SplashView: React.FC<ISplashView> = ({ onFinish }) => {
 
         // 2. Validates if still vaild
         if (isAuthTokenExpired(refreshToken)) {
-          console.warn("Refresh token found, but its expired.")
           dispatch(setAuthenticated(false));
 
-          return
+          throw new Error("Refresh token found, but its expired.")
         }
 
         // 3. Request a new access_token in case it is and store it.

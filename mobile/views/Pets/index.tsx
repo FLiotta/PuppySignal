@@ -17,10 +17,8 @@ import styles from './styles';
 type IProps = NativeStackScreenProps<PetStackParamList, 'MyPets'>;
 
 const PetsView: React.FC<IProps> = ({ navigation }) => {
-  const limit = 25
-  const [offset, setOffset] = useState(0);
-  const { data, isLoading, isFetching } = useGetPetsQuery({ offset , limit });
-
+  const { data, isLoading, isFetching } = useGetPetsQuery({ offset: 0, limit: 50});
+  
   const handlePetCardPress = (id: number) => {
     navigation.navigate("PetProfile", { id })
   }
@@ -33,19 +31,6 @@ const PetsView: React.FC<IProps> = ({ navigation }) => {
     navigation.navigate("PetCreation");
   }
 
-  const handleFetchMoreOnBottom = () => {
-    if (isLoading || isFetching || !data) {
-      return
-    }
-
-    if (data.data.length === data.total) {
-      // No more pagination.
-      return
-    }
-  
-    setOffset(data.data.length);
-  }
-
   return (
     <FlatList
       data={data?.data}
@@ -55,8 +40,6 @@ const PetsView: React.FC<IProps> = ({ navigation }) => {
         paddingBottom: 50
       }}
       keyExtractor={item => item.uuid}
-      onEndReached={handleFetchMoreOnBottom}
-      onEndReachedThreshold={0.2}
       ListHeaderComponent={() => (
         <View>
           <Text style={styles.title}>Pets</Text>

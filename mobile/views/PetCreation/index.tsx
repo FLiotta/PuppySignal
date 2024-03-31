@@ -57,7 +57,7 @@ const PetCreationView: React.FC<IProps> = ({ navigation }) => {
     description: yup.string().required(),
     name: yup.string().required(),
     specie_id: yup.number().min(0).required(),
-    breed_id: yup.number().min(0).required()
+    breed_id: yup.number()
   });
 
 

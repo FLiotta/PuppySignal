@@ -49,15 +49,6 @@ const profileAPI = api.injectEndpoints({
           params: { limit, offset }
         }
       },
-      serializeQueryArgs: ({ endpointName }) => {
-        return endpointName
-      },
-      forceRefetch({ currentArg, previousArg }) {
-        return currentArg !== previousArg
-      },
-      merge: (currentCache, newItems) => {
-        currentCache.data.push(...newItems.data);
-      },
       providesTags: ['Pets'],
     })
   })
