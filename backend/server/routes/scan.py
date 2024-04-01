@@ -63,21 +63,16 @@ def scan_qr_code(qr_code: str, db: Session = Depends(get_db)):
 
                 db.add(new_user_notification)
 
-                try:
-                    message = messaging.Message(
-                        notification=messaging.Notification(
-                            title=f"{code.pet.name} was scanned!",
-                            body="Your contact information was shared!",
-                            image=code.pet.profile_picture,
-                        ),
-                        topic=owner.uuid,
-                    )
+                message = messaging.Message(
+                    notification=messaging.Notification(
+                        title=f"{code.pet.name} was scanned!",
+                        body="Your contact information was shared!",
+                        image=code.pet.profile_picture,
+                    ),
+                    topic=owner.uuid,
+                )
 
-                    messaging.send(message)
-                except FirebaseError as e:
-                    logging.error(
-                        f"Error on firebase when sending notifications for Notification#{new_notification.id}: {e}"
-                    )
+                messaging.send(message)
 
             db.commit()
 

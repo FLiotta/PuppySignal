@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import func
+from sqlalchemy import func, desc
 from simplelimiter import Limiter
 
 from server.models import User, Notification, Pet
@@ -100,6 +100,7 @@ def get_user_notifications(
     notifications = (
         db.query(Notification)
         .filter(Notification.owners.any(id=u["id"]))
+        .order_by(desc(Notification.id))
         .limit(limit)
         .offset(offset)
         .options(joinedload(Notification.pet))
