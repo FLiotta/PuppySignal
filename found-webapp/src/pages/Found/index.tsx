@@ -165,7 +165,6 @@ const FoundPage = () => {
                                             : "Unknown"
                                     }
                                     </p>
-                                    <p>Color: {petFound.pet?.color || 'Unknown'}</p>
                                 </div>
                             </div>
                             <p className='foundpage-found__description'><small>{petFound.pet.extra}</small></p>

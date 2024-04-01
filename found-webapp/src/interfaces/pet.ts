@@ -27,7 +27,6 @@ export interface IPet {
   },
   lost_since?: string
   owners: IOwner[]
-  color?: string
 }
 
 export interface IScanPetResponse {
