@@ -43,7 +43,7 @@ const Activity: React.FC<ActivityProps> = ({
           setCuratedSubtitle('Your information was shared.')
         }
         break;
-      case 'LOCATION_SHARED':
+      case 'NEW_LOCATION':
         setCuratedIcon('location-arrow');
 
         if (!curatedTitle) {
@@ -52,7 +52,7 @@ const Activity: React.FC<ActivityProps> = ({
         }
         break;
       default:
-        setCuratedTitle(`Unknown notification.`);
+        setCuratedTitle(`Unknown notification. [${type}]`);
         setCuratedSubtitle("This is odd.")
         break;
     }
@@ -63,7 +63,7 @@ const Activity: React.FC<ActivityProps> = ({
       case 'SCANNED':
         navigation.navigate("PetStack", { screen: 'PetProfile', params: { id: pet!.id }});
         return
-      case 'LOCATION_SHARED':
+      case 'NEW_LOCATION':
         navigation.navigate("PetStack", { screen: 'PetLocations', params: { id: pet!.id }});
         break;
       default:

@@ -34,7 +34,7 @@ export interface IPet {
   lost_since?: string
 }
 
-export type INotificationType = 'SCANNED' | 'LOCATION_SHARED';
+export type INotificationType = 'SCANNED' | 'NEW_LOCATION';
 
 export interface INotification {
   id: number

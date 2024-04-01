@@ -10,7 +10,7 @@ import config from 'react-native-config';
 import { useAppDispatch } from '../../store';
 import { setAuthenticated } from '../../app.slice';
 import Logo from '../../assets/logo.png';
-import { ACCESS_TOKEN_STORAGE_KEY, REFRESH_TOKEN_STORAGE_KEY } from '../../constants';
+import { ACCESS_TOKEN_STORAGE_KEY, FCM_TOKEN_STORAGE_KEY, REFRESH_TOKEN_STORAGE_KEY } from '../../constants';
 import { useLazySubscribeToPersonalTopicsQuery } from '../../api/notifications';
 import { useLazyLogInQuery } from '../../api/auth';
 
@@ -78,7 +78,10 @@ const AuthView: React.FC = () => {
         throw new Error("Cannot get FCM Token");
       }
 
-      //7. Register user to its topics.
+      //7. Store FCMToken
+      await AsyncStorage.setItem(FCM_TOKEN_STORAGE_KEY, FCMToken);
+
+      //8. Register user to its topics.
       await triggerNotificationSuscribe(FCMToken);
     } catch (err) {
       console.error(err);
