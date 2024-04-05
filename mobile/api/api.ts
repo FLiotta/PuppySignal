@@ -48,7 +48,7 @@ const baseQueryWithReauth: BaseQueryFn<
     }
 
     const refreshResult = await baseQuery({
-      url: config.API_URL + '/oauth/jwt/refresh',
+      url: config.API_URL + 'oauth/jwt/refresh',
       method: "POST",
       headers: {
         'refresh-token': oldRefreshToken

@@ -26,7 +26,7 @@ const PetProfileView: React.FC<Props> = ({ navigation, route }) => {
   }
 
   const onLocationsPress = () => {
-    navigation.navigate("PetLocations", { id: 16 });
+    navigation.navigate("PetLocations", { id: route.params.id });
   }
 
   return (

@@ -27,7 +27,7 @@ export default StyleSheet.create({
   notificationsView: {
     marginBottom: 55,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     flexGrow: 1
   },
   notificationEmptyStatus: {
