@@ -129,7 +129,12 @@ def create_pet(
     response_model=PetSchema,
     dependencies=[Depends(protected_route), Depends(Limiter("5/minute"))],
 )
-def get_pet_by_id(pet_id: int, db: Session = Depends(get_db), u=Depends(get_user)):
+def get_pet_by_id(
+  pet_id: int, 
+  db: Session = Depends(get_db), 
+  u=Depends(get_user),
+  settings: Settings = Depends(get_settings)
+  ):
     pet = (
         db.query(Pet)
         .filter((Pet.id == pet_id) & (Pet.owners.any(id=u["id"])))
@@ -140,6 +145,8 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db), u=Depends(get_user
 
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
+    
+    pet.profile_picture = f"https://{settings.s3_bucket}.s3.amazonaws.com/{pet.profile_picture}"
 
     return pet
 

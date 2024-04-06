@@ -83,6 +83,9 @@ def get_user_pets(
         db.query(func.count(Pet.id)).filter(Pet.owners.any(id=u["id"])).scalar()
     )
 
+    for pet in pets:
+      pet.profile_picture = f"https://{settings.s3_bucket}.s3.amazonaws.com/{pet.profile_picture}"
+
     return {"data": pets, "total": pets_count}
 
 
