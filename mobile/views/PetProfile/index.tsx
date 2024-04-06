@@ -13,6 +13,7 @@ import Button from '../../components/Button';
 
 // @ Own
 import styles from './styles';
+import { useEffect } from 'react';
 
 
 type Props = NativeStackScreenProps<PetStackParamList, 'PetProfile'>;
@@ -29,15 +30,17 @@ const PetProfileView: React.FC<Props> = ({ navigation, route }) => {
     navigation.navigate("PetLocations", { id: route.params.id });
   }
 
+  useEffect(() => {
+    console.log({data})
+  }, [data])
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.wrapper}>
         <View style={styles.profileCard}>
           <View style={styles.profileCardAvatarWrapper}>
             <Image
-              source={{
-                uri: 'https://petsname.s3.us-east-2.amazonaws.com/' + data?.profile_picture
-              }}
+              source={{ uri: data?.profile_picture }}
               style={styles.profileCardAvatar}
             />
           </View>

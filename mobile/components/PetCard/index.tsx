@@ -37,9 +37,7 @@ const PetCard: React.FC<PetCardProps> = ({
         <View style={styles.photoContainer}>
           <Image
             style={styles.photo}
-            source={{
-              uri: 'https://petsname.s3.us-east-2.amazonaws.com/' + pet.profile_picture
-            }}
+            source={{ uri: pet?.profile_picture }}
           />
           <Text style={styles.specieBadge}>{species[pet.specie.id]}</Text>
         </View>
@@ -48,7 +46,7 @@ const PetCard: React.FC<PetCardProps> = ({
             <Text style={styles.name}>{pet.name} {pet.id}</Text>
             {pet.lost_since && <Text style={styles.missing}> (missing)</Text>}
           </View>
-          <Text style={styles.description} numberOfLines={2}>{pet.extra}</Text>
+          <Text style={styles.description} numberOfLines={2}>{pet.description}</Text>
           <View style={styles.QRCodeWrap}>
             <FontAwesome6 name="qrcode" style={styles.QRCode} onPress={onQRPRess} />
           </View>

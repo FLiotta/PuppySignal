@@ -1,6 +1,6 @@
 // @Packages
 import { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator, FlatList } from 'react-native';
+import { View, Text, ActivityIndicator, FlatList, RefreshControl } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 // @Project
@@ -17,7 +17,7 @@ import styles from './styles';
 type IProps = NativeStackScreenProps<PetStackParamList, 'MyPets'>;
 
 const PetsView: React.FC<IProps> = ({ navigation }) => {
-  const { data, isLoading, isFetching } = useGetPetsQuery({ offset: 0, limit: 50});
+  const { data, isLoading, isFetching, refetch } = useGetPetsQuery({ offset: 0, limit: 50});
   
   const handlePetCardPress = (id: number) => {
     navigation.navigate("PetProfile", { id })
@@ -39,6 +39,9 @@ const PetsView: React.FC<IProps> = ({ navigation }) => {
         flexGrow: 1,
         paddingBottom: 50
       }}
+      refreshControl={
+        <RefreshControl refreshing={!isLoading && isFetching} onRefresh={refetch} colors={[PRIMARY_COLOR]}/>
+      }
       keyExtractor={item => item.uuid}
       ListHeaderComponent={() => (
         <View>
