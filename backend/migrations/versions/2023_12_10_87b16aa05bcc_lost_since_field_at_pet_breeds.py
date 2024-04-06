@@ -31,4 +31,7 @@ def upgrade():
 
 
 def downgrade():
-    pass
+    op.drop_table("breed")
+
+    op.drop_column("pet", "breed_id")
+    op.drop_column("pet", "lost_since")

@@ -17,26 +17,30 @@ depends_on = None
 
 
 def upgrade():
-    # Constraints
-    # Pet specie_id constraint
+    # Relationships
+  
+
+    # Pet -> specie_id relationship
     op.add_column(
       "pet",
       sa.Column("specie_id", sa.Integer(), sa.ForeignKey("specie.id"))
     )
     
-    # Code pet_id constraint
+    # Code -> pet_id relationship
     op.add_column(
       "code",
       sa.Column("pet_id", sa.Integer(), sa.ForeignKey("pet.id"))
     )
 
-    # Notification scanned_pet_id constraint
+    # Notification -> scanned_pet_id relationship
     op.add_column(
       "notification",
       sa.Column("scanned_pet_id", sa.Integer(), sa.ForeignKey("pet.id"))
     )
 
-    # Relations
+    # Relations tables
+  
+
     # UserAuth
     op.create_table(
       "user_auth",
@@ -90,4 +94,12 @@ def upgrade():
     )
 
 def downgrade():
-    pass
+    op.drop_table("refresh_token")
+    op.drop_table("pet_location")
+    op.drop_table("user_notification")
+    op.drop_table("user_pet")
+    op.drop_table("user_auth")
+
+    op.drop_column('pet', 'specie_id')
+    op.drop_column('code', 'pet_id')
+    op.drop_column('notification', 'scanned_pet_id')

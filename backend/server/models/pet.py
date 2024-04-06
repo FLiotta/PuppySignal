@@ -19,7 +19,7 @@ class Pet(Base):
     uuid = Column(String(80), default=get_uuid, nullable=False)
     name = Column(String(50), nullable=False)
     profile_picture = Column(String(150))
-    extra = Column(String(220))
+    description = Column(String(220))
     color = Column(String(50))
     specie_id = Column(Integer, ForeignKey("specie.id"))
     breed_id = Column(Integer, ForeignKey("breed.id"))

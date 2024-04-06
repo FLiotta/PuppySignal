@@ -13,7 +13,7 @@ class PetSchema(BaseModel):
     uuid: uuid.UUID
     name: str
     profile_picture: Optional[str]
-    extra: Optional[str]
+    description: Optional[str]
     color: Optional[str]
     specie: Optional[SpecieSchema]
     breed: Optional[BreedSchema]

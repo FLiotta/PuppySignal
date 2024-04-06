@@ -26,7 +26,10 @@ def upgrade():
         sa.Column("updated_at", sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint("id")
     )
+    op.create_unique_constraint('constraint_fcmtoken_unique_fcmtoken', 'fcmtoken', ['fcm_token'])
 
 
 def downgrade():
-    pass
+    op.drop_constraint('constraint_fcmtoken_unique_fcmtoken', type_='unique')
+
+    op.drop_table('fcmtoken')

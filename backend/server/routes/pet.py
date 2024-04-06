@@ -1,6 +1,7 @@
 import boto3
 import cv2
 import numpy
+import logging
 
 from datetime import datetime
 from typing import List, Optional
@@ -86,7 +87,7 @@ def create_pet(
 
         try:
             new_pet = Pet(
-                name=name, extra=description, specie_id=specie_id, breed_id=breed_id
+                name=name, description=description, specie_id=specie_id, breed_id=breed_id
             )
 
             db.add(new_pet)
@@ -115,8 +116,11 @@ def create_pet(
             db.commit()
 
             return new_pet
-        except Exception:
+        except Exception as e:
             db.rollback()
+
+            logging.error(e)
+
             raise HTTPException(status_code=500, detail="Pet can't be created.")
 
 
@@ -148,7 +152,7 @@ def get_pet_by_id(pet_id: int, db: Session = Depends(get_db), u=Depends(get_user
 def update_get_pet_by_id(
     body: UpdatePetBody, pet_id: int, db: Session = Depends(get_db), u=Depends(get_user)
 ):
-    if not body.name and not body.extra and not body.specie_id:
+    if not body.name and not body.description and not body.specie_id:
         raise HTTPException(status_code=400, detail="Params not provided.")
 
     pet = (
@@ -162,8 +166,8 @@ def update_get_pet_by_id(
         if body.name:
             pet.name = body.name
 
-        if body.extra:
-            pet.extra = body.extra
+        if body.description:
+            pet.description = body.description
 
         if body.specie_id:
             pet.specie_id = body.specie_id
