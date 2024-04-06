@@ -69,7 +69,7 @@ const PetProfileView: React.FC<Props> = ({ navigation, route }) => {
             <View>
               <Text style={styles.title}>Description</Text>
               <Text style={[styles.value]}>
-                {isLoading ? "..." : data?.extra}
+                {isLoading ? "..." : data?.description}
               </Text>
             </View>
           </View>

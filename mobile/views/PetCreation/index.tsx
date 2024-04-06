@@ -1,5 +1,4 @@
 // @ Packages
-import * as yup from 'yup';
 import { useState } from 'react';
 import {
   View, 
@@ -9,9 +8,11 @@ import {
   TouchableOpacity, 
   TextInput
 } from 'react-native';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Toast from 'react-native-toast-message';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Formik, FormikProps } from 'formik';
 import { Dropdown } from 'react-native-element-dropdown';
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker';
 
@@ -46,22 +47,24 @@ const PetCreationView: React.FC<IProps> = ({ navigation }) => {
   const [selectedSpecie, setSelectedSpecie] = useState<ISpecie | undefined>()
   const [selectedBreed, setSelectedBreed] = useState<IBreed | undefined>()
 
-  const initialValues: FormValues = {
-    name: '',
-    description: '',
-    specie_id: -1,
-    breed_id: -1
-  }
+  const formSchema = z.object({
+    description: z.string().min(5),
+    name: z.string().min(2),
+    specie_id: z.number().min(0),
+    breed_id: z.number()
+  })
 
-  const validationSchema = yup.object().shape({
-    description: yup.string().required(),
-    name: yup.string().required(),
-    specie_id: yup.number().min(0).required(),
-    breed_id: yup.number()
+  const { control, handleSubmit, formState, resetField } = useForm<FormValues>({
+    defaultValues: {
+      name: '',
+      description: '',
+      specie_id: -1,
+      breed_id: -1
+    },
+    resolver: zodResolver(formSchema),
   });
 
-
-  const handleFormSubmit = (formData: FormValues) => {
+  const onSubmit = (formData: FormValues) => {
     if(!photo) return
 
     const { name, description, breed_id, specie_id } = formData;
@@ -131,92 +134,109 @@ const PetCreationView: React.FC<IProps> = ({ navigation }) => {
           }
         </TouchableOpacity>
 
-        <Formik
-          validateOnMount
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleFormSubmit}
-        >
-          {(formikProps: FormikProps<FormValues>) => (
-            <View>
-              <View style={{width: '100%' }}>
-                <Text>Name</Text>
-                <TextInput
-                  editable={!petMutation.isLoading}
-                  placeholder='ex. Remo'
-                  style={styles.textInput} 
-                  onChangeText={formikProps.handleChange('name')}
-                  onBlur={formikProps.handleBlur('name')}
-                  value={formikProps.values.name}
-                />
-              </View>
-              <View style={{width: '100%', marginTop: 25 }}>
-                <Text>Specie</Text>
-                <Dropdown
-                  data={species.data || []}
-                  search
-                  maxHeight={300}
-                  labelField="name"
-                  valueField="id"
-                  placeholder={'Select specie'}
-                  searchPlaceholder="Search..."
-                  disable={petMutation.isLoading || species.isLoading}
-                  value={selectedSpecie}
-                  onChange={(specie: ISpecie) => {
-                    formikProps.setFieldValue('specie_id', specie.id)
-                    formikProps.setFieldValue('breed_id', undefined)
-
-                    setSelectedSpecie(specie)
-                    setSelectedBreed(undefined);
-
-                    triggerGetBreeds(specie.id);
-                  }}
-                  style={styles.dropdownInput}
-                />
-              </View>
-              <View style={{width: '100%', marginTop: 25 }}>
-                <Text>Breed</Text>
-                <Dropdown
-                  data={breeds.data || []}
-                  search
-                  maxHeight={300}
-                  labelField="name"
-                  valueField="id"
-                  placeholder={'Select breed'}
-                  searchPlaceholder="Search..."
-                  value={selectedBreed}
-                  disable={!selectedSpecie || petMutation.isLoading || breeds.isLoading}
-                  onChange={(breed: IBreed) => {
-                    formikProps.setFieldValue('breed_id', breed.id)
-                    setSelectedBreed(breed)
-                  }}
-                  style={!selectedSpecie 
-                    ? [styles.dropdownInput, styles.dropdownInputDisabled] 
-                    : styles.dropdownInput
-                  }
-                />
-              </View>
-              <View style={{width: '100%', marginTop: 25 }}>
-                <Text>Description</Text>
-                <TextInput 
-                  multiline
-                  editable={!petMutation.isLoading}
-                  style={styles.textInput}
-                  onChangeText={formikProps.handleChange('description')}
-                  onBlur={formikProps.handleBlur('description')}
-                  value={formikProps.values.description}
-                />
-              </View>
-              <View style={{ width: "100%", marginTop: 25}}>
-                <Button
-                  disabled={petMutation.isLoading || !formikProps.isValid || !photo}
-                  text="Create pet profile"
-                  onPress={() => formikProps.handleSubmit()}
-                />
-              </View>
+        <Controller
+          control={control}
+          name="name"
+          render={({field: { onChange, onBlur, value}}) => (
+            <View style={{width: '100%' }}>
+              <Text>Name</Text>
+              <TextInput
+                style={styles.textInput}
+                value={value}
+                onChangeText={(_value) => onChange(_value)}
+                onBlur={onBlur}
+              />
             </View>
           )}
-        </Formik>
+        />
+
+        <Controller
+          control={control}
+          name="specie_id"
+          render={({field: { onChange }}) => (
+            <View style={{width: '100%', marginTop: 25 }}>
+              <Text>Specie</Text>
+              <Dropdown
+                data={species.data || []}
+                search
+                maxHeight={300}
+                labelField="name"
+                valueField="id"
+                placeholder={'Select specie'}
+                searchPlaceholder="Search..."
+                disable={petMutation.isLoading || species.isLoading}
+                value={selectedSpecie}
+                onChange={(specie: ISpecie) => {
+                  onChange(specie.id);
+                  setSelectedSpecie(specie);
+
+                  // When we change the specie, we should reset the breed_id in case there was one already
+                  // and request the new breeds for given specie
+                  resetField('breed_id')
+                  setSelectedBreed(undefined);
+                  triggerGetBreeds(specie.id);
+                }}
+                style={styles.dropdownInput}
+              />
+            </View>
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="breed_id"
+          render={({field: { onChange }}) => (
+            <View style={{width: '100%', marginTop: 25 }}>
+              <Text>Breed</Text>
+              <Dropdown
+                data={breeds.data || []}
+                search
+                maxHeight={300}
+                labelField="name"
+                valueField="id"
+                placeholder={'Select breed'}
+                searchPlaceholder="Search..."
+                value={selectedBreed}
+                disable={!selectedSpecie || petMutation.isLoading || breeds.isLoading}
+                onChange={(breed: IBreed) => {
+                  onChange(breed.id)
+                  setSelectedBreed(breed)
+                }}
+                style={!selectedSpecie 
+                  ? [styles.dropdownInput, styles.dropdownInputDisabled] 
+                  : styles.dropdownInput
+                }
+              />
+            </View>
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="description"
+          render={({field: { onChange, onBlur, value}}) => (
+            <View style={{width: '100%', marginTop: 25 }}>
+              <Text>Description</Text>
+              <TextInput
+                multiline
+                editable={!petMutation.isLoading}
+                style={styles.textInput}
+                value={value}
+                onChangeText={(_value) => onChange(_value)}
+                onBlur={onBlur}
+              />
+            </View>
+          )}
+        />
+
+        <View style={{ width: "100%", marginTop: 25}}>
+          <Button
+            disabled={petMutation.isLoading || !formState.isValid || !photo}
+            text="Create pet profile"
+            onPress={handleSubmit(onSubmit)}
+          />
+        </View>
+        
       </View>
     </ScrollView>
   )

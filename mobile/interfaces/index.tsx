@@ -28,7 +28,7 @@ export interface IPet {
   uuid: string
   name: string
   profile_picture?: string
-  extra?: string
+  description?: string
   specie: ISpecie
   breed: IBreed
   lost_since?: string

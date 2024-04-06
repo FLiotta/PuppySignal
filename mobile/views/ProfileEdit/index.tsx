@@ -1,11 +1,12 @@
 // @Packages
-import * as yup from 'yup';
 import { View, Text, TextInput } from 'react-native';
-import { Formik, FormikProps } from 'formik';
+import { useForm, Controller } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 // @Project
 import Button from '../../components/Button';
-import { useGetProfileQuery, useUpdateProfileMutation } from '../../api/profile';
+import { useUpdateProfileMutation } from '../../api/profile';
 
 // @Own
 import styles from './styles';
@@ -23,25 +24,28 @@ interface FormValues {
 }
 
 const ProfileEditView: React.FC<IProps> = ({ navigation }) => {
-  const { data: profile } = useGetProfileQuery();
-  const [triggerUpdateProfileMutation, updateProfileMutation] = useUpdateProfileMutation();
-
-  const initialValues: FormValues = {
-    first_name: '',
-    last_name: '',
-    phone_number: ''
-  }
-
-
-  // TODO: Validar que solo UNO de algunos de estos fields este setado.
-  const validationSchema = yup.object().shape({
-    first_name: yup.string().required(),
-    last_name: yup.string().required(),
-    phone_number: yup.string().required(),
+  const formSchema = z
+    .object({
+      first_name: z.string(),
+      last_name: z.string(),
+      phone_number: z.string()
+    })
+    .partial()
+    .refine(({ first_name, last_name, phone_number }) => first_name || last_name || phone_number)
+  
+  const { control, handleSubmit, formState } = useForm<FormValues>({
+    defaultValues: {
+      first_name: '',
+      last_name: '',
+      phone_number: '',
+    },
+    reValidateMode: "onChange",
+    resolver: zodResolver(formSchema),
   });
 
+  const [triggerUpdateProfileMutation, updateProfileMutation] = useUpdateProfileMutation();
 
-  const handleFormSubmit = (formValues: FormValues) => {
+  const onSubmit = (formValues: FormValues) => {
     triggerUpdateProfileMutation(formValues)
       .unwrap()
       .then(() => {
@@ -73,51 +77,62 @@ const ProfileEditView: React.FC<IProps> = ({ navigation }) => {
       </Text>
 
       <View style={styles.card}>
-        <Formik
-          validateOnMount
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleFormSubmit}
-        >
-          {(formikProps: FormikProps<FormValues>) => (
-            <View>
-              <View style={{width: '100%' }}>
-                <Text>Firstname</Text>
-                <TextInput
-                  placeholder={profile?.first_name}
-                  style={styles.textInput} 
-                  onChangeText={formikProps.handleChange('first_name')}
-                  onBlur={formikProps.handleBlur('first_name')}
-                />
-              </View>
-              <View style={{width: '100%', marginTop: 25, }}>
-                <Text>Lastname</Text>
-                <TextInput
-                  placeholder={profile?.last_name}
-                  style={styles.textInput} 
-                  onChangeText={formikProps.handleChange('last_name')}
-                  onBlur={formikProps.handleBlur('last_name')}
-                />
-              </View>
-              <View style={{width: '100%', marginTop: 25, }}>
-                <Text>Phone number</Text>
-                <TextInput
-                  placeholder={profile?.phone_number}
-                  style={styles.textInput} 
-                  onChangeText={formikProps.handleChange('phone_number')}
-                  onBlur={formikProps.handleBlur('phone_number')}
-                />
-              </View>
-              <View style={{ height: 50, marginTop: 40 }}>
-                <Button
-                  text='Update profile'
-                  disabled={updateProfileMutation.isLoading || !formikProps.isValid}
-                  onPress={() => formikProps.handleSubmit()}
-                />
-              </View>
+        <Controller
+          control={control}
+          name="first_name"
+          render={({field: { onChange, onBlur, value}}) => (
+            <View style={{width: '100%' }}>
+              <Text>Firstname</Text>
+              <TextInput
+                style={styles.textInput}
+                value={value}
+                onChangeText={(_value) => onChange(_value)}
+                onBlur={onBlur}
+                maxLength={20}
+              />
             </View>
           )}
-        </Formik>
+        />
+        <Controller
+          control={control}
+          name="last_name"
+          render={({field: { onChange, onBlur, value}}) => (
+            <View style={{width: '100%', marginTop: 25 }}>
+              <Text>Lastname</Text>
+              <TextInput
+                style={styles.textInput}
+                value={value}
+                onChangeText={(_value) => onChange(_value)}
+                onBlur={onBlur}
+                maxLength={20}
+              />
+            </View>
+          )}
+        />
+        <Controller
+          control={control}
+          name="phone_number"
+          render={({field: { onChange, onBlur, value}}) => (
+            <View style={{width: '100%', marginTop: 25 }}>
+              <Text>Phone number</Text>
+              <TextInput
+                style={styles.textInput}
+                value={value}
+                onChangeText={(_value) => onChange(_value)}
+                onBlur={onBlur}
+                keyboardType='numeric'
+                maxLength={50}
+              />
+            </View>
+          )}
+        />
+        <View style={{ height: 50, marginTop: 40 }}>
+          <Button
+            text='Update profile'
+            disabled={updateProfileMutation.isLoading || !formState.isValid}
+            onPress={handleSubmit(onSubmit)}
+          />
+        </View>
       </View>
     </View>
   )

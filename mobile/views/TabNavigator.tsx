@@ -52,6 +52,7 @@ const TabNavigator: React.FC = () => {
             height: 60,
           },
           tabBarShowLabel: false,
+          tabBarHideOnKeyboard: true
         })}
       >
         <Tab.Screen name={'Home'} component={HomeView} />
