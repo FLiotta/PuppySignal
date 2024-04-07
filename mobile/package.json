@@ -3,11 +3,23 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "android:staging": "react-native run-android --mode=stagingdebug --appIdSuffix staging",
+    "android:staging-release": "react-native run-android --mode=stagingrelease --appIdSuffix staging",
+    "android:dev": "react-native run-android --mode=developmentdebug --appIdSuffix development",
+    "android:dev-release": "react-native run-android --mode=developmentrelease --appIdSuffix development",
+    "android:prod": "react-native run-android --mode=productiondebug",
+    "android:prod-release": "react-native run-android --mode=productionrelease",
+    "androidProductionReleaseBundle": "cd android && ./gradlew bundleProductionRelease && killall -9 java && open ./android/app/build/outputs/bundle/production/release",
+    "androidDevelopmentDebugAPK": "cd android && ./gradlew assembleDevelopmentDebug && killall -9 java && open ./android/app/build/outputs/apk/development/debug",
+    "androidDevelopmentReleaseAPK": "cd android && ./gradlew assembleDevelopmentRelease && killall -9 java && open ./android/app/build/outputs/apk/development/release",
+    "androidProductionDebugAPK": "cd android && ./gradlew assembleProductionDebug && killall -9 java && open ./android/app/build/outputs/apk/production/debug",
+    "androidProductionReleaseAPK": "cd android && ./gradlew assembleProductionRelease && killall -9 java && open ./android/app/build/outputs/apk/production/release",
+    "androidStagingDebugAPK": "cd android && ./gradlew assembleStagingDebug && killall -9 java && open ./android/app/build/outputs/apk/staging/debug",
+    "androidStagingReleaseAPK": "cd android && ./gradlew assembleStagingRelease && killall -9 java && open ./android/app/build/outputs/apk/staging/release"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",

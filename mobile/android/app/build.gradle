@@ -74,6 +74,22 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
+    flavorDimensions "default"
+    productFlavors {
+        production {
+            applicationIdSuffix ""
+            resValue "string", "build_config_package", "com.puppysignal"
+        }
+        staging {
+            applicationIdSuffix ".staging"
+            resValue "string", "build_config_package", "com.puppysignal"
+        }
+        development {
+            applicationIdSuffix ".development"
+            resValue "string", "build_config_package", "com.puppysignal"
+        }
+    }
+
     namespace "com.puppysignal"
     defaultConfig {
         applicationId "com.puppysignal"
@@ -95,6 +111,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            matchingFallbacks = ['debug', 'release']
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
@@ -125,6 +142,14 @@ apply from: file("../../node_modules/@react-native-community/cli-platform-androi
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
 
 // react-native-config multiple envs configuration
+project.ext.envConfigFiles = [
+   productiondebug: ".env.production",
+   productionrelease: ".env.production",
+   developmentdebug: ".env.development",
+   developmentrelease: ".env.development",
+   stagingdebug: ".env.staging",
+   stagingrelease: ".env.staging",
+]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 apply plugin: 'com.google.gms.google-services'
