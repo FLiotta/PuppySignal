@@ -74,13 +74,22 @@ const FoundPage = () => {
 
         setLocationModalLoading(true);
 
-        shareLocation(petFound?.code, "1.5093", "1.4029")
-            .then(() => {
-                setLocationModalLoading(false)
-                setLocationModalVisible(false)
-                setLocationModalSuccess(true)
-            })
-            .catch(() => setLocationModalLoading(false))
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                geolocationPosition => {
+                    shareLocation(petFound?.code, geolocationPosition.coords.latitude, geolocationPosition.coords.longitude)
+                        .then(() => {
+                            setLocationModalLoading(false)
+                            setLocationModalVisible(false)
+                            setLocationModalSuccess(true)
+                        })
+                        .catch(() => setLocationModalLoading(false))
+                },
+                () => {
+                    setLocationModalLoading(false);
+                }
+            );
+        }
     }
 
     return (
