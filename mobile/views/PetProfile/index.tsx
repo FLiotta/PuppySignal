@@ -5,6 +5,7 @@ import QR from 'react-native-qrcode-svg';
 import dayjs from 'dayjs';
 
 // @Project
+import FallbackColor from '../../assets/fallback.png';
 import { PetStackParamList } from '../PetStack';
 import Map from '../../components/Map';
 import { useGetPetByIdQuery, useToggleLostMutation } from '../../api/pet';
@@ -40,7 +41,11 @@ const PetProfileView: React.FC<Props> = ({ navigation, route }) => {
         <View style={styles.profileCard}>
           <View style={styles.profileCardAvatarWrapper}>
             <Image
-              source={{ uri: data?.profile_picture }}
+              source={
+                data?.profile_picture
+                  ? { uri: data?.profile_picture }
+                  : FallbackColor
+              }
               style={styles.profileCardAvatar}
             />
           </View>
