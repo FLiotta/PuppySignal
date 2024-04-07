@@ -149,7 +149,7 @@ const FoundPage = () => {
                                 <div className='foundpage-found__header-information'>
                                     <h3 className='mt-0'>{petFound.pet.name} </h3>
                                     <p>Specie: {petFound.pet.specie.name}</p>
-                                    <p>Race: {petFound.pet.breed?.name || 'Unknown'}</p>
+                                    <p>Breed: {petFound.pet.breed?.name || 'Unknown'}</p>
                                     <p>Lost since: {
                                         petFound.pet?.lost_since
                                             ? dayjs(petFound.pet.lost_since).format("DD/MM/YYYY")
