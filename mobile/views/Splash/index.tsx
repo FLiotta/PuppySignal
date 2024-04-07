@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // @Project
 import { setAuthenticated } from '../../app.slice';
 import { useAppDispatch } from '../../store';
-import Logo from '../../assets/logo-alt.png';
+import Logo from '../../assets/logo.png';
 import { isAuthTokenExpired } from '../../utils';
 import { useLazyRefreshQuery } from '../../api/auth';
 import { ACCESS_TOKEN_STORAGE_KEY, REFRESH_TOKEN_STORAGE_KEY } from '../../constants';

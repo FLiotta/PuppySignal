@@ -1,9 +1,10 @@
 // @Packages
 import { StyleSheet } from 'react-native';
+import { PRIMARY_COLOR } from '../../styles';
 
 export default StyleSheet.create({
   container: {
-    backgroundColor: '#6377e4',
+    backgroundColor: PRIMARY_COLOR,
     height: '100%',
     width: '100%',
     flex: 1,
@@ -12,7 +13,7 @@ export default StyleSheet.create({
   },
   logo: {
     width: 155,
-    height: 110
+    height: 115
   },
   name: {
     marginTop: 10,

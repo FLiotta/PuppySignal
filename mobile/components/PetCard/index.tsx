@@ -43,7 +43,7 @@ const PetCard: React.FC<PetCardProps> = ({
         </View>
         <View style={styles.right}>
           <View style={styles.rightHeader}>
-            <Text style={styles.name}>{pet.name} {pet.id}</Text>
+            <Text style={styles.name}>{pet.name}</Text>
             {pet.lost_since && <Text style={styles.missing}> (missing)</Text>}
           </View>
           <Text style={styles.description} numberOfLines={2}>{pet.description}</Text>
