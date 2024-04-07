@@ -1,7 +1,7 @@
+// @Packages
 import axios from "axios";
-import config from "config";
+
 
 export const http = axios.create({
-    baseURL: config.API_BASE_PATH
+    baseURL: import.meta.env.VITE_API_BASE_PATH
 });
-
