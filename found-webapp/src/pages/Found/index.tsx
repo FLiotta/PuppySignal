@@ -11,7 +11,6 @@ import { IScanPetResponse } from 'interfaces/pet';
 
 // @Own
 import './styles.scss';
-import { assert } from 'console';
 
 const FoundPage = () => {
     const [petFound, setPetFound] = useState<IScanPetResponse | null>(null)
@@ -64,14 +63,6 @@ const FoundPage = () => {
             })
     }
 
-    const getLocation = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(console.log);
-        } else {
-            console.log(":(")
-        }
-    }
-
     const handleCloseLocationModal = () => {
         setLocationModalVisible(false)
     }
@@ -83,22 +74,13 @@ const FoundPage = () => {
 
         setLocationModalLoading(true);
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                geolocationPosition => {
-                    shareLocation(petFound?.code, geolocationPosition.coords.latitude, geolocationPosition.coords.longitude)
-                        .then(() => {
-                            setLocationModalLoading(false)
-                            setLocationModalVisible(false)
-                            setLocationModalSuccess(true)
-                        })
-                        .catch(() => setLocationModalLoading(false))
-                },
-                () => {
-                    setLocationModalLoading(false);
-                }
-            );
-        }
+        shareLocation(petFound?.code, "1.5093", "1.4029")
+            .then(() => {
+                setLocationModalLoading(false)
+                setLocationModalVisible(false)
+                setLocationModalSuccess(true)
+            })
+            .catch(() => setLocationModalLoading(false))
     }
 
     return (
@@ -154,7 +136,7 @@ const FoundPage = () => {
                     ) : (
                         <div className='foundpage-found'>
                             <div className='foundpage-found__header'>
-                                <img src="https://i.imgur.com/3Fi8UmQ.jpg" width={150} height={150} />
+                                <img src={petFound.pet.profile_picture} width={150} height={150} />
                                 <div className='foundpage-found__header-information'>
                                     <h3 className='mt-0'>{petFound.pet.name} </h3>
                                     <p>Specie: {petFound.pet.specie.name}</p>

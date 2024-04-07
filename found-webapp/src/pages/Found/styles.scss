@@ -1,8 +1,8 @@
-$main_purple_color: #8779f4;
+$main_purple_color: #6377e4;
+$main_purple_color_darker: #4d5db3;
 
 .congratulations-text {
     text-align: center;
-    line-height: 0.5;
     margin-top: 25px;
     color: $main_purple_color;
 }
@@ -18,16 +18,16 @@ $main_purple_color: #8779f4;
 .btn {
     width: 125px;
     height: 40px;
-    border: 1px solid #fff;
-    background-color: #fff;
+    border: 0;
+    color: #fff;
+    background-color: $main_purple_color;
     cursor: pointer;
     border-radius: 6px;
     align-self: end;
-    color: $main_purple_color;
 
     &:hover, &:disabled {
-        background-color: #c9c9c9;
-        color: $main_purple_color;
+        opacity: 0.8;
+        color: #eee;
         border-color: #c9c9c9;
     }
 
@@ -39,16 +39,16 @@ $main_purple_color: #8779f4;
 .btn-alt {
     width: 125px;
     height: 40px;
-    border: 1px solid #fff;
-    background-color: transparent;
+    border: 0;
+    background-color: $main_purple_color;
     cursor: pointer;
     border-radius: 6px;
     align-self: end;
     color: #fff;
 
     &:hover, &:disabled {
-        background-color: transparent;
-        color: #c9c9c9;
+        opacity: 0.8;
+        color: #eee;
         border-color: #c9c9c9;
     }
 
@@ -85,15 +85,15 @@ $main_purple_color: #8779f4;
 
     &-toast {
         position: absolute;
-        background: #8779f4;
-        width: 100%;
+        background: $main_purple_color_darker;
+        width: 95%;
+        margin-bottom: 15px;
         padding: 15px;
         border-radius: 12px;
         box-shadow: 1px 2px 36px -5px rgba(0,0,0,.5);
         border: 5px solid #fff;
         overflow: hidden;
         color: #fff;
-        line-height: 0.5;
         transition: 1s all;
 
         &__buttons {
@@ -137,14 +137,15 @@ $main_purple_color: #8779f4;
         &__lookupbtn {
             width: 75px;
             height: 40px;
-            border: 1px solid $main_purple_color;
-            background-color: transparent;
+            border: 0;
+            background-color: $main_purple_color;
+            color: #fff;
             cursor: pointer;
             border-radius: 6px;
             align-self: end;
         
             &:hover {
-                background-color: $main_purple_color;
+                background-color: $main_purple_color_darker;
                 color: #fff;
             }
         }
@@ -218,6 +219,7 @@ $main_purple_color: #8779f4;
         width: 100%;
         height: 100%;
         justify-content: center;
+        border-radius: 0;
 
         &-logo {
             position: absolute;
