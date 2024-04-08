@@ -69,6 +69,19 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+// react-native-config multiple envs configuration
+project.ext.envConfigFiles = [
+   productiondebug: ".env.production",
+   productionrelease: ".env.production",
+   developmentdebug: ".env.development",
+   developmentrelease: ".env.development",
+   stagingdebug: ".env.staging",
+   stagingrelease: ".env.staging",
+]
+
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -107,6 +120,15 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+          if (project.env.RELEASE_STORE_FILE) {
+            storeFile file(project.env.RELEASE_STORE_FILE)
+            storePassword project.env.RELEASE_STORE_PASSWORD
+
+            keyAlias project.env.RELEASE_KEYSTORE_PASSWORD
+            keyPassword project.env.RELEASE_KEYSTORE_ALIAS
+          }
+        }
     }
     buildTypes {
         debug {
@@ -116,7 +138,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -140,16 +162,5 @@ dependencies {
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
-
-// react-native-config multiple envs configuration
-project.ext.envConfigFiles = [
-   productiondebug: ".env.production",
-   productionrelease: ".env.production",
-   developmentdebug: ".env.development",
-   developmentrelease: ".env.development",
-   stagingdebug: ".env.staging",
-   stagingrelease: ".env.staging",
-]
-apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 apply plugin: 'com.google.gms.google-services'
