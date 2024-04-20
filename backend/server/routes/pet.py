@@ -45,9 +45,11 @@ def create_pet(
     # Assigns an owner
     # Saves and upload the image
     # Assigns the image path to pet
+
+    # @TODO: Endpoint takes a bit to answer back due to image processing and uploading
+    # It could be done on a background task, and remove it from here
+
     try:
-        # TODO: Aca hubo cambio, validar que siga funcionando
-        # from bubffer de fromstring
         uploaded_pet_avatar = cv2.imdecode(
             numpy.frombuffer(memoryview(file.file.read()), numpy.uint8),
             cv2.IMREAD_UNCHANGED,
