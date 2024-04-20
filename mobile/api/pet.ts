@@ -5,10 +5,10 @@ import { ILocation, IPet, IQRCode } from '../interfaces';
 import api from './api';
 
 
-interface ICreatePetArgs {
+export interface ICreatePetArgs {
   name: string,
   specie_id: number,
-  breed_id: number,
+  breed_id?: number,
   description: string,
   file: {
     uri: string,
@@ -43,7 +43,10 @@ const petAPI = api.injectEndpoints({
         bodyFormData.append('description', args.description);
         bodyFormData.append('name', args.name);
         bodyFormData.append('specie_id', args.specie_id);
-        bodyFormData.append('breed_id', args.breed_id);
+
+        if (args.breed_id) {
+          bodyFormData.append('breed_id', args.breed_id);
+        }
 
         return {
           url: '/pet/',

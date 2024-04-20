@@ -21,7 +21,7 @@ import Button from '../../components/Button';
 import { PetStackParamList } from '../PetStack';
 import { IBreed, ISpecie } from '../../interfaces';
 import { useGetSpeciesQuery, useLazyGetBreedsQuery } from '../../api/data';
-import { useCreatePetMutation } from '../../api/pet';
+import { ICreatePetArgs, useCreatePetMutation } from '../../api/pet';
 
 // @ Own
 import styles from './styles';
@@ -69,15 +69,18 @@ const PetCreationView: React.FC<IProps> = ({ navigation }) => {
 
     const { name, description, breed_id, specie_id } = formData;
     
-    const createPetParams = {
+    const createPetParams: ICreatePetArgs = {
       name,
       description,
-      breed_id,
       specie_id,
       file: {
         uri: photo.path,
         mime: photo.mime
       }
+    }
+
+    if (breed_id !== -1) {
+      createPetParams["breed_id"] = breed_id
     }
   
     triggerCreatePet(createPetParams)
