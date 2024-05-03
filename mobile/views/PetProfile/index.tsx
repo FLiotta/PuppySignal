@@ -90,11 +90,13 @@ const PetProfileView: React.FC<Props> = ({ navigation, route }) => {
               <Text style={styles.title}>Missing</Text>
               <Text style={[styles.value]}>
                 {data?.lost_since
-                  ? `${data?.name} its been missing from its home since ${dayjs(data?.lost_since).format("DD/MM/YYYY [at] HH:mmA")}`
-                  : 'Notify that your pet is missing. When people scan its code, they will know for how long it has been out of the home.'
+                  ? `${data?.name} its been missing from its home since ${dayjs(data?.lost_since).format("DD/MM/YYYY [at] HH:mmA")}.
+                      \n\nYour contact information will be shared.`
+                  : `Notify that your pet is missing.
+                    \n\nWhen people scan its code, they will know for how long it has been out of the home, and your contact information will be displayed`
                 }
               </Text>
-              <View style={{ marginTop: 30 }}>
+              <View style={{ marginTop: 20 }}>
                 <Button
                   text={data?.lost_since ? `${data?.name} was found!` : `${data?.name} is missing!`} 
                   onPress={() => triggerLost(data!.id)}

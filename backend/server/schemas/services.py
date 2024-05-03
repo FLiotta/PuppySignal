@@ -76,5 +76,5 @@ class ScannedQRCodeOwnerResponse(BaseModel):
 
 class ScannedQRCodeResponse(BaseModel):
     pet: PetSchema
-    owners: List[ScannedQRCodeOwnerResponse]
+    owners: Optional[List[ScannedQRCodeOwnerResponse]]
     code: str

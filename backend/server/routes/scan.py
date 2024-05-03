@@ -78,7 +78,13 @@ def scan_qr_code(qr_code: str, db: Session = Depends(get_db)):
 
             del code.pet.owners
 
-            return {"code": code.code, "pet": code.pet, "owners": owners_list}
+            response = {"code": code.code, "pet": code.pet}
+
+            if code.pet.lost_since:
+                # Owners information is only retrieved if the pet is tagged as lost
+                response["owners"] = owners_list
+
+            return response
         except Exception as e:
             db.rollback()
             logging.error(f"Error scanning code: {e}")

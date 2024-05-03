@@ -153,19 +153,19 @@ const FoundPage = () => {
                                     <p>Lost since: {
                                         petFound.pet?.lost_since
                                             ? dayjs(petFound.pet.lost_since).format("DD/MM/YYYY")
-                                            : "Unknown"
+                                            : "Not marked as lost."
                                     }
                                     </p>
                                 </div>
                             </div>
                             <p className='foundpage-found__description'><small>{petFound.pet.extra}</small></p>
-                            <hr />
-                            {petFound.owners.map(owner => (
+                            {petFound?.owners && <hr />}
+                            {petFound?.owners?.map(owner => (
                                 <div className='foundpage-found__contact'>
                                     <p>Owner: {owner.first_name} {owner.last_name}</p>
                                     <ul>
-                                        <li>{owner.phone_number}</li>
                                         <li>{owner.email}</li>
+                                        {owner.phone_number && <li>{owner.phone_number}</li>}
                                     </ul>
                                 </div>
                             ))}
