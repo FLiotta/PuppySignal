@@ -8,7 +8,7 @@ class TestDataAPI(BaseTestCase):
 
         self.assertEqual(resp.status_code, 200)
 
-        self.assertIsNotNone(resp_data["data"])
+        self.assertIsNotNone(resp_data)
 
     def test_get_breeds(self):
         resp = self.client.get("/api/v2/data/breeds?specie_id=1")
@@ -16,7 +16,7 @@ class TestDataAPI(BaseTestCase):
 
         self.assertEqual(resp.status_code, 200)
 
-        self.assertIsNotNone(resp_data["data"])
+        self.assertIsNotNone(resp_data)
 
     def test_get_breeds_no_specie_id(self):
         resp = self.client.get("/api/v2/data/breeds")

@@ -41,7 +41,7 @@ class ScanningPetCreateLocationBody(BaseModel):
 
 
 class UpdatePetBody(BaseModel):
-    extra: Optional[str]
+    description: Optional[str]
     name: Optional[str]
     specie_id: Optional[int]
 

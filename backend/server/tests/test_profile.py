@@ -8,16 +8,15 @@ class TestProfileAPI(BaseTestCase):
         resp = self.client.get("/api/v2/profile", headers=headers)
         resp_data = resp.json()
 
-        print(resp_data, flush=True)
         self.assertEqual(resp.status_code, 200)
-        self.assertIsNotNone(resp_data["data"])
+        self.assertIsNotNone(resp_data)
 
-        self.assertEqual(self.user.id, resp_data["data"]["id"])
-        self.assertEqual(self.user.first_name, resp_data["data"]["first_name"])
-        self.assertEqual(self.user.last_name, resp_data["data"]["last_name"])
-        self.assertEqual(self.user.email, resp_data["data"]["email"])
+        self.assertEqual(self.user.id, resp_data["id"])
+        self.assertEqual(self.user.first_name, resp_data["first_name"])
+        self.assertEqual(self.user.last_name, resp_data["last_name"])
+        self.assertEqual(self.user.email, resp_data["email"])
         self.assertEqual(
-            self.user.profile_picture, resp_data["data"]["profile_picture"]
+            self.user.profile_picture, resp_data["profile_picture"]
         )
 
     def test_patch_profile(self):
@@ -29,7 +28,7 @@ class TestProfileAPI(BaseTestCase):
         self.assertEqual(resp.status_code, 200)
 
         resp = self.client.get("/api/v2/profile", headers=headers)
-        user = resp.json()["data"]
+        user = resp.json()
 
         self.assertIsNotNone(user)
 
@@ -47,7 +46,7 @@ class TestProfileAPI(BaseTestCase):
         pet_1 = Pet(
             name="woof",
             profile_picture="http://localhost",
-            extra="nomthing",
+            description="nomthing",
             specie_id=1,
             color="black",
         )
@@ -63,8 +62,8 @@ class TestProfileAPI(BaseTestCase):
         resp_data = resp.json()
 
         self.assertEqual(resp.status_code, 200)
-        self.assertIsNotNone(resp_data["data"])
-        self.assertGreater(len(resp_data["data"]), 0)
+        self.assertIsNotNone(resp_data)
+        self.assertGreater(len(resp_data), 0)
 
     def test_profile_notifications(self):
         notification = Notification(type="SCANNED", scanned_pet_id=self.pet_1.id)
@@ -80,5 +79,5 @@ class TestProfileAPI(BaseTestCase):
         resp_data = resp.json()
 
         self.assertEqual(resp.status_code, 200)
-        self.assertIsNotNone(resp_data["data"])
-        self.assertGreater(len(resp_data["data"]), 0)
+        self.assertIsNotNone(resp_data)
+        self.assertGreater(len(resp_data), 0)

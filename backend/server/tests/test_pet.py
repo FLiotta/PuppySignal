@@ -44,11 +44,11 @@ class TestPetAPI(BaseTestCase):
         resp_data = resp.json()
 
         self.assertEqual(resp.status_code, 200)
-        self.assertIsNotNone(resp_data["data"])
-        self.assertIn("name", resp_data["data"])
-        self.assertIn("specie", resp_data["data"])
-        self.assertIn("extra", resp_data["data"])
-        self.assertIn("profile_picture", resp_data["data"])
+        self.assertIsNotNone(resp_data)
+        self.assertIn("name", resp_data)
+        self.assertIn("specie", resp_data)
+        self.assertIn("description", resp_data)
+        self.assertIn("profile_picture", resp_data)
 
     @patch.object(boto3, "client", lambda *_, **__: FakeB3Client(fail=True))
     def test_create_pet_fail_photo_upload(self):
@@ -167,9 +167,9 @@ class TestPetAPI(BaseTestCase):
 
         self.assertEqual(resp.status_code, 200)
 
-        self.assertEqual(self.pet_1.name, resp_data["data"]["name"])
-        self.assertEqual(self.pet_1.id, resp_data["data"]["id"])
-        self.assertEqual(self.pet_1.extra, resp_data["data"]["extra"])
+        self.assertEqual(self.pet_1.name, resp_data["name"])
+        self.assertEqual(self.pet_1.id, resp_data["id"])
+        self.assertEqual(self.pet_1.description, resp_data["description"])
 
     def test_get_pet_by_id_not_owner(self):
         headers = {"token": f"{self.token_2}"}
@@ -236,7 +236,7 @@ class TestPetAPI(BaseTestCase):
         resp_data = resp.json()
 
         self.assertEqual(resp.status_code, 200)
-        self.assertGreater(len(resp_data["data"]), 0)
+        self.assertGreater(len(resp_data), 0)
 
     def test_get_pet_codes_no_owner(self):
         headers = {"token": f"{self.token_2}"}
@@ -254,7 +254,7 @@ class TestPetAPI(BaseTestCase):
         resp_data = resp.json()
 
         self.assertEqual(resp.status_code, 200)
-        self.assertGreater(len(resp_data["data"]), 0)
+        self.assertGreater(len(resp_data), 0)
 
     def test_get_pet_locations_no_owner(self):
         headers = {"token": f"{self.token_2}"}

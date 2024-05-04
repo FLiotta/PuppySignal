@@ -60,7 +60,7 @@ class BaseTestCase(TestCase):
         self.pet_1 = Pet(
             name="Remo",
             profile_picture="http://localhost:8000/imgs/pets/remo_1.png",
-            extra="Funny little dog.",
+            description="Funny little dog.",
             specie_id=1,
             color="black",
         )

@@ -30,7 +30,7 @@ const authAPI = api.injectEndpoints({
       query: (refresh_token, ) => ({
         url: 'oauth/jwt/refresh',
         method: "DELETE",
-        body: { refresh_token }
+        headers: { "refresh-token": refresh_token },
       })
     })
   })
