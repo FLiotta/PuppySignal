@@ -3,6 +3,8 @@ import cv2
 import numpy
 import logging
 
+from mypy_boto3_s3 import S3Client
+
 from datetime import datetime
 from typing import List, Optional
 from simplelimiter import Limiter
@@ -16,7 +18,7 @@ from server.schemas.pet import PetSchema
 from server.schemas.code import CodeSchema
 from server.schemas.location import LocationSchema
 from server.schemas.services import UpdatePetBody
-from server.utils import get_db, get_user, protected_route, get_settings
+from server.utils import get_db, get_user, protected_route, get_settings, get_boto3_client, presign_url
 from server.config import Settings
 from server.models import Pet, Code, UserPet
 
@@ -38,6 +40,7 @@ def create_pet(
     db: Session = Depends(get_db),
     settings: Settings = Depends(get_settings),
     u: UserSchema = Depends(get_user),
+    boto3_client: S3Client = Depends(get_boto3_client)
 ):
     # Validates image sizes, it must be less than 640x640 and must be 1:1 aspect ratio.
     # Creates the pet
@@ -68,15 +71,6 @@ def create_pet(
         raise HTTPException(
             status_code=400, detail="Pet avatar must be 1:1 aspect ratio."
         )
-
-    try:
-        s3 = boto3.client(
-            "s3",
-            aws_access_key_id=settings.aws_application_key_id,
-            aws_secret_access_key=settings.aws_application_key,
-        )
-    except Exception:
-        raise HTTPException(status_code=500, detail="Cannot initialize s3.")
 
     with db.begin():
         if breed_id is not None:
@@ -111,7 +105,7 @@ def create_pet(
             to_upload_pet_avatar = cv2.imencode(".jpg", uploaded_pet_avatar)[
                 1
             ].tobytes()
-            s3.put_object(
+            boto3_client.put_object(
                 Bucket=settings.s3_bucket, Key=avatar_key, Body=to_upload_pet_avatar
             )
 
@@ -132,11 +126,12 @@ def create_pet(
     dependencies=[Depends(protected_route), Depends(Limiter("5/minute"))],
 )
 def get_pet_by_id(
-  pet_id: int, 
-  db: Session = Depends(get_db), 
-  u=Depends(get_user),
-  settings: Settings = Depends(get_settings)
-  ):
+    pet_id: int, 
+    db: Session = Depends(get_db), 
+    u=Depends(get_user),
+    settings: Settings = Depends(get_settings),
+    boto3_client: S3Client = Depends(get_boto3_client)
+):
     pet = (
         db.query(Pet)
         .filter((Pet.id == pet_id) & (Pet.owners.any(id=u["id"])))
@@ -148,7 +143,7 @@ def get_pet_by_id(
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
     
-    pet.profile_picture = f"https://{settings.s3_bucket}.s3.amazonaws.com/{pet.profile_picture}"
+    pet.profile_picture = presign_url(boto3_client, pet.profile_picture)
 
     return pet
 

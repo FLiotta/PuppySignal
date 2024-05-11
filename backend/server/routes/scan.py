@@ -1,10 +1,11 @@
 import logging
+from mypy_boto3_s3 import S3Client
 from firebase_admin import messaging
 from firebase_admin.exceptions import FirebaseError
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from simplelimiter import Limiter
-from server.utils import get_db
+from server.utils import get_db, get_boto3_client, presign_url
 from server.models import (
     Pet,
     Code,
@@ -24,7 +25,11 @@ router = APIRouter()
     response_model=ScannedQRCodeResponse,
     dependencies=[Depends(Limiter("10/hour"))],
 )
-def scan_qr_code(qr_code: str, db: Session = Depends(get_db)):
+def scan_qr_code(
+    qr_code: str, 
+    db: Session = Depends(get_db),
+    boto3_client: S3Client = Depends(get_boto3_client)
+):
     code = (
         db.query(Code)
         .filter(Code.code == qr_code)
@@ -77,6 +82,8 @@ def scan_qr_code(qr_code: str, db: Session = Depends(get_db)):
             db.commit()
 
             del code.pet.owners
+
+            code.pet.profile_picture = presign_url(boto3_client, code.pet.profile_picture)
 
             response = {"code": code.code, "pet": code.pet}
 
@@ -147,7 +154,7 @@ def create_qr_code_location(
                     messaging.send(message)
                 except FirebaseError as e:
                     logging.error(
-                        f"Error on firebase when sending notifications for Notification#{new_notification.id}: {e}"
+                        f"Error on firebase when sending notifications for Notification #{new_notification.id}: {e}"
                     )
 
             db.commit()

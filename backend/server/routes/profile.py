@@ -1,5 +1,7 @@
 from typing import List
 
+from mypy_boto3_s3 import S3Client
+
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session, joinedload
@@ -10,7 +12,7 @@ from server.models import User, Notification, Pet
 from server.schemas.user import UserSchema
 from server.schemas.notification import NotificationWithPetSchema
 from server.schemas.services import ProfilePatchBody, ProfilePetsResponse
-from server.utils import get_db, protected_route, get_user, get_settings
+from server.utils import get_db, protected_route, get_user, get_settings, get_boto3_client, presign_url
 
 settings = get_settings()
 router = APIRouter()
@@ -69,6 +71,7 @@ def get_user_pets(
     offset: int = 0,
     db: Session = Depends(get_db),
     u: UserSchema = Depends(get_user),
+    boto3_client: S3Client = Depends(get_boto3_client)
 ):
     pets = (
         db.query(Pet)
@@ -84,7 +87,7 @@ def get_user_pets(
     )
 
     for pet in pets:
-      pet.profile_picture = f"https://{settings.s3_bucket}.s3.amazonaws.com/{pet.profile_picture}"
+      pet.profile_picture = presign_url(boto3_client, pet.profile_picture)
 
     return {"data": pets, "total": pets_count}
 
