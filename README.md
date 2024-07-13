@@ -1,4 +1,4 @@
-# PuppySignal
+# PuppySignal - Pet's QR Tag 🐶
 
 ![Banner](banner.png)
 
