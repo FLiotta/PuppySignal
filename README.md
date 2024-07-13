@@ -11,3 +11,12 @@ At the same time, you would be notified right on your phone that someone scanned
 ## Documentation
 
 Visit https://docs.puppysignal.com/ to view the documentation.
+
+## Docker
+
+Once you have configured the project, create an `.env` file following the `.env.template` and start the docker-compose project
+
+```sh
+docker-compose build
+docker-compose up -d
+```

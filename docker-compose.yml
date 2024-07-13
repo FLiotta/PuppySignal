@@ -1,0 +1,77 @@
+version: '3'
+name: 'puppysignal'
+
+services:
+  ps_redis:
+    container_name: ps_redis
+    image: redis:6.2-alpine
+    ports:
+      - "6379:6379"
+    expose:
+      - 6379
+    volumes:
+      - ./redis-data:/data
+  ps_database:
+    container_name: ps_database
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  ps_foundwebapp:
+    build: './found-webapp'
+    image: ps_found_webapp
+    container_name: ps_found_webapp
+    ports:
+      - '3000:3000'
+    expose: 
+      - 3000
+    environment:
+      - VITE_API_BASE_PATH=http://${HOST_IP}:8000/api/v2
+    depends_on:
+      - ps_backend
+    volumes:
+      - ./found-webapp:/srv/found_webapp
+      - /srv/found_webapp/node_modules/
+  ps_backend:
+    container_name: ps_backend
+    image: ps_backend
+    build: ./backend
+    ports:
+      - '8000:8000'
+    expose:
+      - 8000
+    command: >
+      sh -c "alembic upgrade head && python main.py"
+    env_file:
+      - ./backend/.env
+    environment:
+      - db_host=ps_database
+      - db_engine=postgresql
+      - db_username=postgres
+      - db_password=postgres
+      - db_name=puppysignal
+      - redis_host=ps_redis
+      - redis_port=6379
+    volumes:
+      - ./backend:/srv/ps_backend
+    depends_on:
+      ps_database:
+        condition: service_healthy
+    restart: "on-failure"
+volumes:
+  backend:
+  found-webapp:
+  postgres-data:
+  redis-data:
