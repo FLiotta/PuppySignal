@@ -1,0 +1,26 @@
+name: "Found webapp checks"
+description: 'Run all necessary checks for the Found webapp project'
+
+on:
+  pull_request:
+    branches: ['master']
+
+defaults:
+  run:
+    working-directory: ./found-webapp
+
+jobs:
+  builds:
+    runs-on: ubuntu-latest
+  
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.11'
+      - name: 'Install dependencies'
+        run: |
+          npm install yarn -g
+          yarn
+      - name: 'Build website'
+        run: yarn run build

@@ -1,0 +1,26 @@
+name: "Mobile checks"
+description: 'Run all necessary checks for the Mobile project'
+
+on:
+  pull_requests:
+    branches: ['master']
+
+defaults:
+  run:
+    working-directory: ./mobile
+
+jobs:
+  builds:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.11'
+      - name: 'Install dependencies'
+        run: npm install
+      - name: 'Run tests'
+        run: npm run test
+      - name: 'Run linter'
+        run: npm run lint

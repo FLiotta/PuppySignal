@@ -1,4 +1,5 @@
 name: "Code Quality"
+description: "Check if all the pre-commit hooks are fine."
 
 on:
   pull_request:
