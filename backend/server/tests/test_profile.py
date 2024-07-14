@@ -1,4 +1,8 @@
-from server.tests.base import BaseTestCase
+import boto3
+
+from unittest.mock import patch
+
+from server.tests.base import BaseTestCase, FakeB3Client
 from server.models import Pet, UserPet, Notification, UserNotification
 
 
@@ -42,6 +46,7 @@ class TestProfileAPI(BaseTestCase):
         resp = self.client.patch("/api/v2/profile/", json=payload, headers=headers)
         self.assertEqual(resp.status_code, 400)
 
+    @patch.object(boto3, "client", lambda *_, **__: FakeB3Client())
     def test_profile_pets(self):
         pet_1 = Pet(
             name="woof",
