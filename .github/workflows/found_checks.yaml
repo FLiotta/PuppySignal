@@ -1,5 +1,4 @@
 name: "Found webapp checks"
-description: 'Run all necessary checks for the Found webapp project'
 
 on:
   pull_request:

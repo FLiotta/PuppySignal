@@ -1,5 +1,4 @@
 name: 'Backend checks'
-description: 'Run all necessary checks for the backend project'
 
 on:
   pull_request:

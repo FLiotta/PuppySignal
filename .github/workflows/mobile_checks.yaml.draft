@@ -1,5 +1,4 @@
 name: "Mobile checks"
-description: 'Run all necessary checks for the Mobile project'
 
 on:
   pull_requests:
