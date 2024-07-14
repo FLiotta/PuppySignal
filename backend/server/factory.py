@@ -37,12 +37,12 @@ def init_db_hooks(app: FastAPI) -> None:
 
   @app.on_event("startup")
   async def startup():
-    firebase_admin.initialize_app(credential=firebase_admin.credentials.Certificate("./firebase_admin_key.json"))
-
     await database.connect()
 
     if not ("unittest" in sys.modules or "pytest" in sys.modules):
-      # Do not initialize the rate-limiter when app created from within tests
+      # Do not initialize the rate-limiter neither firebase when app created from within tests
+      firebase_admin.initialize_app(credential=firebase_admin.credentials.Certificate("./firebase_admin_key.json"))
+
       redis_url = f"redis://{settings.redis_host}:{settings.redis_port}"
       redis_instance = redis.from_url(redis_url, encoding="utf-8", decode_responses=True)
 
