@@ -27,6 +27,20 @@ class FakeResponse:
         return self.response
 
 
+class FakeB3Client:
+    def __init__(self, fail: bool = False):
+        self.fail = fail
+
+    def put_object(self, *_, **__):
+        if self.fail:
+            raise RuntimeError("Cannot upload photo")
+
+        return 1
+  
+    def generate_presigned_url(self, *_, **__):
+        return "http://us-east-2.loremipsum.xyz/lor3m-1psum-t35t"
+
+
 class BaseTestCase(TestCase):
     def setUp(self) -> None:
         Base.metadata.create_all(bind=engine)

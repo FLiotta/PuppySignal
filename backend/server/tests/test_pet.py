@@ -1,20 +1,10 @@
 import boto3
 import os
+
 from unittest.mock import patch
 
-from server.tests.base import BaseTestCase
+from server.tests.base import BaseTestCase, FakeB3Client
 from server.models import Pet
-
-
-class FakeB3Client:
-    def __init__(self, fail: bool = False):
-        self.fail = fail
-
-    def put_object(self, *_, **__):
-        if self.fail:
-            raise RuntimeError("Cannot upload photo")
-
-        return 1
 
 
 class TestPetAPI(BaseTestCase):
@@ -159,6 +149,7 @@ class TestPetAPI(BaseTestCase):
 
         self.assertEqual(pets_created, 0)
 
+    @patch.object(boto3, "client", lambda *_, **__: FakeB3Client())
     def test_get_pet_by_id(self):
         headers = {"token": self.token}
 

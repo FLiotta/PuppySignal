@@ -1,11 +1,14 @@
+import boto3
+
 from unittest.mock import patch
 
-from server.tests.base import BaseTestCase
+from server.tests.base import BaseTestCase, FakeB3Client
 from server.models import PetLocation, Notification
 
 
 class TestScanAPI(BaseTestCase):
     @patch("firebase_admin.messaging.send", return_value=None)
+    @patch.object(boto3, "client", lambda *_, **__: FakeB3Client())
     def test_scan_pet(self, _):
         resp = self.client.get(f"/api/v2/scan/{self.code.code}")
         resp_data = resp.json()
