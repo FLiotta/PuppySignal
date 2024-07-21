@@ -77,7 +77,7 @@ export default StyleSheet.create({
     color: '#000',
     zIndex: 100000
   },
-  dropdownInput: { 
+  dropdownInput: {
     padding: 6,
     borderWidth: 1,
     borderColor: '#4444',
@@ -85,7 +85,7 @@ export default StyleSheet.create({
     marginTop: 8,
     backgroundColor: "#fff"
   },
-  dropdownInputDisabled: { 
+  dropdownInputDisabled: {
     backgroundColor: "#eee"
   }
 });

@@ -26,9 +26,9 @@ router = APIRouter()
     dependencies=[Depends(Limiter("10/hour"))],
 )
 def scan_qr_code(
-    qr_code: str, 
+    qr_code: str,
     db: Session = Depends(get_db),
-    boto3_client: S3Client = Depends(get_boto3_client)
+    boto3_client: S3Client = Depends(get_boto3_client),
 ):
     code = (
         db.query(Code)
@@ -83,7 +83,9 @@ def scan_qr_code(
 
             del code.pet.owners
 
-            code.pet.profile_picture = presign_url(boto3_client, code.pet.profile_picture)
+            code.pet.profile_picture = presign_url(
+                boto3_client, code.pet.profile_picture
+            )
 
             response = {"code": code.code, "pet": code.pet}
 

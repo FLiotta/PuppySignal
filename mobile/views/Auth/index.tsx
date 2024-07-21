@@ -50,7 +50,7 @@ const AuthView: React.FC = () => {
       // 3. Save tokens on async storage
       await AsyncStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, authenticationResponse.access_token);
       await AsyncStorage.setItem(REFRESH_TOKEN_STORAGE_KEY, authenticationResponse.refresh_token);
-    
+
       // 4. Set session 'authenticated' to true
       dispatch(setAuthenticated(true))
 
@@ -62,14 +62,14 @@ const AuthView: React.FC = () => {
       // 6. Get FCMToken in case its affirmative
       if (!notificationPermissions) {
         console.warn("User didn't approve notifications permissions");
-        return 
+        return
       }
 
       const hasMessagingPermissions = await messaging().hasPermission()
 
       if (!hasMessagingPermissions) {
         console.warn("User didn't approve firebase messaging");
-        return 
+        return
       }
 
       const FCMToken = await messaging().getToken()
@@ -100,7 +100,7 @@ const AuthView: React.FC = () => {
           size={GoogleSigninButton.Size.Wide}
           color={GoogleSigninButton.Color.Dark}
           disabled={loading}
-          
+
         />
         <Text style={styles.footerText}>Get in contact with an administrator in case you face any technical issue.</Text>
       </View>

@@ -106,16 +106,16 @@ const FoundPage = () => {
                     <p>🧭 Would you like to send the pet's location to its owners?</p>
                     <p><small>They will be notified and able to see it on the map</small></p>
                     <div className='foundpage-toast__buttons'>
-                        <button 
-                            className='btn-alt' 
-                            onClick={handleCloseLocationModal} 
+                        <button
+                            className='btn-alt'
+                            onClick={handleCloseLocationModal}
                             disabled={locationModalLoading}
                         >
                             Close
                         </button>
-                        <button 
-                            className='btn ml-2' 
-                            onClick={handleShareLocation} 
+                        <button
+                            className='btn ml-2'
+                            onClick={handleShareLocation}
                             disabled={locationModalLoading}
                         >
                             {locationModalLoading ? "Sharing location..." : "Share location"}

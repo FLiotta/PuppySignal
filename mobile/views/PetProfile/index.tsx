@@ -98,7 +98,7 @@ const PetProfileView: React.FC<Props> = ({ navigation, route }) => {
               </Text>
               <View style={{ marginTop: 20 }}>
                 <Button
-                  text={data?.lost_since ? `${data?.name} was found!` : `${data?.name} is missing!`} 
+                  text={data?.lost_since ? `${data?.name} was found!` : `${data?.name} is missing!`}
                   onPress={() => triggerLost(data!.id)}
                   disabled={isLoading || triggerLostResponse.isLoading}
                 />
@@ -142,7 +142,7 @@ const PetProfileView: React.FC<Props> = ({ navigation, route }) => {
             </View>
             <View style={{ justifyContent: 'center', height: 250 }}>
               <TouchableOpacity onPress={onLocationsPress}>
-                <Map 
+                <Map
                   zoomControlEnabled={false}
                   zoomEnabled={false}
                   zoomTapEnabled={false}

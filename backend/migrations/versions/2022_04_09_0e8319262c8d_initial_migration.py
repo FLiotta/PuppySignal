@@ -1,19 +1,17 @@
 """Initial migration
 
 Revision ID: 0e8319262c8d
-Revises: 
+Revises:
 Create Date: 2022-04-09 18:34:59.798534
 
 """
-from sqlalchemy.dialects.postgresql import UUID
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.sql import expression
-from server.models.code import code_generator
 
 
 # revision identifiers, used by Alembic.
-revision = '0e8319262c8d'
+revision = "0e8319262c8d"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,85 +22,84 @@ def upgrade():
 
     # Specie
     op.create_table(
-      "specie",
-      sa.Column("id", sa.Integer(), nullable=False),
-      sa.Column("name", sa.String(50), nullable=False),
-      sa.PrimaryKeyConstraint("id")
+        "specie",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("name", sa.String(50), nullable=False),
+        sa.PrimaryKeyConstraint("id"),
     )
 
-    # Locations 
+    # Locations
     op.create_table(
-      "location",
-      sa.Column("id", sa.Integer(), nullable=False),
-      sa.Column("latitude", sa.Float(), nullable=False),
-      sa.Column("longitude", sa.Float(), nullable=False),
-      sa.Column("created_at", sa.DateTime(), nullable=False),
-      sa.Column("updated_at", sa.DateTime(), nullable=False),
-      sa.PrimaryKeyConstraint("id")
+        "location",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("latitude", sa.Float(), nullable=False),
+        sa.Column("longitude", sa.Float(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(), nullable=False),
+        sa.PrimaryKeyConstraint("id"),
     )
 
     # User
     op.create_table(
-      "user",
-      sa.Column("id"     , sa.Integer(), nullable=False),
-      sa.Column("uuid", sa.String(80), nullable=False),
-      sa.Column("first_name", sa.String(50), nullable=False),
-      sa.Column("last_name", sa.String(50), nullable=False),
-      sa.Column("email", sa.String(50), nullable=False),
-      sa.Column("profile_picture", sa.String(150)),
-      sa.Column("phone_number", sa.String(50)),
-      sa.Column("phone_verified", sa.Boolean(), server_default=expression.true()),
-      sa.Column("created_at", sa.DateTime(), nullable=False),
-      sa.Column("updated_at", sa.DateTime(), nullable=False),
-      sa.PrimaryKeyConstraint("id")
+        "user",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("uuid", sa.String(80), nullable=False),
+        sa.Column("first_name", sa.String(50), nullable=False),
+        sa.Column("last_name", sa.String(50), nullable=False),
+        sa.Column("email", sa.String(50), nullable=False),
+        sa.Column("profile_picture", sa.String(150)),
+        sa.Column("phone_number", sa.String(50)),
+        sa.Column("phone_verified", sa.Boolean(), server_default=expression.true()),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(), nullable=False),
+        sa.PrimaryKeyConstraint("id"),
     )
-    op.create_unique_constraint('constraint_user_unique_uuid', 'user', ['uuid'])
+    op.create_unique_constraint("constraint_user_unique_uuid", "user", ["uuid"])
 
     # Pet
     op.create_table(
-      "pet",
-      sa.Column("id"     , sa.Integer(), nullable=False),
-      sa.Column("uuid", sa.String(80), nullable=False),
-      sa.Column("name", sa.String(50), nullable=False),
-      sa.Column("profile_picture", sa.String(150)),
-      sa.Column("extra", sa.String(220), nullable=False),
-      sa.Column("color", sa.String(50)),
-      sa.PrimaryKeyConstraint("id")
+        "pet",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("uuid", sa.String(80), nullable=False),
+        sa.Column("name", sa.String(50), nullable=False),
+        sa.Column("profile_picture", sa.String(150)),
+        sa.Column("extra", sa.String(220), nullable=False),
+        sa.Column("color", sa.String(50)),
+        sa.PrimaryKeyConstraint("id"),
     )
 
     # Codes
     op.create_table(
-      "code",
-      sa.Column("id", sa.Integer(), nullable=False),
-      sa.Column("code", sa.String(50), nullable=False, server_default=""),
-      sa.Column("created_at", sa.DateTime(), nullable=False),
-      sa.Column("updated_at", sa.DateTime(), nullable=False),
-      sa.PrimaryKeyConstraint("id")
+        "code",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("code", sa.String(50), nullable=False, server_default=""),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(), nullable=False),
+        sa.PrimaryKeyConstraint("id"),
     )
-    op.create_unique_constraint('constraint_code_unique_code', 'code', ['code'])
+    op.create_unique_constraint("constraint_code_unique_code", "code", ["code"])
 
     # Notification
     op.create_table(
-      "notification",
-      sa.Column("id", sa.Integer(), nullable=False),
-      sa.Column("type", sa.String(100)),
-      sa.Column("created_at", sa.DateTime(), nullable=False),
-      sa.Column("updated_at", sa.DateTime(), nullable=False),
-      sa.PrimaryKeyConstraint("id")
+        "notification",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("type", sa.String(100)),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(), nullable=False),
+        sa.PrimaryKeyConstraint("id"),
     )
     # ### end Alembic commands ###
 
 
-
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
-    op.drop_constraint('constraint_code_unique_code', type_='unique')
-    op.drop_constraint('constraint_user_unique_uuid', type_='uuid')
+    op.drop_constraint("constraint_code_unique_code", type_="unique")
+    op.drop_constraint("constraint_user_unique_uuid", type_="uuid")
 
-    op.drop_table('specie')
-    op.drop_table('location')
-    op.drop_table('user')
-    op.drop_table('pet')
-    op.drop_table('code')
-    op.drop_table('notification')
+    op.drop_table("specie")
+    op.drop_table("location")
+    op.drop_table("user")
+    op.drop_table("pet")
+    op.drop_table("code")
+    op.drop_table("notification")
     # ### end Alembic commands ###

@@ -3,12 +3,13 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, ForeignKey, String, Date
 from server.database import Base
 
+
 class FCMToken(Base):
-    __tablename__ = 'fcmtoken'
-    
+    __tablename__ = "fcmtoken"
+
     id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     fcm_token = Column(String(256), unique=True, nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey("user.id"))
     created_at = Column(Date, default=datetime.now, nullable=False)
     updated_at = Column(Date, default=datetime.now, nullable=False)
 

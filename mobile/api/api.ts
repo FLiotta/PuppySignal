@@ -1,11 +1,11 @@
 // @ Packages
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import config from 'react-native-config';
-import { 
-  BaseQueryFn, 
-  FetchArgs, 
-  FetchBaseQueryError, 
-  createApi, 
+import {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+  createApi,
   fetchBaseQuery
 } from "@reduxjs/toolkit/query/react";
 
@@ -59,10 +59,10 @@ const baseQueryWithReauth: BaseQueryFn<
       const refreshResultResponse = refreshResult.data as IRefreshTokenResponse;
 
       const { access_token } = refreshResultResponse.data;
-      
+
       // store the new token
       AsyncStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, access_token);
-      
+
       // retry the initial query
       result = await baseQuery(args, api, extraOptions)
     } else {
@@ -77,13 +77,13 @@ const api = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),
   tagTypes: [
-    "Profile", 
-    "Notifications", 
-    "Pets", 
-    "Pet", 
-    "Codes", 
-    "Breeds", 
-    "Species", 
+    "Profile",
+    "Notifications",
+    "Pets",
+    "Pet",
+    "Codes",
+    "Breeds",
+    "Species",
     "Locations"
   ]
 });

@@ -32,7 +32,7 @@ interface IProps {
 
 const Map: React.FC<IProps> = ({
   locations,
-  scrollEnabled, 
+  scrollEnabled,
   zoomEnabled,
   zoomTapEnabled,
   zoomControlEnabled,
@@ -57,7 +57,7 @@ const Map: React.FC<IProps> = ({
         updated_at: new Date()
       }
 
-      
+
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
       );
@@ -67,7 +67,7 @@ const Map: React.FC<IProps> = ({
           (position) => {
             tempCoords['latitude'] = position.coords.latitude
             tempCoords['longitude'] = position.coords.longitude
-    
+
             setDefaultCoords(tempCoords);
           },
           () => setDefaultCoords(tempCoords)
@@ -78,17 +78,17 @@ const Map: React.FC<IProps> = ({
 
       setDefaultCoords(tempCoords);
     }
-    
+
     handleDefaultCoords()
   }, [])
 
   if (!defaultCoords) {
     return (
       <View
-        style={{ 
-          width: "100%", 
-          height: "100%", 
-          justifyContent: "center", 
+        style={{
+          width: "100%",
+          height: "100%",
+          justifyContent: "center",
           alignItems: "center"
         }}
       >
@@ -128,14 +128,14 @@ const Map: React.FC<IProps> = ({
       >
         {locations && locations.map((location, index: number) => (
           <Marker
-            key={`market_${location.id}`} 
+            key={`market_${location.id}`}
             title={String(index + 1)}
             onPress={() => onLocationPress(location)}
             coordinate={location}
           />
         ))}
 
-        <Polyline 
+        <Polyline
           coordinates={locations ? locations.map((location: any) => ({
             latitude: location.latitude,
             longitude: location.longitude
@@ -172,7 +172,7 @@ const Map: React.FC<IProps> = ({
                 <Text style={{ marginTop: 10 }}>
                   Scanned on {
                     dayjs(selectedLocation.created_at).format('DD/MM/YYYY [at] HH:mm A')
-                  } 
+                  }
                 </Text>
               </View>
               <TouchableOpacity

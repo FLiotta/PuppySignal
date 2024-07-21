@@ -4,13 +4,14 @@ from sqlalchemy.orm import relationship
 
 from server.database import Base
 
-class UserAuth(Base):
-  __tablename__ = "user_auth"
-  id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-  oauth_id = Column(String(50), nullable=False)
-  method = Column(String(50), nullable=False)
-  user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-  created_at = Column(Date, default=datetime.now, nullable=False)
-  updated_at = Column(Date, default=datetime.now, nullable=False)
 
-  user = relationship('User', back_populates='auths', lazy=False)
+class UserAuth(Base):
+    __tablename__ = "user_auth"
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    oauth_id = Column(String(50), nullable=False)
+    method = Column(String(50), nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    created_at = Column(Date, default=datetime.now, nullable=False)
+    updated_at = Column(Date, default=datetime.now, nullable=False)
+
+    user = relationship("User", back_populates="auths", lazy=False)

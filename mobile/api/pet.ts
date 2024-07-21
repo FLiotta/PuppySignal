@@ -52,7 +52,7 @@ const petAPI = api.injectEndpoints({
           url: '/pet/',
           method: "POST",
           body: bodyFormData,
-          formData: true  
+          formData: true
         }
       },
       invalidatesTags: ["Pets"]
@@ -72,8 +72,8 @@ const petAPI = api.injectEndpoints({
 
 export default petAPI;
 export const {
-  useGetPetByIdQuery, 
-  useGetPetCodesQuery, 
+  useGetPetByIdQuery,
+  useGetPetCodesQuery,
   useCreatePetMutation,
   useGetPetLocationsQuery,
   useToggleLostMutation

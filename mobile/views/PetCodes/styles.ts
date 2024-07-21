@@ -16,7 +16,7 @@ export default StyleSheet.create({
     height: 325,
     width: 250,
     backgroundColor: '#fff',
-    alignItems: 'center', 
+    alignItems: 'center',
     justifyContent: "center"
   },
   qrText: {

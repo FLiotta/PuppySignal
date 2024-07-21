@@ -21,8 +21,8 @@ const Button: React.FC<IProp> = ({ disabled, text, onPress, light }) => {
         flex: 1,
         justifyContent: "center",
         alignItems: 'center',
-        backgroundColor: disabled 
-          ? "#eee" 
+        backgroundColor: disabled
+          ? "#eee"
           : light ? PRIMARY_COLOR_LIGHT : PRIMARY_COLOR,
         borderRadius: 12
       }}

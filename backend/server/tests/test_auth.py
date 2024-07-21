@@ -36,33 +36,35 @@ class TestAuthAPI(BaseTestCase):
 
     def test_already_register_user(self):
         with self.client as client:
-          token = "hola_mundo_soy_un_token_de_google"
+            token = "hola_mundo_soy_un_token_de_google"
 
-          body = {"token": token}
-          resp = client.post("/api/v2/oauth/google", json=body)
-          resp_data = resp.json()
+            body = {"token": token}
+            resp = client.post("/api/v2/oauth/google", json=body)
+            resp_data = resp.json()
 
-          self.assertEqual(resp.status_code, 200)
-          self.assertIsNotNone(resp_data)
-          new_user_token = resp_data["access_token"]
+            self.assertEqual(resp.status_code, 200)
+            self.assertIsNotNone(resp_data)
+            new_user_token = resp_data["access_token"]
 
-          resp = client.post("/api/v2/oauth/google", json=body)
-          resp_data = resp.json()
+            resp = client.post("/api/v2/oauth/google", json=body)
+            resp_data = resp.json()
 
-          self.assertEqual(resp.status_code, 200)
-          self.assertIsNotNone(resp_data)
-          retrieve_user_token = resp_data["access_token"]
+            self.assertEqual(resp.status_code, 200)
+            self.assertIsNotNone(resp_data)
+            retrieve_user_token = resp_data["access_token"]
 
-          new_user_data = jwt.decode(
-              new_user_token, algorithms=["HS256"], options={"verify_signature": False}
-          )
-          retrieve_user_data = jwt.decode(
-              retrieve_user_token,
-              algorithms=["HS256"],
-              options={"verify_signature": False},
-          )
+            new_user_data = jwt.decode(
+                new_user_token,
+                algorithms=["HS256"],
+                options={"verify_signature": False},
+            )
+            retrieve_user_data = jwt.decode(
+                retrieve_user_token,
+                algorithms=["HS256"],
+                options={"verify_signature": False},
+            )
 
-          self.assertEqual(new_user_data["id"], retrieve_user_data["id"])
+            self.assertEqual(new_user_data["id"], retrieve_user_data["id"])
 
     def test_refresh_token_success(self):
         token = RefreshToken(
@@ -75,8 +77,7 @@ class TestAuthAPI(BaseTestCase):
         self.db.commit()
 
         resp = self.client.post(
-          url="/api/v2/oauth/jwt/refresh", 
-          json={"refresh_token": token.token}
+            url="/api/v2/oauth/jwt/refresh", json={"refresh_token": token.token}
         )
         resp_data = resp.json()
 
@@ -97,8 +98,7 @@ class TestAuthAPI(BaseTestCase):
         time.sleep(1)
 
         resp = self.client.post(
-          url="/api/v2/oauth/jwt/refresh", 
-          json={"refresh_token": token.token}
+            url="/api/v2/oauth/jwt/refresh", json={"refresh_token": token.token}
         )
 
         self.assertEqual(resp.status_code, 400)
@@ -126,8 +126,7 @@ class TestAuthAPI(BaseTestCase):
         self.db.commit()
 
         resp = self.client.delete(
-          url="/api/v2/oauth/jwt/refresh", 
-          headers={"refresh-token": token.token}
+            url="/api/v2/oauth/jwt/refresh", headers={"refresh-token": token.token}
         )
 
         self.assertEqual(resp.status_code, 200)
