@@ -2,7 +2,7 @@
 
 This is the mobile application for puppysignal, built with react native, it works as a cross-platform solution for IOS and Android.
 
-> [!NOTE]  
+> [!NOTE]
 > Application was only tested with android, IOS performance was not tested properly given I don't have the necessary tools for it.
 
 ### Requirements
@@ -37,7 +37,7 @@ Follow the next guide to generate an api key to consume google maps services htt
 
 ### Set environments variables
 
-Assuming you already generated the needed keys for the different services, setted up your firebase project, and have the [backend](https://www.github.com/puppysignal/backend) project up and running, 
+Assuming you already generated the needed keys for the different services, setted up your firebase project, and have the [backend](https://www.github.com/puppysignal/backend) project up and running,
 we need to create the .env.development file at the base path of our project:
 
 [PROJECT]/.env.development

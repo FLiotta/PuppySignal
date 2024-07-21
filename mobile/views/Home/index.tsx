@@ -1,11 +1,11 @@
 // @Packages
 import {
-  Image, 
-  Linking, 
-  View, 
-  Text, 
-  ScrollView, 
-  ActivityIndicator, 
+  Image,
+  Linking,
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
   RefreshControl
 } from 'react-native';
 
@@ -32,7 +32,7 @@ const HomeView: React.FC = () => {
 
   return (
     <ScrollView
-      style={styles.container} 
+      style={styles.container}
       contentContainerStyle={{flexGrow: 1}}
       refreshControl={
         <RefreshControl refreshing={!isLoading && isFetching} onRefresh={refetch} colors={[PRIMARY_COLOR]}/>

@@ -28,7 +28,7 @@ const ProfileView: React.FC<IProps> = ({ navigation }) => {
   const [triggerDeleteRefreshToken] = useLazyDeleteRefreshQuery()
 
   const [logoutInProcess, setLogoutInProcess] = useState(false);
-  
+
   const onLogoutPress = async () => {
     setLogoutInProcess(true);
 
@@ -49,12 +49,12 @@ const ProfileView: React.FC<IProps> = ({ navigation }) => {
 
       // 3. Clean AsyncStorage
       await AsyncStorage.multiRemove([
-        FCM_TOKEN_STORAGE_KEY, 
-        REFRESH_TOKEN_STORAGE_KEY, 
+        FCM_TOKEN_STORAGE_KEY,
+        REFRESH_TOKEN_STORAGE_KEY,
         ACCESS_TOKEN_STORAGE_KEY
       ]);
 
-      
+
       dispatch(setAuthenticated(false))
     } catch (e) {
       console.error(e)

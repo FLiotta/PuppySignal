@@ -1,11 +1,11 @@
 // @ Packages
 import { useState } from 'react';
 import {
-  View, 
-  Image, 
-  ScrollView, 
-  Text, 
-  TouchableOpacity, 
+  View,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
   TextInput
 } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
@@ -68,7 +68,7 @@ const PetCreationView: React.FC<IProps> = ({ navigation }) => {
     if(!photo) return
 
     const { name, description, breed_id, specie_id } = formData;
-    
+
     const createPetParams: ICreatePetArgs = {
       name,
       description,
@@ -82,7 +82,7 @@ const PetCreationView: React.FC<IProps> = ({ navigation }) => {
     if (breed_id !== -1) {
       createPetParams["breed_id"] = breed_id
     }
-  
+
     triggerCreatePet(createPetParams)
       .unwrap()
       .then((payload) => {
@@ -90,7 +90,7 @@ const PetCreationView: React.FC<IProps> = ({ navigation }) => {
       })
       .catch((e) => {
         console.error(e);
-        
+
         Toast.show({
           position: "bottom",
           type: "error",
@@ -127,7 +127,7 @@ const PetCreationView: React.FC<IProps> = ({ navigation }) => {
 
       <View style={styles.formContainer}>
         <TouchableOpacity
-          onPress={handleTakePhoto} 
+          onPress={handleTakePhoto}
           style={styles.imageContainer}
           disabled={petMutation.isLoading}
         >
@@ -205,8 +205,8 @@ const PetCreationView: React.FC<IProps> = ({ navigation }) => {
                   onChange(breed.id)
                   setSelectedBreed(breed)
                 }}
-                style={!selectedSpecie 
-                  ? [styles.dropdownInput, styles.dropdownInputDisabled] 
+                style={!selectedSpecie
+                  ? [styles.dropdownInput, styles.dropdownInputDisabled]
                   : styles.dropdownInput
                 }
               />
@@ -239,7 +239,7 @@ const PetCreationView: React.FC<IProps> = ({ navigation }) => {
             onPress={handleSubmit(onSubmit)}
           />
         </View>
-        
+
       </View>
     </ScrollView>
   )

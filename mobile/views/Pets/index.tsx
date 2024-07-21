@@ -18,7 +18,7 @@ type IProps = NativeStackScreenProps<PetStackParamList, 'MyPets'>;
 
 const PetsView: React.FC<IProps> = ({ navigation }) => {
   const { data, isLoading, isFetching, refetch } = useGetPetsQuery({ offset: 0, limit: 50});
-  
+
   const handlePetCardPress = (id: number) => {
     navigation.navigate("PetProfile", { id })
   }
@@ -58,8 +58,8 @@ const PetsView: React.FC<IProps> = ({ navigation }) => {
       )}
       renderItem={(pet) => (
         <PetCard
-          pet={pet.item} 
-          key={pet.item.uuid} 
+          pet={pet.item}
+          key={pet.item.uuid}
           extraStyle={{ marginBottom: 15 }}
           onQRPRess={() => handlePetCardQRPress(pet.item.id)}
           onPress={() => handlePetCardPress(pet.item.id)}

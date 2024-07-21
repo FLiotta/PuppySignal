@@ -55,7 +55,7 @@ const PetCodesView: React.FC<Props> = ({ route }) => {
     // @ts-ignore
     QrCodeRef.current.toDataURL(async (data: string) => {
       const imagePath = `${RNFS.DownloadDirectoryPath}/${QRCode}.png`;
-      
+
       try {
         await RNFS.writeFile(imagePath, data, 'base64')
         Toast.show({
@@ -108,7 +108,7 @@ const PetCodesView: React.FC<Props> = ({ route }) => {
       {data.length > 1 && (
         <View style={styles.paginator}>
           <TouchableOpacity
-            style={styles.button} 
+            style={styles.button}
             onPress={() => setSelectedCodeIndex(selectedCodeIndex - 1)}
             disabled={selectedCodeIndex === 0}
           >
@@ -116,7 +116,7 @@ const PetCodesView: React.FC<Props> = ({ route }) => {
           </TouchableOpacity>
 
           <Text>{selectedCodeIndex + 1} / {data.length}</Text>
-          
+
           <TouchableOpacity
             style={styles.button}
             onPress={() => setSelectedCodeIndex(selectedCodeIndex + 1)}

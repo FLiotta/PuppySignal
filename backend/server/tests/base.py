@@ -36,7 +36,7 @@ class FakeB3Client:
             raise RuntimeError("Cannot upload photo")
 
         return 1
-  
+
     def generate_presigned_url(self, *_, **__):
         return "http://us-east-2.loremipsum.xyz/lor3m-1psum-t35t"
 

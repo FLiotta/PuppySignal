@@ -124,7 +124,7 @@ $main_purple_color_darker: #4d5db3;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         &__error {
             color: #db2626;
             margin: 0;
@@ -143,7 +143,7 @@ $main_purple_color_darker: #4d5db3;
             cursor: pointer;
             border-radius: 6px;
             align-self: end;
-        
+
             &:hover {
                 background-color: $main_purple_color_darker;
                 color: #fff;
@@ -227,4 +227,3 @@ $main_purple_color_darker: #4d5db3;
         }
     }
 }
-

@@ -16,7 +16,6 @@ from server.schemas.services import (
     GoogleOAuthBody,
     RefreshTokenResponse,
     RefreshTokenBody,
-    DeleteRefreshTokenBody,
 )
 from server.models import UserAuth, User, RefreshToken
 from server.config import Settings
@@ -171,8 +170,7 @@ async def refresh_json_web_token(
 
 @router.delete("/jwt/refresh", dependencies=[Depends(Limiter("10/hour"))])
 async def delete_refresh_token(
-  refresh_token: str = Header(...), 
-  db: Session = Depends(get_db)
+    refresh_token: str = Header(...), db: Session = Depends(get_db)
 ):
     stored_token = (
         db.query(RefreshToken).filter(RefreshToken.token == refresh_token).first()

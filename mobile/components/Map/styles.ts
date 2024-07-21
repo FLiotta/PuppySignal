@@ -3,8 +3,8 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   selectedLocationContainer: {
-    position: "absolute", 
-    top: 0, 
+    position: "absolute",
+    top: 0,
     width: '100%',
     padding: 15
   },
@@ -52,10 +52,10 @@ export default StyleSheet.create({
     height: 25,
     marginRight: 35,
   },
-  locationIdContainer: { 
-    width: "100%", 
-    position: "absolute", 
-    alignItems: "center", 
+  locationIdContainer: {
+    width: "100%",
+    position: "absolute",
+    alignItems: "center",
     bottom: 7
   },
   locationId: {

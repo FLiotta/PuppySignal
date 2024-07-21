@@ -42,7 +42,7 @@ Follow the next guide to generate an api key to consume google maps services htt
 
 ### Set environments variables
 
-Assuming you already generated the needed keys for the different services, setted up your firebase project, and have the [backend](https://github.com/FLiotta/PuppySignal/tree/master/backend) project up and running, 
+Assuming you already generated the needed keys for the different services, setted up your firebase project, and have the [backend](https://github.com/FLiotta/PuppySignal/tree/master/backend) project up and running,
 we need to create the .env.development file at the base path of our project:
 
 [PROJECT]/.env.development

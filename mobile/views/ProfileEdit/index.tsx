@@ -32,7 +32,7 @@ const ProfileEditView: React.FC<IProps> = ({ navigation }) => {
     })
     .partial()
     .refine(({ first_name, last_name, phone_number }) => first_name || last_name || phone_number)
-  
+
   const { control, handleSubmit, formState } = useForm<FormValues>({
     defaultValues: {
       first_name: '',

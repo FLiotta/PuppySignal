@@ -5,7 +5,7 @@ declare module 'react-native-config' {
     API_URL: string
     FOUND_QR_PATH: string
   }
-  
+
   export const Config: NativeConfig
   export default Config
 }

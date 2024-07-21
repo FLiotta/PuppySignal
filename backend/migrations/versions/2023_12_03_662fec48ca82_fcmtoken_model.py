@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '662fec48ca82'
-down_revision = 'db4039dd743f'
+revision = "662fec48ca82"
+down_revision = "db4039dd743f"
 branch_labels = None
 depends_on = None
 
@@ -24,12 +24,14 @@ def upgrade():
         sa.Column("user_id", sa.Integer(), sa.ForeignKey("user.id"), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.Column("updated_at", sa.DateTime(), nullable=False),
-        sa.PrimaryKeyConstraint("id")
+        sa.PrimaryKeyConstraint("id"),
     )
-    op.create_unique_constraint('constraint_fcmtoken_unique_fcmtoken', 'fcmtoken', ['fcm_token'])
+    op.create_unique_constraint(
+        "constraint_fcmtoken_unique_fcmtoken", "fcmtoken", ["fcm_token"]
+    )
 
 
 def downgrade():
-    op.drop_constraint('constraint_fcmtoken_unique_fcmtoken', type_='unique')
+    op.drop_constraint("constraint_fcmtoken_unique_fcmtoken", type_="unique")
 
-    op.drop_table('fcmtoken')
+    op.drop_table("fcmtoken")

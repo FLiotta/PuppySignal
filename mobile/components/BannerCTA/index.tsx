@@ -20,11 +20,11 @@ interface IProps {
 }
 
 const CTABanner: React.FC<IProps> = ({
-  title, 
-  description, 
-  image, 
-  imageStyle, 
-  onPress, 
+  title,
+  description,
+  image,
+  imageStyle,
+  onPress,
   pulse,
   extraStyles
 }) => {
@@ -69,15 +69,15 @@ const CTABanner: React.FC<IProps> = ({
         <Text style={styles.presentationDesc}>{description}</Text>
         {image && (
           <Image
-            source={image} 
+            source={image}
             style={{
               ...styles.presentationImage,
               ...imageStyle
-            }} 
+            }}
           />
         )}
       </View>
-      <Animated.View 
+      <Animated.View
         style={[
           styles.presentation,
           {

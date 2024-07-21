@@ -19,9 +19,7 @@ class TestProfileAPI(BaseTestCase):
         self.assertEqual(self.user.first_name, resp_data["first_name"])
         self.assertEqual(self.user.last_name, resp_data["last_name"])
         self.assertEqual(self.user.email, resp_data["email"])
-        self.assertEqual(
-            self.user.profile_picture, resp_data["profile_picture"]
-        )
+        self.assertEqual(self.user.profile_picture, resp_data["profile_picture"])
 
     def test_patch_profile(self):
         headers = {"token": self.token}

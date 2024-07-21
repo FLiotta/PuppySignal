@@ -57,7 +57,7 @@ const SplashView: React.FC<ISplashView> = ({ onFinish }) => {
 
     handleRefreshSession()
   }, [])
-  
+
   return (
     <View style={styles.container}>
       <Image source={Logo} style={styles.logo} />

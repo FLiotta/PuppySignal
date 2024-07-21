@@ -24,7 +24,7 @@ const dataAPI = api.injectEndpoints({
 
 export default dataAPI;
 export const {
-  useLazyGetBreedsQuery, 
+  useLazyGetBreedsQuery,
   useLazyGetSpeciesQuery,
   useGetSpeciesQuery
 } = dataAPI;

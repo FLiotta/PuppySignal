@@ -26,14 +26,14 @@ const PetStack: React.FC = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name='MyPets' 
+        name='MyPets'
         component={PetsView}
         options={{
           headerShown: false
         }}
       />
-      <Stack.Screen 
-        name='PetProfile' 
+      <Stack.Screen
+        name='PetProfile'
         component={PetProfileView}
         options={{
           headerStyle: {
@@ -44,8 +44,8 @@ const PetStack: React.FC = () => {
           title: '',
         }}
       />
-      <Stack.Screen 
-        name='PetCodes' 
+      <Stack.Screen
+        name='PetCodes'
         component={PetCodesView}
         options={{
           headerStyle: {
@@ -56,8 +56,8 @@ const PetStack: React.FC = () => {
           title: '',
         }}
       />
-      <Stack.Screen 
-        name='PetLocations' 
+      <Stack.Screen
+        name='PetLocations'
         component={PetLocationsView}
         options={{
           headerStyle: {
@@ -68,7 +68,7 @@ const PetStack: React.FC = () => {
           title: '',
         }}
       />
-      <Stack.Screen 
+      <Stack.Screen
         name='PetCreation'
         component={PetCreationView}
         options={{
